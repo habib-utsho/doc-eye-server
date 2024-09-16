@@ -14,7 +14,7 @@ const createAppointmentZodSchema = z.object({
     .enum(['in-person', 'online'], {
       message: 'Appointment type is either in-person or online',
     })
-    .optional(),
+    .default('online'),
   symptoms: z.string().optional(),
 })
 

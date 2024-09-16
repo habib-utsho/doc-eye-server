@@ -65,18 +65,22 @@ export type TDistrict =
   | 'Meherpur'
   | 'Narail'
   | 'Satkhira'
-type TBloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
+export type TBloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
+export type TGender = 'Male' | 'Female' | 'Other'
 
 export type TPatient = {
   _id: Types.ObjectId
   user: Types.ObjectId
+  name: string
+  email: string
   phone: string
-  gender: 'Male' | 'Female'
+  profileImg?: string
+  gender: TGender
   district: TDistrict
   dateOfBirth: Date
   bloodGroup: TBloodGroup
-  weight: number
-  height: number
-  allergies: string
+  weight?: number
+  height?: number
+  allergies?: string
   isDeleted: boolean
 }

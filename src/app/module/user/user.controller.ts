@@ -7,35 +7,33 @@ import AppError from '../../errors/appError'
 import { userServices } from './user.service'
 import { JwtPayload } from 'jsonwebtoken'
 
-const insertStudent: RequestHandler = catchAsync(async (req, res) => {
-
-
-  const student = await userServices.insertStudentToDb(req.file, req.body)
+const insertPatient: RequestHandler = catchAsync(async (req, res) => {
+  const patient = await userServices.insertPatient(req.file, req.body)
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: 'Student inserted successfully!',
-    data: student,
+    message: 'Patient inserted successfully!',
+    data: patient,
   })
 })
 
-const insertFaculty: RequestHandler = catchAsync(async (req, res) => {
-  const faculty = await userServices.insertFacultyToDb(req.body)
+const insertDoctor: RequestHandler = catchAsync(async (req, res) => {
+  const faculty = await userServices.insertDoctor(req.file, req.body)
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: 'Faculty inserted successfully!',
+    message: 'Doctor inserted successfully!',
     data: faculty,
   })
 })
-const insertAdmin: RequestHandler = catchAsync(async (req, res) => {
-  const admin = await userServices.insertAdminToDb(req.body)
-  sendResponse(res, StatusCodes.OK, {
-    success: true,
-    message: 'Admin inserted successfully!',
-    data: admin,
-  })
-})
+// const insertAdmin: RequestHandler = catchAsync(async (req, res) => {
+//   const admin = await userServices.insertAdminToDb(req.body)
+//   sendResponse(res, StatusCodes.OK, {
+//     success: true,
+//     message: 'Admin inserted successfully!',
+//     data: admin,
+//   })
+// })
 
 const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const users = await userServices.getAllUser()
@@ -71,9 +69,9 @@ const getMe: RequestHandler = catchAsync(async (req, res) => {
 })
 
 export const userController = {
-  insertStudent,
-  insertFaculty,
-  insertAdmin,
+  insertPatient,
+  insertDoctor,
+  // insertAdmin,
   getAllUsers,
   getUserById,
   getMe,

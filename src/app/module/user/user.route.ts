@@ -6,6 +6,8 @@ import { userController } from './user.controller'
 import auth from '../../middleware/auth'
 import { USER_ROLE } from './user.constant'
 import { upload } from '../../utils/uploadImgToCloudinary'
+import { createPatientZodSchema } from '../patient/patient.validation'
+import { createDoctorZodSchema } from '../doctor/doctor.validation'
 
 const router = Router()
 
@@ -17,27 +19,28 @@ router.post(
     req.body = JSON.parse(req.body?.data)
     next()
   },
-  zodValidateHandler(createStudentZodSchema),
-  userController.insertStudent,
+  zodValidateHandler(createPatientZodSchema),
+  userController.insertPatient,
 )
+
 router.post(
-  '/create-faculty',
-  zodValidateHandler(createFacultyZodSchema),
-  userController.insertFaculty,
+  '/create-doctor',
+  zodValidateHandler(createDoctorZodSchema),
+  userController.insertDoctor,
 )
-router.post(
-  '/create-admin',
-  zodValidateHandler(createAdminZodSchema),
-  userController.insertAdmin,
-)
+// router.post(
+//   '/create-admin',
+//   zodValidateHandler(createAdminZodSchema),
+//   userController.insertAdmin,
+// )
 
 router.get(
   '/me',
-  auth(USER_ROLE.ADMIN, USER_ROLE.FACULTY, USER_ROLE.STUDENT),
+  auth(USER_ROLE.ADMIN, USER_ROLE.PATIENT, USER_ROLE.DOCTOR),
   userController.getMe,
 )
-// Not secured for blood donor (TODO: Only admin and faculty should be access)
-router.get('/', userController.getAllUsers)
-router.get('/:id', userController.getUserById)
+
+router.get('/', auth(USER_ROLE.ADMIN), userController.getAllUsers)
+router.get('/:id', auth(USER_ROLE.ADMIN), userController.getUserById)
 
 export { router as userRouter }
