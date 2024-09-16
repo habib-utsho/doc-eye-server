@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authControllers } from "./auth.controller";
 import zodValidateHandler from "../../middleware/zodValidateHandler";
-import { authZodSchema } from "./auth.validate";
+import { authZodSchema } from "./auth.validation";
 import auth from "../../middleware/auth";
 import { USER_ROLE } from "../user/user.constant";
 

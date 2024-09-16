@@ -6,19 +6,19 @@ import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { sendEmail } from '../../utils/sendEmail'
 
-const login = async (loginInfo: TLoginUser) => {
-  const user = await User.findOne({ id: loginInfo.id })
+const login = async (payload: TLoginUser) => {
+  const user = await User.findOne({ email: payload.email })
 
   if (!user) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'User not found!')
   }
-  const decryptPass = await bcrypt.compare(loginInfo.password, user.password)
+  const decryptPass = await bcrypt.compare(payload.password, user.password)
 
   if (!decryptPass) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Incorrect password!')
   }
 
-  const jwtPayload = { id: user.id, role: user.role }
+  const jwtPayload = { email: user.email, role: user.role }
 
   const accessToken = jwt.sign(
     jwtPayload,
@@ -57,10 +57,10 @@ const refreshToken = async (token: string) => {
     throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
   }
 
-  const { id } = decoded
+  const { email } = decoded
 
   // checking if the user is exist
-  const user = await User.findOne({ id })
+  const user = await User.findOne({ email })
 
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !')
@@ -72,15 +72,15 @@ const refreshToken = async (token: string) => {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is deleted !')
   }
 
-  // checking if the user is not active
-  const userStatus = user?.status
-
-  if (userStatus === 'inactive') {
+  if (user.status === 'inactive') {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is not active!')
+  }
+  if (user.isDeleted) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'This user is deleted!')
   }
 
   const jwtPayload = {
-    id: user.id,
+    email: user.email,
     role: user.role,
   }
 
@@ -98,12 +98,12 @@ const refreshToken = async (token: string) => {
 }
 
 const forgetPassword = async (payload: Record<string, unknown>) => {
-  const user = await User.findOne({ id: payload.id })
+  const user = await User.findOne({ email: payload.email })
 
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
   }
-  const jwtPayload = { id: user.id, role: user.role }
+  const jwtPayload = { email: user.email, role: user.role }
 
   const accessToken = jwt.sign(
     jwtPayload,
@@ -112,10 +112,10 @@ const forgetPassword = async (payload: Record<string, unknown>) => {
       expiresIn: '10m' as string,
     },
   )
-  const resetLink = `${process.env.CLIENT_URL}/reset-password?id=${user.id}&token=${accessToken}`
+  const resetLink = `${process.env.CLIENT_URL}/reset-password?email=${user.email}&token=${accessToken}`
   await sendEmail({
     toEmail: user.email,
-    subject: 'Reset your password for Pandit university!',
+    subject: 'Reset your password for Doc Eye!',
     text: `You requested a password reset for your account. Please click the link below to reset your password:
     ${resetLink} This link will expire in 10 minutes. If you did not request a password reset, please ignore this email.`,
     html: `
@@ -137,13 +137,13 @@ const resetPassword = async (
   payload: TResetPassword,
   jwtPayload: JwtPayload,
 ) => {
-  const user = await User.findOne({ id: payload.id })
+  const user = await User.findOne({ email: payload.email })
 
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
   }
 
-  if (jwtPayload.id != user.id) {
+  if (jwtPayload.email != user.email) {
     throw new AppError(
       StatusCodes.FORBIDDEN,
       'You are not authorized to reset password for this user',
@@ -156,7 +156,7 @@ const resetPassword = async (
   )
 
   const result = await User.findOneAndUpdate(
-    { id: payload.id },
+    { email: payload.email },
     { password: hashedPass, needsPasswordChange: false },
     { new: true },
   ).select('-password')
@@ -173,7 +173,7 @@ const changePassword = async (
   userPayload: JwtPayload,
   payload: TPasswordUpdate,
 ) => {
-  const user = await User.findOne({ id: userPayload.id })
+  const user = await User.findOne({ email: userPayload.email })
 
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
@@ -190,7 +190,7 @@ const changePassword = async (
   )
 
   const result = await User.findOneAndUpdate(
-    { id: userPayload.id },
+    { email: userPayload.email },
     { password: hashedPass, needsPasswordChange: false },
     { new: true },
   ).select('-password')
