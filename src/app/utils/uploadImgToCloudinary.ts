@@ -11,6 +11,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET, // Click 'View API Keys' above to copy your API secret
 })
 
+// TODO: Need to transform img
 export const uploadImgToCloudinary = async (
   fileName: string,
   filePath: string,

@@ -4,12 +4,17 @@ import { appointmentRouter } from '../module/appointment/appointment.route'
 import { doctorRouter } from '../module/doctor/doctor.route'
 import { adminRouter } from '../module/admin/admin.route'
 import { patientRouter } from '../module/patient/patient.route'
+import { userRouter } from '../module/user/user.route'
 
 const router = Router()
 const routes = [
   {
     path: '/auth',
     route: authRouter,
+  },
+  {
+    path: '/user',
+    route: userRouter,
   },
   {
     path: '/appointment',

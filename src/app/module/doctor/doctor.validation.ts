@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { Types } from 'mongoose'
 
 const createDoctorZodSchema = z.object({
-  user: z.string().refine((val) => Types.ObjectId.isValid(val), {
-    message: 'Invalid user ID format.',
-  }),
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters long.')
+    .optional(),
   name: z.string().min(1, 'Name is required.'),
   email: z.string().email('Invalid email format.'),
   phone: z
@@ -40,9 +40,7 @@ const createDoctorZodSchema = z.object({
       workingPeriod: z.string(),
     }),
   ),
-  dateOfBirth: z.date().refine((date) => date < new Date(), {
-    message: 'Date of birth must be in the past.',
-  }),
+  dateOfBirth: z.string({ required_error: 'Date of birth is required.' }),
   currentWorkplace: z.string(),
   availability: z.object({
     dayStart: z.string(),
@@ -119,8 +117,14 @@ const createDoctorZodSchema = z.object({
     ],
     { required_error: 'District is required.' },
   ),
-  NID: z.number().int().nonnegative('NID must be a positive integer.'),
-  BMDC: z.number().int().nonnegative('BMDC must be a positive integer.'),
+  nid: z
+    .number({ required_error: 'Nid is required.' })
+    .int()
+    .nonnegative('NID must be a positive integer.'),
+  bmdc: z
+    .number({ required_error: 'bmdc is required.' })
+    .int()
+    .nonnegative('BMDC must be a positive integer.'),
   status: z
     .enum(['pending', 'approve', 'reject'], {
       required_error: 'Status is required.',

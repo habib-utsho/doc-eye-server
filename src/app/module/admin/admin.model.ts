@@ -4,7 +4,6 @@ import { TAdmin } from './admin.interface'
 const AdminSchema = new Schema<TAdmin>({
   user: {
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User',
   },
   name: {
@@ -40,10 +39,6 @@ const AdminSchema = new Schema<TAdmin>({
   district: {
     type: String,
     required: true, // Assuming TDistrict is a string
-  },
-  nid: {
-    type: Number,
-    required: true,
   },
   isDeleted: {
     type: Boolean,

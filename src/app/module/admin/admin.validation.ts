@@ -1,10 +1,6 @@
 import { z } from 'zod'
-import { Types } from 'mongoose'
 
 const createAdminZodSchema = z.object({
-  user: z.string().refine((val) => Types.ObjectId.isValid(val), {
-    message: 'Invalid user ID format.',
-  }),
   name: z.string().min(1, 'Name is required.'),
   email: z
     .string({ required_error: 'Email is required.' })
@@ -13,9 +9,7 @@ const createAdminZodSchema = z.object({
   gender: z.enum(['Male', 'Female', 'Other'], {
     required_error: 'Gender is required.',
   }),
-  dateOfBirth: z.date().refine((date) => date < new Date(), {
-    message: 'Date of birth must be in the past.',
-  }),
+  dateOfBirth: z.string({required_error: 'Date of birth is required.'}),
   district: z.enum(
     [
       'Dhaka',
@@ -85,7 +79,6 @@ const createAdminZodSchema = z.object({
     ],
     { required_error: 'District is required.' },
   ),
-  NID: z.number().int().nonnegative('NID must be a positive integer.'),
   isDeleted: z.boolean().default(false), // Default value
 })
 

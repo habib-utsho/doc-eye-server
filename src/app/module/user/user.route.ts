@@ -26,12 +26,24 @@ router.post(
 
 router.post(
   '/create-doctor',
+  auth(USER_ROLE.ADMIN),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body?.data)
+    next()
+  },
   zodValidateHandler(createDoctorZodSchema),
   userController.insertDoctor,
 )
 
 router.post(
   '/create-admin',
+  auth(USER_ROLE.ADMIN),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body?.data)
+    next()
+  },
   zodValidateHandler(createAdminZodSchema),
   userController.insertAdmin,
 )

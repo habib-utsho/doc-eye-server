@@ -1,10 +1,6 @@
 import { z } from 'zod'
-import { Types } from 'mongoose'
 
 const createPatientZodSchema = z.object({
-  user: z.string().refine((val) => Types.ObjectId.isValid(val), {
-    message: 'Invalid user ID format.',
-  }),
   name: z.string().min(1, 'Name is required.'),
   email: z.string().email('Invalid email format.'),
   phone: z
@@ -82,11 +78,7 @@ const createPatientZodSchema = z.object({
     ],
     { required_error: 'District is required.' },
   ),
-  dateOfBirth: z
-    .date({ required_error: 'Date of birth is required.' })
-    .refine((date) => date < new Date(), {
-      message: 'Date of birth must be in the past.',
-    }),
+  dateOfBirth: z.string({ required_error: 'Date of birth is required.' }),
   bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'], {
     required_error: 'Blood group is required.',
   }),

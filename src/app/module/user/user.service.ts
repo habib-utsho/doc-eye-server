@@ -117,7 +117,7 @@ const insertDoctor = async (
     const userData: Partial<TUser> = {
       email: payload.email,
       password: payload.password || process.env.DOCTOR_DEFAULT_PASSWORD,
-      needsPasswordChange: true,
+      needsPasswordChange: payload.password ? false : true,
       role: 'doctor',
     }
     // Save user
@@ -188,7 +188,7 @@ const insertAdmin = async (file: any, payload: TAdmin & TUser) => {
     const userData: Partial<TUser> = {
       email: payload.email,
       password: payload.password || process.env.ADMIN_DEFAULT_PASSWORD,
-      needsPasswordChange: false,
+      needsPasswordChange: payload.password ? false : true,
       role: 'admin',
     }
     // Save user
@@ -202,7 +202,7 @@ const insertAdmin = async (file: any, payload: TAdmin & TUser) => {
       user: user[0]._id,
     }
     // Save doctor
-    const admin = await Doctor.create([adminData], { session })
+    const admin = await Admin.create([adminData], { session })
     if (!admin?.length) {
       throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to insert admin!')
     }

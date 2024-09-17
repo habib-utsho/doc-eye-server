@@ -4,8 +4,7 @@ import { TDoctor } from './doctor.interface' // Adjust the path as needed
 const DoctorSchema: Schema = new Schema<TDoctor>({
   user: {
     type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'User', // Assuming you have a User model
+    ref: 'User',
   },
   name: {
     type: String,

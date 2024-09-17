@@ -7,8 +7,7 @@ const patientSchema = new Schema<TPatient>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'User', // Adjust the ref according to your User model
+      ref: 'User',
     },
     name: {
       type: String,
