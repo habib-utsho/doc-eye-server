@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { authRouter } from '../module/auth/auth.route'
 import { appointmentRouter } from '../module/appointment/appointment.route'
 import { doctorRouter } from '../module/doctor/doctor.route'
+import { adminRouter } from '../module/admin/admin.route'
+import { patientRouter } from '../module/patient/patient.route'
 
 const router = Router()
 const routes = [
@@ -14,8 +16,16 @@ const routes = [
     route: appointmentRouter,
   },
   {
+    path: '/patient',
+    route: patientRouter,
+  },
+  {
     path: '/doctor',
     route: doctorRouter,
+  },
+  {
+    path: '/admin',
+    route: adminRouter,
   },
 ]
 

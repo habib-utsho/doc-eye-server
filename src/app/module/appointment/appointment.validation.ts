@@ -7,7 +7,7 @@ const createAppointmentZodSchema = z.object({
   patient: z.string({
     required_error: 'Patient is required',
   }),
-  appointmentDate: z.string({
+  appointmentDateTime: z.string({
     required_error: 'Appointment date is required',
   }),
   appointmentType: z

@@ -13,7 +13,7 @@ const AppointmentSchema = new Schema<TAppointment>(
       ref: 'Patient',
       required: true,
     },
-    appointmentDate: {
+    appointmentDateTime: {
       type: Date,
       required: true,
     },

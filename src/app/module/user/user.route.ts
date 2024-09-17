@@ -8,6 +8,7 @@ import { USER_ROLE } from './user.constant'
 import { upload } from '../../utils/uploadImgToCloudinary'
 import { createPatientZodSchema } from '../patient/patient.validation'
 import { createDoctorZodSchema } from '../doctor/doctor.validation'
+import { createAdminZodSchema } from '../admin/admin.validation'
 
 const router = Router()
 
@@ -27,6 +28,12 @@ router.post(
   '/create-doctor',
   zodValidateHandler(createDoctorZodSchema),
   userController.insertDoctor,
+)
+
+router.post(
+  '/create-admin',
+  zodValidateHandler(createAdminZodSchema),
+  userController.insertAdmin,
 )
 // router.post(
 //   '/create-admin',

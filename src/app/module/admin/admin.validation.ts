@@ -1,17 +1,20 @@
 import { z } from 'zod'
 import { Types } from 'mongoose'
 
-const createPatientZodSchema = z.object({
+const createAdminZodSchema = z.object({
   user: z.string().refine((val) => Types.ObjectId.isValid(val), {
     message: 'Invalid user ID format.',
   }),
   name: z.string().min(1, 'Name is required.'),
-  email: z.string().email('Invalid email format.'),
-  phone: z
-    .string()
-    .min(10, 'Phone number must be at least 10 characters long.'),
+  email: z
+    .string({ required_error: 'Email is required.' })
+    .email('Invalid email format.'),
+  phone: z.string({ required_error: 'Phone number is required.' }),
   gender: z.enum(['Male', 'Female', 'Other'], {
     required_error: 'Gender is required.',
+  }),
+  dateOfBirth: z.date().refine((date) => date < new Date(), {
+    message: 'Date of birth must be in the past.',
   }),
   district: z.enum(
     [
@@ -82,18 +85,8 @@ const createPatientZodSchema = z.object({
     ],
     { required_error: 'District is required.' },
   ),
-  dateOfBirth: z
-    .date({ required_error: 'Date of birth is required.' })
-    .refine((date) => date < new Date(), {
-      message: 'Date of birth must be in the past.',
-    }),
-  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'], {
-    required_error: 'Blood group is required.',
-  }),
-  weight: z.number().optional(), // Optional field
-  height: z.number().optional(), // Optional field
-  allergies: z.string().optional(), // Optional field
+  NID: z.number().int().nonnegative('NID must be a positive integer.'),
   isDeleted: z.boolean().default(false), // Default value
 })
 
-export { createPatientZodSchema }
+export { createAdminZodSchema }

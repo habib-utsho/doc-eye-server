@@ -4,7 +4,7 @@ export type TAppointment = {
   _id: Types.ObjectId
   doctor: Types.ObjectId
   patient: Types.ObjectId
-  appointmentDate: Date
+  appointmentDateTime: Date
   appointmentType: 'in-person' | 'online'
   symptoms?: string
   status: 'pending' | 'confirmed' | 'completed' | 'canceled'

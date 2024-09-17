@@ -26,14 +26,14 @@ const insertDoctor: RequestHandler = catchAsync(async (req, res) => {
     data: faculty,
   })
 })
-// const insertAdmin: RequestHandler = catchAsync(async (req, res) => {
-//   const admin = await userServices.insertAdminToDb(req.body)
-//   sendResponse(res, StatusCodes.OK, {
-//     success: true,
-//     message: 'Admin inserted successfully!',
-//     data: admin,
-//   })
-// })
+const insertAdmin: RequestHandler = catchAsync(async (req, res) => {
+  const admin = await userServices.insertAdmin(req.file, req.body)
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: 'Admin inserted successfully!',
+    data: admin,
+  })
+})
 
 const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const users = await userServices.getAllUser()
@@ -71,7 +71,7 @@ const getMe: RequestHandler = catchAsync(async (req, res) => {
 export const userController = {
   insertPatient,
   insertDoctor,
-  // insertAdmin,
+  insertAdmin,
   getAllUsers,
   getUserById,
   getMe,

@@ -53,7 +53,7 @@ const refreshToken = async (token: string) => {
       token,
       process.env.JWT_REFRESH_SECRET as string,
     ) as JwtPayload
-  } catch (e) {
+  } catch (e: any) {
     throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
   }
 

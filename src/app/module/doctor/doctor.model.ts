@@ -1,9 +1,9 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 import { TDoctor } from './doctor.interface' // Adjust the path as needed
 
-const DoctorSchema: Schema = new Schema({
+const DoctorSchema: Schema = new Schema<TDoctor>({
   user: {
-    type: mongoose.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'User', // Assuming you have a User model
   },
@@ -154,6 +154,6 @@ DoctorSchema.pre('save', function (next) {
 })
 
 // Create the Doctor model
-const Doctor = mongoose.model<TDoctor & Document>('Doctor', DoctorSchema)
+const Doctor = mongoose.model('Doctor', DoctorSchema)
 
 export default Doctor

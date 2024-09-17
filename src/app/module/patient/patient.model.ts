@@ -1,11 +1,12 @@
-import { Schema, model, Types } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import { bloodGroups, districts } from './patient.constant'
+import { TPatient } from './patient.interface'
 
 // Patient Schema
-const patientSchema = new Schema(
+const patientSchema = new Schema<TPatient>(
   {
     user: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: 'User', // Adjust the ref according to your User model
     },

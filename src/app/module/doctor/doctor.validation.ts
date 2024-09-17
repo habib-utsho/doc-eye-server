@@ -14,7 +14,6 @@ const createDoctorZodSchema = z.object({
   bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
     required_error: 'Blood group is required.',
   }),
-  profileImg: z.string().optional(), // Optional field
   bio: z.string().optional(), // Optional field
   doctorTitle: z.enum(
     ['Dr.', 'Prof. Dr.', 'Assoc. Prof. Dr.', 'Asst. Prof. Dr.'],

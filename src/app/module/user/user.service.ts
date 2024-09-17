@@ -9,6 +9,8 @@ import { TPatient } from '../patient/patient.interface'
 import Patient from '../patient/patient.model'
 import { TDoctor } from '../doctor/doctor.interface'
 import Doctor from '../doctor/doctor.model'
+import { TAdmin } from '../admin/admin.interface'
+import Admin from '../admin/admin.model'
 
 const insertPatient = async (file: any, payload: TPatient & Partial<TUser>) => {
   const session = await mongoose.startSession()
@@ -97,6 +99,15 @@ const insertDoctor = async (
       )
     }
 
+    // file upload
+    const cloudinaryRes = await uploadImgToCloudinary(
+      `${payload.name}-${Date.now()}`,
+      file.path,
+    )
+    if (cloudinaryRes) {
+      payload.profileImg = cloudinaryRes.secure_url
+    }
+
     const totalDoctor = await Doctor.countDocuments({}).exec()
 
     // Update id
@@ -128,6 +139,76 @@ const insertDoctor = async (
 
     await session.commitTransaction()
     return doctor[0]
+  } catch (err: any) {
+    await session.abortTransaction()
+    throw new Error(err)
+  } finally {
+    await session.endSession()
+  }
+}
+
+const insertAdmin = async (file: any, payload: TAdmin & TUser) => {
+  const session = await mongoose.startSession()
+
+  try {
+    session.startTransaction()
+
+    const alreadyExistEmail = await Admin.findOne({ email: payload.email })
+    const alreadyExistNid = await Admin.findOne({ nid: payload.nid })
+    const alreadyExistPhone = await Admin.findOne({ phone: payload.phone })
+
+    if (alreadyExistEmail) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Email is already exist. Try with different email!',
+      )
+    }
+    if (alreadyExistNid) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'NID is already exist. Try with different NID!',
+      )
+    }
+    if (alreadyExistPhone) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Phone is already exist. Try with different phone!',
+      )
+    }
+
+    // file upload
+    const cloudinaryRes = await uploadImgToCloudinary(
+      `${payload.name}-${Date.now()}`,
+      file.path,
+    )
+    if (cloudinaryRes) {
+      payload.profileImg = cloudinaryRes.secure_url
+    }
+
+    const userData: Partial<TUser> = {
+      email: payload.email,
+      password: payload.password || process.env.ADMIN_DEFAULT_PASSWORD,
+      needsPasswordChange: false,
+      role: 'admin',
+    }
+    // Save user
+    const user = await User.create([userData], { session })
+    if (!user?.length) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to insert user!')
+    }
+
+    const adminData: Partial<TAdmin> = {
+      ...payload,
+      user: user[0]._id,
+    }
+    // Save doctor
+    const admin = await Doctor.create([adminData], { session })
+    if (!admin?.length) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to insert admin!')
+    }
+
+    await session.commitTransaction()
+    return admin[0]
   } catch (err: any) {
     await session.abortTransaction()
     throw new Error(err)
@@ -235,6 +316,7 @@ const getMe = async (payload: JwtPayload) => {
 export const userServices = {
   insertPatient,
   insertDoctor,
+  insertAdmin,
   // insertAdminToDb,
   getAllUser,
   getSingleUserById,
