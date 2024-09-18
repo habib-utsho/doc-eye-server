@@ -83,6 +83,7 @@ const insertDoctor = async (
     const alreadyExistEmail = await Doctor.findOne({ email: payload.email })
     const alreadyExistNid = await Doctor.findOne({ nid: payload.nid })
     const alreadyExistPhone = await Doctor.findOne({ phone: payload.phone })
+    const alreadyExistBmdc = await Doctor.findOne({ phone: payload.bmdc })
 
     if (alreadyExistEmail) {
       throw new AppError(
@@ -100,6 +101,12 @@ const insertDoctor = async (
       throw new AppError(
         StatusCodes.BAD_REQUEST,
         'Phone is already exist. Try with different phone!',
+      )
+    }
+    if (alreadyExistBmdc) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'BMDC is already exist. Try with different BMDC!',
       )
     }
     // Validate medicalSpecialty IDs

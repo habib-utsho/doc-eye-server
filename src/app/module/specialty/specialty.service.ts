@@ -39,7 +39,7 @@ const getAllSpecialty = async (query: Record<string, unknown>) => {
 }
 
 const getSpecialtyById = async (id: string) => {
-  const specialty = await Specialty.findOne({ id }).select('-__v')
+  const specialty = await Specialty.findById(id).select('-__v')
   return specialty
 }
 

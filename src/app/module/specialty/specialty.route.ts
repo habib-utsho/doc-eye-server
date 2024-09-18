@@ -38,11 +38,6 @@ router.patch(
 router.delete(
   '/:id',
   auth(USER_ROLE.ADMIN),
-  upload.single('file'),
-  (req: Request, res: Response, next: NextFunction) => {
-    req.body = JSON.parse(req.body?.data)
-    next()
-  },
   specialtyController.deleteSpecialtyById,
 )
 
