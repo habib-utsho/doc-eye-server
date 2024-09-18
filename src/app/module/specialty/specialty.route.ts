@@ -29,7 +29,9 @@ router.patch(
   auth(USER_ROLE.ADMIN),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
-    req.body = JSON.parse(req.body?.data)
+    if (req.body?.data) {
+      req.body = JSON.parse(req.body?.data)
+    }
     next()
   },
   zodValidateHandler(specialtyZodSchema.updateSpecialtyZodSchema),

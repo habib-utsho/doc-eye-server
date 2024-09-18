@@ -7,7 +7,7 @@ import Specialty from './specialty.model'
 const createSpecialty = async (file: any, payload: TSpecialty) => {
   // Create a new specialty entry
   // file upload
-  if (file.path) {
+  if (file?.path) {
     const cloudinaryRes = await uploadImgToCloudinary(
       `${payload.name}-${Date.now()}`,
       file.path,
