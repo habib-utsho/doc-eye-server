@@ -19,30 +19,30 @@ export type TDoctor = {
   bio: string
   doctorTitle: TDoctorTitle
   doctorType: TDoctorType
-  medicalSpecialty: string[] 
-  totalExperienceYear: number 
-  medicalDegree: string 
-  consultationFee: number 
-  followupFee: number 
+  medicalSpecialty: Types.ObjectId[]
+  totalExperienceYear: number
+  medicalDegree: string
+  consultationFee: number
+  followupFee: number
   workingExperiences: {
     workPlace: string
     department: string
     designation: string
     workingPeriod: string
-  }[] 
-  dateOfBirth: Date 
-  currentWorkplace: string 
+  }[]
+  dateOfBirth: Date
+  currentWorkplace: string
   availability: {
     dayStart: string
     dayEnd: string
     timeStart: string
     timeEnd: string
-  } 
-  district: TDistrict 
-  nid: number 
-  bmdc: number 
-  patientAttended: number 
-  status: 'pending' | 'approve' | 'reject' 
-  doctorCode: string 
-  isDeleted: boolean 
+  }
+  district: TDistrict
+  nid: number
+  bmdc: number
+  patientAttended: number
+  status: 'pending' | 'approve' | 'reject'
+  doctorCode: string
+  isDeleted: boolean
 }

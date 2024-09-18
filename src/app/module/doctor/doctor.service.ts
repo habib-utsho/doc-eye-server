@@ -1,9 +1,6 @@
 import QueryBuilder from '../../builder/QueryBuilder'
-import AppError from '../../errors/appError'
-import { StatusCodes } from 'http-status-codes'
 import Doctor from './doctor.model'
 import { doctorSearchableFields } from './doctor.constant'
-import { TDoctor } from './doctor.interface'
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
   const doctorQuery = new QueryBuilder(Doctor.find(), {

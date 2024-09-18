@@ -11,6 +11,7 @@ import { TDoctor } from '../doctor/doctor.interface'
 import Doctor from '../doctor/doctor.model'
 import { TAdmin } from '../admin/admin.interface'
 import Admin from '../admin/admin.model'
+import Specialty from '../specialty/specialty.model'
 
 const insertPatient = async (file: any, payload: TPatient & Partial<TUser>) => {
   const session = await mongoose.startSession()
@@ -27,12 +28,14 @@ const insertPatient = async (file: any, payload: TPatient & Partial<TUser>) => {
     }
 
     // file upload
-    const cloudinaryRes = await uploadImgToCloudinary(
-      `${payload.name}-${Date.now()}`,
-      file.path,
-    )
-    if (cloudinaryRes) {
-      payload.profileImg = cloudinaryRes.secure_url
+    if (file?.path) {
+      const cloudinaryRes = await uploadImgToCloudinary(
+        `${payload.name}-${Date.now()}`,
+        file.path,
+      )
+      if (cloudinaryRes?.secure_url) {
+        payload.profileImg = cloudinaryRes.secure_url
+      }
     }
 
     const userData: Partial<TUser> = {
@@ -71,6 +74,7 @@ const insertDoctor = async (
   file: any,
   payload: TDoctor & Omit<TUser, 'status'>,
 ) => {
+  const { medicalSpecialty } = payload
   const session = await mongoose.startSession()
 
   try {
@@ -98,14 +102,27 @@ const insertDoctor = async (
         'Phone is already exist. Try with different phone!',
       )
     }
+    // Validate medicalSpecialty IDs
+    const validSpecialties = await Specialty.find({
+      _id: { $in: payload.medicalSpecialty },
+    }).select('_id')
+
+    if (validSpecialties.length !== medicalSpecialty.length) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'One or more medical specialty IDs are invalid!',
+      )
+    }
 
     // file upload
-    const cloudinaryRes = await uploadImgToCloudinary(
-      `${payload.name}-${Date.now()}`,
-      file.path,
-    )
-    if (cloudinaryRes) {
-      payload.profileImg = cloudinaryRes.secure_url
+    if (file?.path) {
+      const cloudinaryRes = await uploadImgToCloudinary(
+        `${payload.name}-${Date.now()}`,
+        file.path,
+      )
+      if (cloudinaryRes?.secure_url) {
+        payload.profileImg = cloudinaryRes.secure_url
+      }
     }
 
     const totalDoctor = await Doctor.countDocuments({}).exec()
@@ -177,12 +194,14 @@ const insertAdmin = async (file: any, payload: TAdmin & TUser) => {
     }
 
     // file upload
-    const cloudinaryRes = await uploadImgToCloudinary(
-      `${payload.name}-${Date.now()}`,
-      file.path,
-    )
-    if (cloudinaryRes) {
-      payload.profileImg = cloudinaryRes.secure_url
+    if (file?.path) {
+      const cloudinaryRes = await uploadImgToCloudinary(
+        `${payload.name}-${Date.now()}`,
+        file.path,
+      )
+      if (cloudinaryRes?.secure_url) {
+        payload.profileImg = cloudinaryRes.secure_url
+      }
     }
 
     const userData: Partial<TUser> = {

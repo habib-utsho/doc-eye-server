@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { Schema, Types } from 'mongoose'
 import { TDoctor } from './doctor.interface' // Adjust the path as needed
 
 const DoctorSchema: Schema = new Schema<TDoctor>({
@@ -52,7 +52,7 @@ const DoctorSchema: Schema = new Schema<TDoctor>({
     required: true,
   },
   medicalSpecialty: {
-    type: [String],
+    type: [Types.ObjectId],
     required: true,
   },
   totalExperienceYear: {
