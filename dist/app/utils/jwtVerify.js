@@ -12,28 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app"));
-const server = app_1.default.listen(process.env.PORT, () => __awaiter(void 0, void 0, void 0, function* () {
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const http_status_codes_1 = require("http-status-codes");
+const appError_1 = __importDefault(require("../errors/appError"));
+const jwtVerify = (token, tokenSecret) => __awaiter(void 0, void 0, void 0, function* () {
+    let decoded;
     try {
-        yield mongoose_1.default.connect(process.env.MONGO_URI);
-        console.log(`😀 Database connected at port ${process.env.PORT}`);
+        decoded = jsonwebtoken_1.default.verify(token, tokenSecret);
     }
-    catch (error) {
-        console.log(`😡 Failed to connect with db - ${error.message}`);
+    catch (e) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, "You are not authorized!");
     }
-}));
-// stop server when async errors
-process.on('unhandledRejection', () => {
-    console.log('😡 UNHANDLED REJECTION! Shutting down...');
-    if (server) {
-        server.close(() => {
-            process.exit(1);
-        });
-    }
+    return decoded;
 });
-// stop server when sync errors
-process.on('uncaughtException', () => {
-    console.log('😡 UNCAUGHT EXCEPTION! Shutting down...');
-    process.exit(1);
-});
+exports.default = jwtVerify;

@@ -12,28 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app"));
-const server = app_1.default.listen(process.env.PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield mongoose_1.default.connect(process.env.MONGO_URI);
-        console.log(`😀 Database connected at port ${process.env.PORT}`);
+exports.appointmentService = void 0;
+const doctor_model_1 = __importDefault(require("../doctor/doctor.model"));
+const patient_model_1 = __importDefault(require("../patient/patient.model"));
+const appointment_model_1 = __importDefault(require("./appointment.model"));
+const createAppointment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { doctor, patient } = payload;
+    const isExistDoctor = yield doctor_model_1.default.findById(doctor);
+    const isExistPatient = yield patient_model_1.default.findById(patient);
+    if (!isExistDoctor) {
+        throw new Error('Doctor not found');
     }
-    catch (error) {
-        console.log(`😡 Failed to connect with db - ${error.message}`);
+    if (!isExistPatient) {
+        throw new Error('Patient not found');
     }
-}));
-// stop server when async errors
-process.on('unhandledRejection', () => {
-    console.log('😡 UNHANDLED REJECTION! Shutting down...');
-    if (server) {
-        server.close(() => {
-            process.exit(1);
-        });
-    }
+    const result = yield appointment_model_1.default.create(payload);
+    return result;
 });
-// stop server when sync errors
-process.on('uncaughtException', () => {
-    console.log('😡 UNCAUGHT EXCEPTION! Shutting down...');
-    process.exit(1);
-});
+exports.appointmentService = {
+    createAppointment,
+};

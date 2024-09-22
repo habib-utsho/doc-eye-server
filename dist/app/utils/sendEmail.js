@@ -12,28 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app"));
-const server = app_1.default.listen(process.env.PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield mongoose_1.default.connect(process.env.MONGO_URI);
-        console.log(`😀 Database connected at port ${process.env.PORT}`);
-    }
-    catch (error) {
-        console.log(`😡 Failed to connect with db - ${error.message}`);
-    }
-}));
-// stop server when async errors
-process.on('unhandledRejection', () => {
-    console.log('😡 UNHANDLED REJECTION! Shutting down...');
-    if (server) {
-        server.close(() => {
-            process.exit(1);
-        });
-    }
+exports.sendEmail = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const sendEmail = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const transporter = nodemailer_1.default.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: process.env.NODE_ENV === "production", // true for port 465, false for other ports
+        auth: {
+            user: process.env.NODE_MAILER_USER,
+            pass: process.env.NODE_MAILER_PASSWORD,
+        },
+    });
+    yield transporter.sendMail({
+        from: '"DocEye 🩺" <utsho926@gmail.com>', // sender address
+        to: payload.toEmail, // list of receivers
+        subject: payload.subject, // Subject line
+        text: payload.text,
+        html: payload.html,
+    });
 });
-// stop server when sync errors
-process.on('uncaughtException', () => {
-    console.log('😡 UNCAUGHT EXCEPTION! Shutting down...');
-    process.exit(1);
-});
+exports.sendEmail = sendEmail;

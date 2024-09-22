@@ -32,7 +32,7 @@ const patientSchema = new Schema<TPatient>(
     gender: {
       type: String,
       required: true,
-      enum: ['Male', 'Female'],
+      enum: ['Male', 'Female', 'Other'],
     },
     district: {
       type: String,
@@ -50,12 +50,15 @@ const patientSchema = new Schema<TPatient>(
     },
     weight: {
       type: Number,
+      default: null,
     },
     height: {
       type: Number,
+      default: null,
     },
     allergies: {
       type: String,
+      default: null,
     },
     isDeleted: {
       type: Boolean,

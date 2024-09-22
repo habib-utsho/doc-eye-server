@@ -12,28 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app"));
-const server = app_1.default.listen(process.env.PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield mongoose_1.default.connect(process.env.MONGO_URI);
-        console.log(`😀 Database connected at port ${process.env.PORT}`);
-    }
-    catch (error) {
-        console.log(`😡 Failed to connect with db - ${error.message}`);
-    }
+exports.appointmentController = void 0;
+const http_status_codes_1 = require("http-status-codes");
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const appointment_service_1 = require("./appointment.service");
+const createAppointment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield appointment_service_1.appointmentService.createAppointment(req.body);
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: 'Appointment is created successfully',
+        data: result,
+    });
 }));
-// stop server when async errors
-process.on('unhandledRejection', () => {
-    console.log('😡 UNHANDLED REJECTION! Shutting down...');
-    if (server) {
-        server.close(() => {
-            process.exit(1);
-        });
-    }
-});
-// stop server when sync errors
-process.on('uncaughtException', () => {
-    console.log('😡 UNCAUGHT EXCEPTION! Shutting down...');
-    process.exit(1);
-});
+exports.appointmentController = {
+    createAppointment,
+};
