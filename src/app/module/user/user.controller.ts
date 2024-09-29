@@ -8,6 +8,7 @@ import { userServices } from './user.service'
 import { JwtPayload } from 'jsonwebtoken'
 
 const insertPatient: RequestHandler = catchAsync(async (req, res) => {
+  console.log('insertPatient')
   const patient = await userServices.insertPatient(req.file, req.body)
 
   sendResponse(res, StatusCodes.OK, {

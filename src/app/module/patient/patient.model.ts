@@ -32,7 +32,7 @@ const patientSchema = new Schema<TPatient>(
     gender: {
       type: String,
       required: true,
-      enum: ['Male', 'Female', 'Other'],
+      enum: ['Male', 'Female', 'Other '],
     },
     district: {
       type: String,

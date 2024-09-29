@@ -9,6 +9,7 @@ const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
 
+
   res.cookie('refreshToken', refreshToken, {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
@@ -17,7 +18,7 @@ const login = catchAsync(async (req, res) => {
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'User is logged in successfully',
-    data: { accessToken, needsPasswordChange },
+    data: { accessToken, refreshToken, needsPasswordChange },
   })
 })
 const refreshToken = catchAsync(async (req, res) => {

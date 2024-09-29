@@ -13,7 +13,7 @@ const createSpecialty = async (file: any, payload: TSpecialty) => {
       file.path,
     )
     if (cloudinaryRes?.secure_url) {
-      payload.logo = cloudinaryRes.secure_url
+      payload.icon = cloudinaryRes.secure_url
     }
   }
   const result = await Specialty.create(payload)
@@ -55,7 +55,7 @@ const updateSpecialtyById = async (
       file.path,
     )
     if (cloudinaryRes) {
-      payload.logo = cloudinaryRes.secure_url
+      payload.icon = cloudinaryRes.secure_url
     }
   }
   const specialty = await Specialty.findByIdAndUpdate(id, payload, {

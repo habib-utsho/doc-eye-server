@@ -14,7 +14,6 @@ const router = Router()
 
 router.post(
   '/create-patient',
-  auth(USER_ROLE.ADMIN),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body?.data)

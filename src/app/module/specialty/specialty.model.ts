@@ -12,7 +12,7 @@ const specialtySchema = new Schema<TSpecialty>(
       type: String,
       required: true,
     },
-    logo: {
+    icon: {
       type: String,
       required: true,
     },

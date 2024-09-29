@@ -12,13 +12,16 @@ const login = async (payload: TLoginUser) => {
   if (!user) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'User not found!')
   }
+  if (user?.status === 'inactive') {
+    throw new AppError(StatusCodes.FORBIDDEN, 'This user is not active!')
+  }
   const decryptPass = await bcrypt.compare(payload.password, user.password)
 
   if (!decryptPass) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Incorrect password!')
   }
 
-  const jwtPayload = { email: user.email, role: user.role }
+  const jwtPayload = { _id: user?._id, email: user.email, role: user.role }
 
   const accessToken = jwt.sign(
     jwtPayload,
@@ -79,10 +82,7 @@ const refreshToken = async (token: string) => {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is deleted!')
   }
 
-  const jwtPayload = {
-    email: user.email,
-    role: user.role,
-  }
+  const jwtPayload = { _id: user?._id, email: user.email, role: user.role }
 
   const accessToken = jwt.sign(
     jwtPayload,
@@ -103,7 +103,7 @@ const forgetPassword = async (payload: Record<string, unknown>) => {
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
   }
-  const jwtPayload = { email: user.email, role: user.role }
+  const jwtPayload = { _id: user?._id, email: user.email, role: user.role }
 
   const accessToken = jwt.sign(
     jwtPayload,

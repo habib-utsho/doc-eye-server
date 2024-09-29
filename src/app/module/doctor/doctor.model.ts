@@ -91,7 +91,7 @@ const DoctorSchema: Schema = new Schema<TDoctor>({
       },
     },
   ],
-  dateOfBirth: {
+  dateOfBirth: { 
     type: Date,
     required: true,
   },
