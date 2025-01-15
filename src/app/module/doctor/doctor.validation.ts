@@ -37,14 +37,35 @@ const createDoctorZodSchema = z.object({
       workPlace: z.string(),
       department: z.string(),
       designation: z.string(),
-      workingPeriod: z.string(),
+      workingPeriodStart: z.string(),
+      workingPeriodEnd: z.string(),
     }),
   ),
   dateOfBirth: z.string({ required_error: 'Date of birth is required.' }),
   currentWorkplace: z.string(),
   availability: z.object({
-    dayStart: z.string(),
-    dayEnd: z.string(),
+    dayStart: z.string(
+      z.enum([
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+      ]),
+    ),
+    dayEnd: z.string(
+      z.enum([
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+      ]),
+    ),
     timeStart: z.string(),
     timeEnd: z.string(),
   }),
@@ -117,14 +138,8 @@ const createDoctorZodSchema = z.object({
     ],
     { required_error: 'District is required.' },
   ),
-  nid: z
-    .number({ required_error: 'Nid is required.' })
-    .int()
-    .nonnegative('NID must be a positive integer.'),
-  bmdc: z
-    .number({ required_error: 'bmdc is required.' })
-    .int()
-    .nonnegative('BMDC must be a positive integer.'),
+  nid: z.string({ required_error: 'Nid is required.' }),
+  bmdc: z.string({ required_error: 'bmdc is required.' }),
   status: z
     .enum(['pending', 'approve', 'reject'], {
       required_error: 'Status is required.',

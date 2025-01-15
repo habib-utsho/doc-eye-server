@@ -23,7 +23,7 @@ const createSpecialty = (file, payload) => __awaiter(void 0, void 0, void 0, fun
     if (file === null || file === void 0 ? void 0 : file.path) {
         const cloudinaryRes = yield (0, uploadImgToCloudinary_1.uploadImgToCloudinary)(`${payload.name}-${Date.now()}`, file.path);
         if (cloudinaryRes === null || cloudinaryRes === void 0 ? void 0 : cloudinaryRes.secure_url) {
-            payload.logo = cloudinaryRes.secure_url;
+            payload.icon = cloudinaryRes.secure_url;
         }
     }
     const result = yield specialty_model_1.default.create(payload);
@@ -49,7 +49,7 @@ const updateSpecialtyById = (file, id, payload) => __awaiter(void 0, void 0, voi
     if (file === null || file === void 0 ? void 0 : file.path) {
         const cloudinaryRes = yield (0, uploadImgToCloudinary_1.uploadImgToCloudinary)(`${payload.name}-${Date.now()}`, file.path);
         if (cloudinaryRes) {
-            payload.logo = cloudinaryRes.secure_url;
+            payload.icon = cloudinaryRes.secure_url;
         }
     }
     const specialty = yield specialty_model_1.default.findByIdAndUpdate(id, payload, {

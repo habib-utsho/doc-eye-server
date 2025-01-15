@@ -35,14 +35,15 @@ const handleMongooseCastErr = (err) => {
     };
 };
 exports.handleMongooseCastErr = handleMongooseCastErr;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleMongooseDuplicateKeyErr = (err) => {
-    var _a, _b;
+    var _a, _b, _c;
     const statusCode = http_status_codes_1.StatusCodes.BAD_REQUEST;
-    const message = 'Duplicate key error!';
+    const message = `${(_a = Object.values(err.keyValue)) === null || _a === void 0 ? void 0 : _a[0]} is already exist!`;
     const errorSources = [
         {
-            path: (_a = Object.keys(err.keyValue)) === null || _a === void 0 ? void 0 : _a[0],
-            message: `${(_b = Object.values(err.keyValue)) === null || _b === void 0 ? void 0 : _b[0]} is already exist!`,
+            path: (_b = Object.keys(err.keyValue)) === null || _b === void 0 ? void 0 : _b[0],
+            message: `${(_c = Object.values(err.keyValue)) === null || _c === void 0 ? void 0 : _c[0]} is already exist!`,
         },
     ];
     return {

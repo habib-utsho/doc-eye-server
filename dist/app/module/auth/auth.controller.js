@@ -27,7 +27,7 @@ const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'User is logged in successfully',
-        data: { accessToken, needsPasswordChange },
+        data: { accessToken, refreshToken, needsPasswordChange },
     });
 }));
 const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

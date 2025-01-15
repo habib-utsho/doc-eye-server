@@ -39,7 +39,6 @@ const DoctorSchema: Schema = new Schema<TDoctor>({
   },
   bio: {
     type: String,
-    required: true,
   },
   doctorTitle: {
     type: String,
@@ -85,13 +84,17 @@ const DoctorSchema: Schema = new Schema<TDoctor>({
         type: String,
         required: true,
       },
-      workingPeriod: {
-        type: String,
+      workingPeriodStart: {
+        type: Date,
+        required: true,
+      },
+      workingPeriodEnd: {
+        type: Date,
         required: true,
       },
     },
   ],
-  dateOfBirth: { 
+  dateOfBirth: {
     type: Date,
     required: true,
   },
@@ -122,11 +125,11 @@ const DoctorSchema: Schema = new Schema<TDoctor>({
     required: true, // Assuming TDistrict is a string
   },
   nid: {
-    type: Number,
+    type: String,
     required: true,
   },
   bmdc: {
-    type: Number,
+    type: String,
     required: true,
   },
   patientAttended: {

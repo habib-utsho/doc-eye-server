@@ -9,13 +9,16 @@ const zod_1 = require("zod");
 const mongoose_1 = __importDefault(require("mongoose"));
 const handleZodErr_1 = __importDefault(require("../errors/handleZodErr"));
 const handleMongooseErr_1 = require("../errors/handleMongooseErr");
-const notFoundErrHandler = (req, res, next) => {
+const notFoundErrHandler = (req, res, 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+next) => {
     const error = new Error(`Not Found - ${req.originalUrl}`);
     res
         .status(http_status_codes_1.StatusCodes.NOT_FOUND)
         .send({ success: false, message: error === null || error === void 0 ? void 0 : error.message, error: error });
 };
 exports.notFoundErrHandler = notFoundErrHandler;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrHandler = (err, req, res, next) => {
     // Default values
     let statusCode = err.statusCode || http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR;
@@ -23,7 +26,7 @@ const globalErrHandler = (err, req, res, next) => {
     let errorSources = [
         {
             path: '',
-            message: 'Internal server error',
+            message: err.message || 'Internal server error',
         },
     ];
     //   zod error

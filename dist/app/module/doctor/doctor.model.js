@@ -62,7 +62,6 @@ const DoctorSchema = new mongoose_1.Schema({
     },
     bio: {
         type: String,
-        required: true,
     },
     doctorTitle: {
         type: String,
@@ -108,8 +107,12 @@ const DoctorSchema = new mongoose_1.Schema({
                 type: String,
                 required: true,
             },
-            workingPeriod: {
-                type: String,
+            workingPeriodStart: {
+                type: Date,
+                required: true,
+            },
+            workingPeriodEnd: {
+                type: Date,
                 required: true,
             },
         },
@@ -145,11 +148,11 @@ const DoctorSchema = new mongoose_1.Schema({
         required: true, // Assuming TDistrict is a string
     },
     nid: {
-        type: Number,
+        type: String,
         required: true,
     },
     bmdc: {
-        type: Number,
+        type: String,
         required: true,
     },
     patientAttended: {

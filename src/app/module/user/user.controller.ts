@@ -13,7 +13,7 @@ const insertPatient: RequestHandler = catchAsync(async (req, res) => {
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: 'Patient inserted successfully!',
+    message: 'Patient created successfully!',
     data: patient,
   })
 })
@@ -23,7 +23,8 @@ const insertDoctor: RequestHandler = catchAsync(async (req, res) => {
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: 'Doctor inserted successfully!',
+    message:
+      'Doctor created successfully. Wait for admin approval. You will be notified via email!',
     data: faculty,
   })
 })
@@ -31,7 +32,7 @@ const insertAdmin: RequestHandler = catchAsync(async (req, res) => {
   const admin = await userServices.insertAdmin(req.file, req.body)
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: 'Admin inserted successfully!',
+    message: 'Admin created successfully!',
     data: admin,
   })
 })

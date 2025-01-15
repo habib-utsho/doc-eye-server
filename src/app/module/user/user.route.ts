@@ -25,7 +25,7 @@ router.post(
 
 router.post(
   '/create-doctor',
-  auth(USER_ROLE.ADMIN),
+  // auth(USER_ROLE.ADMIN),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body?.data)

@@ -38,8 +38,8 @@ const auth = (...requiredRoles) => {
         //   throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
         // }
         const decoded = (yield (0, jwtVerify_1.default)(bearerToken, process.env.JWT_ACCESS_SECRET));
-        const { id, role } = decoded;
-        const user = yield user_model_1.default.findOne({ id });
+        const { _id, role } = decoded;
+        const user = yield user_model_1.default.findById(_id);
         if (!user) {
             throw new appError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'This user is not found!');
         }

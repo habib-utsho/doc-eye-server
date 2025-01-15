@@ -15,12 +15,14 @@ const doctor_validation_1 = require("../doctor/doctor.validation");
 const admin_validation_1 = require("../admin/admin.validation");
 const router = (0, express_1.Router)();
 exports.userRouter = router;
-router.post('/create-patient', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), uploadImgToCloudinary_1.upload.single('file'), (req, res, next) => {
+router.post('/create-patient', uploadImgToCloudinary_1.upload.single('file'), (req, res, next) => {
     var _a;
     req.body = JSON.parse((_a = req.body) === null || _a === void 0 ? void 0 : _a.data);
     next();
 }, (0, zodValidateHandler_1.default)(patient_validation_1.createPatientZodSchema), user_controller_1.userController.insertPatient);
-router.post('/create-doctor', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), uploadImgToCloudinary_1.upload.single('file'), (req, res, next) => {
+router.post('/create-doctor', 
+// auth(USER_ROLE.ADMIN),
+uploadImgToCloudinary_1.upload.single('file'), (req, res, next) => {
     var _a;
     req.body = JSON.parse((_a = req.body) === null || _a === void 0 ? void 0 : _a.data);
     next();

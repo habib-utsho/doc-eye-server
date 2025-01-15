@@ -6,9 +6,11 @@ const createSpecialtyZodSchema = zod_1.z.object({
     name: zod_1.z.string({
         required_error: 'Specialty name is required',
     }),
-    description: zod_1.z.string({
+    description: zod_1.z
+        .string({
         required_error: 'Description is required',
-    }),
+    })
+        .max(450, 'Description must be less than 450 characters'),
 });
 const updateSpecialtyZodSchema = zod_1.z.object({
     name: zod_1.z.string().optional(),

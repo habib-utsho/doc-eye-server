@@ -39,8 +39,8 @@ export type TDoctor = {
     timeEnd: string
   }
   district: TDistrict
-  nid: number
-  bmdc: number
+  nid: string
+  bmdc: string
   patientAttended: number
   status: 'pending' | 'approve' | 'reject'
   doctorCode: string

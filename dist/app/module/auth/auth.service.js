@@ -19,16 +19,30 @@ const user_model_1 = __importDefault(require("../user/user.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const sendEmail_1 = require("../../utils/sendEmail");
+const doctor_model_1 = __importDefault(require("../doctor/doctor.model"));
 const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findOne({ email: payload.email });
     if (!user) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'User not found!');
     }
+    if ((user === null || user === void 0 ? void 0 : user.status) === 'inactive') {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'This user is not active!');
+    }
+    const isDoctor = (user === null || user === void 0 ? void 0 : user.role) === 'doctor';
+    if (isDoctor) {
+        const doctor = (yield doctor_model_1.default.findOne({ user: user === null || user === void 0 ? void 0 : user._id }));
+        const doctorStatus = doctor === null || doctor === void 0 ? void 0 : doctor.status;
+        if (doctorStatus !== 'approve') {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, doctorStatus === 'pending'
+                ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
+                : 'Your account is rejected by admin!');
+        }
+    }
     const decryptPass = yield bcrypt_1.default.compare(payload.password, user.password);
     if (!decryptPass) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Incorrect password!');
     }
-    const jwtPayload = { email: user.email, role: user.role };
+    const jwtPayload = { _id: user === null || user === void 0 ? void 0 : user._id, email: user.email, role: user.role };
     const accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_ACCESS_SECRET, {
         expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
     });
@@ -68,10 +82,7 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     if (user.isDeleted) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'This user is deleted!');
     }
-    const jwtPayload = {
-        email: user.email,
-        role: user.role,
-    };
+    const jwtPayload = { _id: user === null || user === void 0 ? void 0 : user._id, email: user.email, role: user.role };
     const accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_ACCESS_SECRET, {
         expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
     });
@@ -84,7 +95,7 @@ const forgetPassword = (payload) => __awaiter(void 0, void 0, void 0, function* 
     if (!user) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found!');
     }
-    const jwtPayload = { email: user.email, role: user.role };
+    const jwtPayload = { _id: user === null || user === void 0 ? void 0 : user._id, email: user.email, role: user.role };
     const accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_ACCESS_SECRET, {
         expiresIn: '10m',
     });

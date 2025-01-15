@@ -40,9 +40,10 @@ const handleMongooseCastErr = (
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleMongooseDuplicateKeyErr = (err: any): TGenericErrorResponse => {
   const statusCode = StatusCodes.BAD_REQUEST
-  const message = 'Duplicate key error!'
+  const message = `${Object.values(err.keyValue)?.[0]} is already exist!`
   const errorSources: TErrorSources = [
     {
       path: Object.keys(err.keyValue)?.[0],
@@ -57,4 +58,8 @@ const handleMongooseDuplicateKeyErr = (err: any): TGenericErrorResponse => {
   }
 }
 
-export { handleMongooseValidationErr, handleMongooseCastErr, handleMongooseDuplicateKeyErr }
+export {
+  handleMongooseValidationErr,
+  handleMongooseCastErr,
+  handleMongooseDuplicateKeyErr,
+}

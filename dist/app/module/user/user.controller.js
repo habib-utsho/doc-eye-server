@@ -19,10 +19,11 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const appError_1 = __importDefault(require("../../errors/appError"));
 const user_service_1 = require("./user.service");
 const insertPatient = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('insertPatient');
     const patient = yield user_service_1.userServices.insertPatient(req.file, req.body);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
-        message: 'Patient inserted successfully!',
+        message: 'Patient created successfully!',
         data: patient,
     });
 }));
@@ -30,7 +31,7 @@ const insertDoctor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     const faculty = yield user_service_1.userServices.insertDoctor(req.file, req.body);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
-        message: 'Doctor inserted successfully!',
+        message: 'Doctor created successfully. Wait for admin approval. You will be notified via email!',
         data: faculty,
     });
 }));
@@ -38,7 +39,7 @@ const insertAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     const admin = yield user_service_1.userServices.insertAdmin(req.file, req.body);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
-        message: 'Admin inserted successfully!',
+        message: 'Admin created successfully!',
         data: admin,
     });
 }));

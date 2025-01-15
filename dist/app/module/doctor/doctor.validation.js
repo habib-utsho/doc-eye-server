@@ -35,13 +35,30 @@ const createDoctorZodSchema = zod_1.z.object({
         workPlace: zod_1.z.string(),
         department: zod_1.z.string(),
         designation: zod_1.z.string(),
-        workingPeriod: zod_1.z.string(),
+        workingPeriodStart: zod_1.z.string(),
+        workingPeriodEnd: zod_1.z.string(),
     })),
     dateOfBirth: zod_1.z.string({ required_error: 'Date of birth is required.' }),
     currentWorkplace: zod_1.z.string(),
     availability: zod_1.z.object({
-        dayStart: zod_1.z.string(),
-        dayEnd: zod_1.z.string(),
+        dayStart: zod_1.z.string(zod_1.z.enum([
+            'Saturday',
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+        ])),
+        dayEnd: zod_1.z.string(zod_1.z.enum([
+            'Saturday',
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+        ])),
         timeStart: zod_1.z.string(),
         timeEnd: zod_1.z.string(),
     }),
@@ -111,14 +128,8 @@ const createDoctorZodSchema = zod_1.z.object({
         'Narail',
         'Satkhira',
     ], { required_error: 'District is required.' }),
-    nid: zod_1.z
-        .number({ required_error: 'Nid is required.' })
-        .int()
-        .nonnegative('NID must be a positive integer.'),
-    bmdc: zod_1.z
-        .number({ required_error: 'bmdc is required.' })
-        .int()
-        .nonnegative('BMDC must be a positive integer.'),
+    nid: zod_1.z.string({ required_error: 'Nid is required.' }),
+    bmdc: zod_1.z.string({ required_error: 'bmdc is required.' }),
     status: zod_1.z
         .enum(['pending', 'approve', 'reject'], {
         required_error: 'Status is required.',

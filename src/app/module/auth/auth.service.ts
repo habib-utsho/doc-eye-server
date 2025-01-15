@@ -5,9 +5,12 @@ import { TLoginUser, TPasswordUpdate, TResetPassword } from './auth.interface'
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { sendEmail } from '../../utils/sendEmail'
+import Doctor from '../doctor/doctor.model'
+import { TDoctor } from '../doctor/doctor.interface'
 
 const login = async (payload: TLoginUser) => {
   const user = await User.findOne({ email: payload.email })
+
 
   if (!user) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'User not found!')
@@ -15,6 +18,21 @@ const login = async (payload: TLoginUser) => {
   if (user?.status === 'inactive') {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is not active!')
   }
+
+  const isDoctor = user?.role === 'doctor'
+  if (isDoctor) {
+    const doctor = (await Doctor.findOne({ user: user?._id })) as TDoctor
+    const doctorStatus = doctor?.status
+    if (doctorStatus !== 'approve') {
+      throw new AppError(
+        StatusCodes.FORBIDDEN,
+        doctorStatus === 'pending'
+          ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
+          : 'Your account is rejected by admin!',
+      )
+    }
+  }
+
   const decryptPass = await bcrypt.compare(payload.password, user.password)
 
   if (!decryptPass) {

@@ -146,6 +146,7 @@ const insertDoctor = async (
     }
     // Save user
     const user = await User.create([userData], { session })
+
     if (!user?.length) {
       throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to insert user!')
     }

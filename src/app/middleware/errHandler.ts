@@ -13,6 +13,7 @@ import {
 const notFoundErrHandler = (
   req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) => {
   const error = new Error(`Not Found - ${req.originalUrl}`)
@@ -21,15 +22,15 @@ const notFoundErrHandler = (
     .send({ success: false, message: error?.message, error: error })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrHandler: ErrorRequestHandler = (err, req, res, next) => {
-
   // Default values
   let statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
   let message = err.message || 'Internal server error'
   let errorSources: TErrorSources = [
     {
       path: '',
-      message: 'Internal server error',
+      message: err.message || 'Internal server error',
     },
   ]
 
@@ -66,7 +67,6 @@ const globalErrHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = ourErr.statusCode
     errorSources = ourErr.errorSources
   }
-
 
   // Send response
   res.status(statusCode).send({
