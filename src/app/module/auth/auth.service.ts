@@ -7,10 +7,14 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { sendEmail } from '../../utils/sendEmail'
 import Doctor from '../doctor/doctor.model'
 import { TDoctor } from '../doctor/doctor.interface'
+import Patient from '../patient/patient.model'
+import { TPatient } from '../patient/patient.interface'
+import Admin from '../admin/admin.model'
+import { TAdmin } from '../admin/admin.interface'
 
 const login = async (payload: TLoginUser) => {
   const user = await User.findOne({ email: payload.email })
-
+  let updatedUser
 
   if (!user) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'User not found!')
@@ -20,9 +24,15 @@ const login = async (payload: TLoginUser) => {
   }
 
   const isDoctor = user?.role === 'doctor'
+  const isPatient = user?.role === 'patient'
+  const isAdmin = user?.role === 'admin'
   if (isDoctor) {
     const doctor = (await Doctor.findOne({ user: user?._id })) as TDoctor
     const doctorStatus = doctor?.status
+    const isDoctorDeleted = doctor?.isDeleted
+    if (isDoctorDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This doctor is deleted!')
+    }
     if (doctorStatus !== 'approve') {
       throw new AppError(
         StatusCodes.FORBIDDEN,
@@ -30,6 +40,39 @@ const login = async (payload: TLoginUser) => {
           ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
           : 'Your account is rejected by admin!',
       )
+    }
+    updatedUser = {
+      _id: user?._id,
+      email: user?.email,
+      role: user?.role,
+      profileImg: doctor.profileImg,
+    }
+  }
+  if (isPatient) {
+    const patient = (await Patient.findOne({ user: user?._id })) as TPatient
+    const isPatientDeleted = patient?.isDeleted
+    if (isPatientDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This patient is deleted!')
+    }
+
+    updatedUser = {
+      _id: user?._id,
+      email: user?.email,
+      role: user?.role,
+      profileImg: patient.profileImg,
+    }
+  }
+  if (isAdmin) {
+    const admin = (await Admin.findOne({ user: user?._id })) as TAdmin
+    const isAdminDeleted = admin?.isDeleted
+    if (isAdminDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This admin is deleted!')
+    }
+    updatedUser = {
+      _id: user?._id,
+      email: user?.email,
+      role: user?.role,
+      profileImg: admin.profileImg,
     }
   }
 
@@ -39,7 +82,12 @@ const login = async (payload: TLoginUser) => {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Incorrect password!')
   }
 
-  const jwtPayload = { _id: user?._id, email: user.email, role: user.role }
+  const jwtPayload = {
+    _id: updatedUser?._id,
+    email: updatedUser?.email,
+    role: updatedUser?.role,
+    profileImg: updatedUser?.profileImg,
+  }
 
   const accessToken = jwt.sign(
     jwtPayload,
