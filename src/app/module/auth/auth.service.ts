@@ -45,6 +45,7 @@ const login = async (payload: TLoginUser) => {
       _id: user?._id,
       email: user?.email,
       role: user?.role,
+      name: doctor.name,
       profileImg: doctor.profileImg,
     }
   }
@@ -59,6 +60,7 @@ const login = async (payload: TLoginUser) => {
       _id: user?._id,
       email: user?.email,
       role: user?.role,
+      name: patient.name,
       profileImg: patient.profileImg,
     }
   }
@@ -72,6 +74,7 @@ const login = async (payload: TLoginUser) => {
       _id: user?._id,
       email: user?.email,
       role: user?.role,
+      name: admin.name,
       profileImg: admin.profileImg,
     }
   }
@@ -86,6 +89,7 @@ const login = async (payload: TLoginUser) => {
     _id: updatedUser?._id,
     email: updatedUser?.email,
     role: updatedUser?.role,
+    name: updatedUser?.name,
     profileImg: updatedUser?.profileImg,
   }
 

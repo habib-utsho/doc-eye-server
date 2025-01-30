@@ -9,10 +9,10 @@ const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
 
-
   res.cookie('refreshToken', refreshToken, {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: 'none',
   })
 
   sendResponse(res, StatusCodes.OK, {
