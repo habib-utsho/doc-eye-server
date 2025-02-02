@@ -51,8 +51,9 @@ const DoctorSchema: Schema = new Schema<TDoctor>(
       enum: ['Medical', 'Dental', 'Veterinary'],
       required: true,
     },
-    medicalSpecialty: {
+    medicalSpecialties: {
       type: [Types.ObjectId],
+      ref: 'Specialty',
       required: true,
     },
     totalExperienceYear: {

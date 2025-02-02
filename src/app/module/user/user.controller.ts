@@ -57,6 +57,17 @@ const getUserById: RequestHandler = catchAsync(async (req, res) => {
     data: user,
   })
 })
+const toggleUserStatus: RequestHandler = catchAsync(async (req, res) => {
+  const user = await userServices.toggleUserStatus(req.params?.id)
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
+  }
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: `User is ${user.status} successfully!`,
+    data: user,
+  })
+})
 
 const getMe: RequestHandler = catchAsync(async (req, res) => {
   const user = await userServices.getMe(req.user as JwtPayload)
@@ -76,5 +87,6 @@ export const userController = {
   insertAdmin,
   getAllUsers,
   getUserById,
+  toggleUserStatus,
   getMe,
 }

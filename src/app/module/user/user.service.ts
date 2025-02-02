@@ -74,7 +74,7 @@ const insertDoctor = async (
   file: any,
   payload: TDoctor & Omit<TUser, 'status'>,
 ) => {
-  const { medicalSpecialty } = payload
+  const { medicalSpecialties } = payload
   const session = await mongoose.startSession()
 
   try {
@@ -109,12 +109,12 @@ const insertDoctor = async (
         'BMDC is already exist. Try with different BMDC!',
       )
     }
-    // Validate medicalSpecialty IDs
+    // Validate medicalSpecialties IDs
     const validSpecialties = await Specialty.find({
-      _id: { $in: payload.medicalSpecialty },
+      _id: { $in: payload.medicalSpecialties },
     }).select('_id')
 
-    if (validSpecialties.length !== medicalSpecialty.length) {
+    if (validSpecialties.length !== medicalSpecialties.length) {
       throw new AppError(
         StatusCodes.BAD_REQUEST,
         'One or more medical specialty IDs are invalid!',
@@ -325,6 +325,22 @@ const getSingleUserById = async (id: string) => {
   return user
 }
 
+const toggleUserStatus = async (id: string) => {
+  const toggleUserStatus = await User.findById(id).select('-__v')
+  if (!toggleUserStatus) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found')
+  }
+  if (toggleUserStatus.status === 'active') {
+    toggleUserStatus.status = 'inactive'
+    await toggleUserStatus.save()
+  } else {
+    toggleUserStatus.status = 'active'
+    await toggleUserStatus.save()
+  }
+
+  return toggleUserStatus
+}
+
 const getMe = async (payload: JwtPayload) => {
   let result
   if (payload.role === 'doctor') {
@@ -347,5 +363,6 @@ export const userServices = {
   // insertAdminToDb,
   getAllUser,
   getSingleUserById,
+  toggleUserStatus,
   getMe,
 }

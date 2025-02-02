@@ -58,6 +58,12 @@ router.get(
   userController.getMe,
 )
 
+router.patch(
+  '/toggle-status/:id',
+  auth(USER_ROLE.ADMIN),
+  userController.toggleUserStatus,
+)
+
 router.get('/', auth(USER_ROLE.ADMIN), userController.getAllUsers)
 router.get('/:id', auth(USER_ROLE.ADMIN), userController.getUserById)
 

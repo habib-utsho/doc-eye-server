@@ -19,7 +19,7 @@ export type TDoctor = {
   bio: string
   doctorTitle: TDoctorTitle
   doctorType: TDoctorType
-  medicalSpecialty: Types.ObjectId[]
+  medicalSpecialties: Types.ObjectId[]
   totalExperienceYear: number
   medicalDegree: string
   consultationFee: number

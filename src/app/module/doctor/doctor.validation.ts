@@ -22,7 +22,7 @@ const createDoctorZodSchema = z.object({
   doctorType: z.enum(['Medical', 'Dental', 'Veterinary'], {
     required_error: 'Doctor type is required.',
   }),
-  medicalSpecialty: z.array(z.string()).optional(), // Array of medical specialties
+  medicalSpecialties: z.array(z.string()).optional(), // Array of medical specialties
   totalExperienceYear: z
     .number()
     .int()

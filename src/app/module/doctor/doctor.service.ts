@@ -12,7 +12,10 @@ const getAllDoctor = async (query: Record<string, unknown>) => {
     .sortQuery()
     .paginateQuery()
     .fieldFilteringQuery()
-    .populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }])
+    .populateQuery([
+      { path: 'user', select: '-createdAt -updatedAt -__v' },
+      { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
+    ])
 
   const result = await doctorQuery?.queryModel
   const total = await Doctor.countDocuments(doctorQuery.queryModel.getFilter())
