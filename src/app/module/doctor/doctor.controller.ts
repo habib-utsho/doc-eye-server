@@ -29,20 +29,17 @@ const getDoctorById: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
-// const updateStudentById: RequestHandler = catchAsync(async (req, res) => {
-//   const student = await doctorServices.updateStudentById(
-//     req.params?.id,
-//     req.body,
-//   )
-//   if (!student) {
-//     throw new AppError(StatusCodes.BAD_REQUEST, 'Student not updated!')
-//   }
-//   sendResponse(res, StatusCodes.OK, {
-//     success: true,
-//     message: 'Student updated successfully!',
-//     data: student,
-//   })
-// })
+const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
+  const doctor = await doctorServices.updateDoctorById(req.params?.id, req.body)
+  if (!doctor) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Doctor not updated!')
+  }
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: 'Doctor updated successfully!',
+    data: doctor,
+  })
+})
 
 const deleteDoctorById = catchAsync(async (req, res) => {
   const doctor = await doctorServices.deleteDoctorById(req.params.id)
@@ -59,6 +56,6 @@ const deleteDoctorById = catchAsync(async (req, res) => {
 export const doctorController = {
   getAllDoctor,
   getDoctorById,
-  // updateDoctorById,
+  updateDoctorById,
   deleteDoctorById,
 }

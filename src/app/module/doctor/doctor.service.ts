@@ -1,6 +1,7 @@
 import QueryBuilder from '../../builder/QueryBuilder'
 import Doctor from './doctor.model'
 import { doctorSearchableFields } from './doctor.constant'
+import { TDoctor } from './doctor.interface'
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
   const doctorQuery = new QueryBuilder(Doctor.find(), {
@@ -29,36 +30,36 @@ const getDoctorById = async (id: string) => {
   return student
 }
 
-// const updateDoctorById = async (id: string, payload: Partial<TDoctor>) => {
-//   const { name, guardian, ...restStudentData } = payload
-//   const modifiedUpdatedData: Record<string, unknown> = {
-//     ...restStudentData,
-//   }
 
-//   // update non primitive values
-//   // Update name
-//   if (name && Object.keys(name)?.length > 0) {
-//     for (const [key, value] of Object.entries(name)) {
-//       modifiedUpdatedData[`name.${key}`] = value
-//     }
-//   }
-//   // update guardian
-//   if (guardian && Object.keys(guardian)?.length > 0) {
-//     for (const [key, value] of Object.entries(guardian)) {
-//       modifiedUpdatedData[`guardian.${key}`] = value
-//     }
-//   }
+// TODO: need to handle workingExperiences and medicalSpecialties for update doctor 
+const updateDoctorById = async (id: string, payload: Partial<TDoctor>) => {
+  const {
+    availability,
+    workingExperiences,
+    medicalSpecialties,
+    ...restDoctorData
+  } = payload
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...restDoctorData,
+  }
 
-//   const student = await Student.findByIdAndUpdate(id, modifiedUpdatedData, {
-//     new: true,
-//   })
-//     .select('-__v')
-//     .populate('user', '-createdAt -updatedAt -__v -department')
-//     .populate('academicInfo.department')
-//     .populate('academicInfo.batch')
+  // update non primitive values
+  // Update availability
+  if (availability && Object.keys(availability)?.length > 0) {
+    for (const [key, value] of Object.entries(availability)) {
+      modifiedUpdatedData[`availability.${key}`] = value
+    }
+  }
 
-//   return student
-// }
+  const doctor = await Doctor.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+  })
+    .select('-__v')
+    .populate('user', '-createdAt -updatedAt -__v -department')
+    .populate('medicalSpecialties')
+
+  return doctor
+}
 
 const deleteDoctorById = async (id: string) => {
   const student = await Doctor.findByIdAndUpdate(
@@ -72,6 +73,6 @@ const deleteDoctorById = async (id: string) => {
 export const doctorServices = {
   getAllDoctor,
   getDoctorById,
-  // updateDoctorById,
+  updateDoctorById,
   deleteDoctorById,
 }
