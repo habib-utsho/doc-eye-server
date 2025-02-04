@@ -2,6 +2,7 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import Doctor from './doctor.model'
 import { doctorSearchableFields } from './doctor.constant'
 import { TDoctor } from './doctor.interface'
+import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
   const doctorQuery = new QueryBuilder(Doctor.find(), {
@@ -30,9 +31,12 @@ const getDoctorById = async (id: string) => {
   return student
 }
 
-
-// TODO: need to handle workingExperiences and medicalSpecialties for update doctor 
-const updateDoctorById = async (id: string, payload: Partial<TDoctor>) => {
+// TODO: need to handle workingExperiences and medicalSpecialties for update doctor
+const updateDoctorById = async (
+  id: string,
+  file: any,
+  payload: Partial<TDoctor>,
+) => {
   const {
     availability,
     workingExperiences,
@@ -48,6 +52,17 @@ const updateDoctorById = async (id: string, payload: Partial<TDoctor>) => {
   if (availability && Object.keys(availability)?.length > 0) {
     for (const [key, value] of Object.entries(availability)) {
       modifiedUpdatedData[`availability.${key}`] = value
+    }
+  }
+
+  // file upload
+  if (file?.path) {
+    const cloudinaryRes = await uploadImgToCloudinary(
+      `${payload.name}-${Date.now()}`,
+      file.path,
+    )
+    if (cloudinaryRes?.secure_url) {
+      modifiedUpdatedData.profileImg = cloudinaryRes.secure_url
     }
   }
 

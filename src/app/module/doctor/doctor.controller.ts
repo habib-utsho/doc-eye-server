@@ -30,7 +30,7 @@ const getDoctorById: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
-  const doctor = await doctorServices.updateDoctorById(req.params?.id, req.body)
+  const doctor = await doctorServices.updateDoctorById(req.params?.id, req.file, req.body)
   if (!doctor) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Doctor not updated!')
   }
