@@ -4,6 +4,6 @@ export const doctorSearchableFields = [
   'phone',
   'doctorTitle',
   'doctorType',
-  'medicalSpecialties',
   'medicalDegree',
+  'doctorCode',
 ]
