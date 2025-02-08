@@ -326,19 +326,16 @@ const getSingleUserById = async (id: string) => {
 }
 
 const toggleUserStatus = async (id: string) => {
-  const toggleUserStatus = await User.findById(id).select('-__v')
-  if (!toggleUserStatus) {
+  const user = await User.findById(id).select('-__v')
+  if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found')
   }
-  if (toggleUserStatus.status === 'active') {
-    toggleUserStatus.status = 'inactive'
-    await toggleUserStatus.save()
-  } else {
-    toggleUserStatus.status = 'active'
-    await toggleUserStatus.save()
-  }
 
-  return toggleUserStatus
+  // Toggle user status
+  user.status = user.status === 'active' ? 'inactive' : 'active'
+  await user.save()
+
+  return user
 }
 
 const getMe = async (payload: JwtPayload) => {

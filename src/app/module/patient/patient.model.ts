@@ -28,6 +28,8 @@ const patientSchema = new Schema<TPatient>(
     profileImg: {
       type: String,
       trim: true,
+      default:
+        'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper.png',
     },
     gender: {
       type: String,
