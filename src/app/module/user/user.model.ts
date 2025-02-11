@@ -23,6 +23,10 @@ UserSchema.pre<TUser>(
   'save',
   async function (this: TUser, next: (err?: any) => void) {
     try {
+      const user = await User.findById(this?._id)
+      if (user && user.password === this.password) {
+        return next()
+      }
       const hashPass = await bcrypt.hash(
         this.password,
         Number(process.env.SALT_ROUNDS),
