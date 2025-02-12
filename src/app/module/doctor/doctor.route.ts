@@ -8,8 +8,21 @@ import { upload } from '../../utils/uploadImgToCloudinary'
 
 const router = Router()
 
-router.get('/', auth(USER_ROLE.ADMIN), doctorController.getAllDoctor)
-router.get('/:id', auth(USER_ROLE.ADMIN), doctorController.getDoctorById)
+router.get(
+  '/',
+  auth(USER_ROLE.ADMIN, USER_ROLE.DOCTOR, USER_ROLE.PATIENT),
+  doctorController.getAllDoctor,
+)
+router.get(
+  '/:id',
+  auth(USER_ROLE.ADMIN, USER_ROLE.DOCTOR, USER_ROLE.PATIENT),
+  doctorController.getDoctorById,
+)
+router.get(
+  '/doctor-code/:id',
+  auth(USER_ROLE.ADMIN, USER_ROLE.DOCTOR, USER_ROLE.PATIENT),
+  doctorController.getDoctorByDoctorCode,
+)
 router.patch(
   '/:id',
   auth(USER_ROLE.ADMIN, USER_ROLE.DOCTOR),

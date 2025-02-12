@@ -3,6 +3,8 @@ import Doctor from './doctor.model'
 import { doctorSearchableFields } from './doctor.constant'
 import { TDoctor } from './doctor.interface'
 import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
+import AppError from '../../errors/appError'
+import { StatusCodes } from 'http-status-codes'
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
   const doctorQuery = new QueryBuilder(Doctor.find(), {
@@ -25,10 +27,25 @@ const getAllDoctor = async (query: Record<string, unknown>) => {
 }
 
 const getDoctorById = async (id: string) => {
-  const student = await Doctor.findOne({ id })
+  const doctor = await Doctor.findById(id)
     .select('-__v')
-    .populate('user', '-createdAt -updatedAt -__v')
-  return student
+    .populate([
+      { path: 'user', select: '-createdAt -updatedAt -__v' },
+      { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
+    ])
+  return doctor
+}
+const getDoctorByDoctorCode = async (id: string) => {
+  const doctor = await Doctor.findOne({ doctorCode: id })
+    .select('-__v')
+    .populate([
+      { path: 'user', select: '-createdAt -updatedAt -__v' },
+      { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
+    ])
+  if (!doctor) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Doctor not found!')
+  }
+  return doctor
 }
 
 // TODO: need to handle workingExperiences and medicalSpecialties for update doctor
@@ -88,6 +105,7 @@ const deleteDoctorById = async (id: string) => {
 export const doctorServices = {
   getAllDoctor,
   getDoctorById,
+  getDoctorByDoctorCode,
   updateDoctorById,
   deleteDoctorById,
 }

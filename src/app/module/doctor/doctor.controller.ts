@@ -28,6 +28,14 @@ const getDoctorById: RequestHandler = catchAsync(async (req, res) => {
     data: doctor,
   })
 })
+const getDoctorByDoctorCode: RequestHandler = catchAsync(async (req, res) => {
+  const doctor = await doctorServices.getDoctorByDoctorCode(req.params?.id)
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: 'Doctor is retrieved successfully!',
+    data: doctor,
+  })
+})
 
 const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
   const doctor = await doctorServices.updateDoctorById(
@@ -61,6 +69,7 @@ const deleteDoctorById = catchAsync(async (req, res) => {
 export const doctorController = {
   getAllDoctor,
   getDoctorById,
+  getDoctorByDoctorCode,
   updateDoctorById,
   deleteDoctorById,
 }
