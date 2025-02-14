@@ -26,6 +26,7 @@ const getAllDoctor = async (query: Record<string, unknown>) => {
   return { data: result, total }
 }
 
+
 const getDoctorById = async (id: string) => {
   const doctor = await Doctor.findById(id)
     .select('-__v')
