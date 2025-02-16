@@ -28,10 +28,17 @@ export type TDoctor = {
     workPlace: string
     department: string
     designation: string
-    workingPeriod: string
+    workingPeriodStart: string
+    workingPeriodEnd: string | null
   }[]
   dateOfBirth: Date
-  currentWorkplace: string
+  currentWorkplace: {
+    workPlace: string
+    department: string
+    designation: string
+    workingPeriodStart: string
+    workingPeriodEnd: string | null
+  }
   availability: {
     dayStart: string
     dayEnd: string

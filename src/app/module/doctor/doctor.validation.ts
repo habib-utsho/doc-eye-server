@@ -42,7 +42,13 @@ const createDoctorZodSchema = z.object({
     }),
   ),
   dateOfBirth: z.string({ required_error: 'Date of birth is required.' }),
-  currentWorkplace: z.string(),
+  currentWorkplace: z.object({
+    workPlace: z.string(),
+    department: z.string(),
+    designation: z.string(),
+    workingPeriodStart: z.string(),
+    workingPeriodEnd: z.string().nullish(),
+  }),
   availability: z.object({
     dayStart: z.string(
       z.enum([
@@ -195,7 +201,15 @@ const updateDoctorZodSchema = z.object({
     )
     .optional(),
   dateOfBirth: z.string().optional(),
-  currentWorkplace: z.string().optional(),
+  currentWorkplace: z
+    .object({
+      workPlace: z.string(),
+      department: z.string(),
+      designation: z.string(),
+      workingPeriodStart: z.string(),
+      workingPeriodEnd: z.string().nullish(),
+    })
+    .optional(),
   availability: z
     .object({
       dayStart: z

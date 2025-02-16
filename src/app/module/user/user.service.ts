@@ -114,7 +114,7 @@ const insertDoctor = async (
       _id: { $in: payload.medicalSpecialties },
     }).select('_id')
 
-    if (validSpecialties.length !== medicalSpecialties.length) {
+    if (validSpecialties?.length !== medicalSpecialties?.length) {
       throw new AppError(
         StatusCodes.BAD_REQUEST,
         'One or more medical specialty IDs are invalid!',

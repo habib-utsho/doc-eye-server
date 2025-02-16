@@ -37,19 +37,19 @@ const getDoctorByDoctorCode: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
-const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
+const updateDoctorStatusById: RequestHandler = catchAsync(async (req, res) => {
   const doctor = await doctorServices.updateDoctorById(
     req.params?.id,
     req.file,
     req.body,
   )
   if (!doctor) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Doctor not updated!')
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Doctor is not updated!')
   }
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: `${doctor.name} is ${doctor.status}ed successfully!`,
+    message: `${doctor.name} is updated successfully!`,
     data: doctor,
   })
 })
@@ -70,6 +70,6 @@ export const doctorController = {
   getAllDoctor,
   getDoctorById,
   getDoctorByDoctorCode,
-  updateDoctorById,
+  updateDoctorById: updateDoctorStatusById,
   deleteDoctorById,
 }

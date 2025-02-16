@@ -26,7 +26,6 @@ const getAllDoctor = async (query: Record<string, unknown>) => {
   return { data: result, total }
 }
 
-
 const getDoctorById = async (id: string) => {
   const doctor = await Doctor.findById(id)
     .select('-__v')
@@ -57,6 +56,7 @@ const updateDoctorById = async (
 ) => {
   const {
     availability,
+    currentWorkplace,
     workingExperiences,
     medicalSpecialties,
     ...restDoctorData
@@ -70,6 +70,12 @@ const updateDoctorById = async (
   if (availability && Object.keys(availability)?.length > 0) {
     for (const [key, value] of Object.entries(availability)) {
       modifiedUpdatedData[`availability.${key}`] = value
+    }
+  }
+  // Update currentWorkplace
+  if (currentWorkplace && Object.keys(currentWorkplace)?.length > 0) {
+    for (const [key, value] of Object.entries(currentWorkplace)) {
+      modifiedUpdatedData[`currentWorkplace.${key}`] = value
     }
   }
 

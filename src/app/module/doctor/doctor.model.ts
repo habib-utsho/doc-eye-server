@@ -101,8 +101,25 @@ const DoctorSchema: Schema = new Schema<TDoctor>(
       required: true,
     },
     currentWorkplace: {
-      type: String,
-      required: true,
+      workPlace: {
+        type: String,
+        required: true,
+      },
+      department: {
+        type: String,
+        required: true,
+      },
+      designation: {
+        type: String,
+        required: true,
+      },
+      workingPeriodStart: {
+        type: Date,
+        required: true,
+      },
+      workingPeriodEnd: {
+        type: Date,
+      },
     },
     availability: {
       dayStart: {
