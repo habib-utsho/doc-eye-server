@@ -48,6 +48,8 @@ const getDoctorByDoctorCode = async (id: string) => {
   return doctor
 }
 
+
+
 // TODO: need to handle workingExperiences and medicalSpecialties for update doctor
 const updateDoctorById = async (
   id: string,
