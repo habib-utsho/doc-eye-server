@@ -13,7 +13,12 @@ const AppointmentSchema = new Schema<TAppointment>(
       ref: 'Patient',
       required: true,
     },
-    appointmentDateTime: {
+    payment: {
+      type: Schema.Types.ObjectId,
+      ref: 'Payment',
+      required: true,
+    },
+    schedule: {
       type: Date,
       required: true,
     },

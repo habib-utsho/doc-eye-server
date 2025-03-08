@@ -6,6 +6,7 @@ import { adminRouter } from '../module/admin/admin.route'
 import { patientRouter } from '../module/patient/patient.route'
 import { userRouter } from '../module/user/user.route'
 import { specialtyRouter } from '../module/specialty/specialty.route'
+import { paymentRouter } from '../module/payment/payment.route'
 
 const router = Router()
 const routes = [
@@ -22,10 +23,6 @@ const routes = [
     route: specialtyRouter,
   },
   {
-    path: '/appointment',
-    route: appointmentRouter,
-  },
-  {
     path: '/patient',
     route: patientRouter,
   },
@@ -36,6 +33,14 @@ const routes = [
   {
     path: '/admin',
     route: adminRouter,
+  },
+  {
+    path: '/appointment',
+    route: appointmentRouter,
+  },
+  {
+    path: '/payment',
+    route: paymentRouter,
   },
 ]
 

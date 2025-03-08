@@ -7,9 +7,14 @@ const createAppointmentZodSchema = z.object({
   patient: z.string({
     required_error: 'Patient is required',
   }),
-  appointmentDateTime: z.string({
-    required_error: 'Appointment date is required',
+  schedule: z.string({
+    required_error: 'Schedule is required',
   }),
+  status: z
+    .enum(['pending', 'confirmed', 'completed', 'canceled'], {
+      message: 'Status is either pending, confirmed, completed, or canceled',
+    })
+    .default('pending'),
   appointmentType: z
     .enum(['in-person', 'online'], {
       message: 'Appointment type is either in-person or online',

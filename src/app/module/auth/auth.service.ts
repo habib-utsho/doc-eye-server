@@ -22,6 +22,9 @@ const login = async (payload: TLoginUser) => {
   if (user?.status === 'inactive') {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is not active!')
   }
+  if (user.isDeleted) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'This user is deleted!')
+  }
 
   const isDoctor = user?.role === 'doctor'
   const isPatient = user?.role === 'patient'
@@ -42,7 +45,8 @@ const login = async (payload: TLoginUser) => {
       )
     }
     updatedUser = {
-      _id: user?._id,
+      userId: user?._id,
+      _id: doctor?._id,
       email: user?.email,
       role: user?.role,
       name: doctor.name,
@@ -57,7 +61,8 @@ const login = async (payload: TLoginUser) => {
     }
 
     updatedUser = {
-      _id: user?._id,
+      userId: user?._id,
+      _id: patient?._id,
       email: user?.email,
       role: user?.role,
       name: patient.name,
@@ -71,7 +76,8 @@ const login = async (payload: TLoginUser) => {
       throw new AppError(StatusCodes.FORBIDDEN, 'This admin is deleted!')
     }
     updatedUser = {
-      _id: user?._id,
+      userId: user?._id,
+      _id: admin?._id,
       email: user?.email,
       role: user?.role,
       name: admin.name,
@@ -86,6 +92,7 @@ const login = async (payload: TLoginUser) => {
   }
 
   const jwtPayload = {
+    userId: updatedUser?.userId,
     _id: updatedUser?._id,
     email: updatedUser?.email,
     role: updatedUser?.role,
@@ -139,11 +146,6 @@ const refreshToken = async (token: string) => {
     throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !')
   }
   // checking if the user is already deleted
-  const isDeleted = user?.isDeleted
-
-  if (isDeleted) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'This user is deleted !')
-  }
 
   if (user.status === 'inactive') {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is not active!')
@@ -152,7 +154,75 @@ const refreshToken = async (token: string) => {
     throw new AppError(StatusCodes.FORBIDDEN, 'This user is deleted!')
   }
 
-  const jwtPayload = { _id: user?._id, email: user.email, role: user.role }
+  let updatedUser
+
+  const isDoctor = user?.role === 'doctor'
+  const isPatient = user?.role === 'patient'
+  const isAdmin = user?.role === 'admin'
+  if (isDoctor) {
+    const doctor = (await Doctor.findOne({ user: user?._id })) as TDoctor
+    const doctorStatus = doctor?.status
+    const isDoctorDeleted = doctor?.isDeleted
+    if (isDoctorDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This doctor is deleted!')
+    }
+    if (doctorStatus !== 'approve') {
+      throw new AppError(
+        StatusCodes.FORBIDDEN,
+        doctorStatus === 'pending'
+          ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
+          : 'Your account is rejected by admin!',
+      )
+    }
+    updatedUser = {
+      userId: user?._id,
+      _id: doctor?._id,
+      email: user?.email,
+      role: user?.role,
+      name: doctor.name,
+      profileImg: doctor.profileImg,
+    }
+  }
+  if (isPatient) {
+    const patient = (await Patient.findOne({ user: user?._id })) as TPatient
+    const isPatientDeleted = patient?.isDeleted
+    if (isPatientDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This patient is deleted!')
+    }
+
+    updatedUser = {
+      userId: user?._id,
+      _id: patient?._id,
+      email: user?.email,
+      role: user?.role,
+      name: patient.name,
+      profileImg: patient.profileImg,
+    }
+  }
+  if (isAdmin) {
+    const admin = (await Admin.findOne({ user: user?._id })) as TAdmin
+    const isAdminDeleted = admin?.isDeleted
+    if (isAdminDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This admin is deleted!')
+    }
+    updatedUser = {
+      userId: user?._id,
+      _id: admin?._id,
+      email: user?.email,
+      role: user?.role,
+      name: admin.name,
+      profileImg: admin.profileImg,
+    }
+  }
+
+  const jwtPayload = {
+    userId: updatedUser?.userId,
+    _id: updatedUser?._id,
+    email: updatedUser?.email,
+    role: updatedUser?.role,
+    name: updatedUser?.name,
+    profileImg: updatedUser?.profileImg,
+  }
 
   const accessToken = jwt.sign(
     jwtPayload,
