@@ -9,13 +9,18 @@ const PaymentSchema = new Schema<TPayment>(
       default: null,
     },
     amount: {
-      type: String,
+      type: Number,
       required: true,
     },
     paymentMethod: {
       type: String,
       enum: ['bKash', 'SSLCOMMERZ'],
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'confirmed', 'completed', 'canceled'],
+      default: 'pending',
     },
   },
   {

@@ -3,13 +3,54 @@ import AppError from '../../errors/appError'
 import { TPayment } from './payment.interface'
 import Payment from './payment.model'
 import QueryBuilder from '../../builder/QueryBuilder'
+import mongoose from 'mongoose'
+import Appointment from '../appointment/appointment.model'
+import { TAppointment } from '../appointment/appointment.interface'
+import Doctor from '../doctor/doctor.model'
+import Patient from '../patient/patient.model'
 
-const createPayment = async (payload: TPayment) => {
-  const result = await Payment.create(payload)
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Payment not created')
+const createPayment = async (payload: Partial<TAppointment>) => {
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const { doctor, patient } = payload || {}
+    const isExistDoctor = await Doctor.findById(doctor)
+    const isExistPatient = await Patient.findById(patient)
+    if (!isExistDoctor) {
+      throw new Error('Doctor not found')
+    }
+    if (!isExistPatient) {
+      throw new Error('Patient not found')
+    }
+
+    const payment = await Payment.create(
+      [{ ...payload, status: 'confirmed' }],
+      { session },
+    )
+    const appointmentPayload = {
+      ...payload,
+      status: 'confirmed',
+      payment: payment[0]._id,
+    }
+    const appointment = await Appointment.create([appointmentPayload], {
+      session,
+    })
+
+    const updatedPayment = await Payment.findByIdAndUpdate(
+      payment[0]._id,
+      { appointment: appointment[0]._id },
+      { new: true, session },
+    )
+
+    await session.commitTransaction()
+    session.endSession()
+    // if (!payment) {
+    //   throw new AppError(StatusCodes.NOT_FOUND, 'Payment not created')
+    // }
+    return { payment: updatedPayment, appointment: appointment[0] }
+  } catch (err: any) {
+    throw new AppError(StatusCodes.BAD_REQUEST, err.message)
   }
-  return result
 }
 
 const getAllPayment = async (query: Record<string, unknown>) => {

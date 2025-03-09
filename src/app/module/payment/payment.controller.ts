@@ -9,7 +9,7 @@ const createPayment = catchAsync(async (req, res) => {
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: 'Payment is created successfully',
+    message: 'Payment success and appointment is confirmed!',
     data: result,
   })
 })

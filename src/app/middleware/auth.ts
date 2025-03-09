@@ -34,9 +34,9 @@ const auth = (...requiredRoles: TUserRole[]) => {
       process.env.JWT_ACCESS_SECRET as string,
     )) as JwtPayload
 
-    const { _id, role } = decoded
+    const { userId, role } = decoded
 
-    const user = await User.findById(_id)
+    const user = await User.findById(userId)
 
     if (!user) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'This user is not found!')

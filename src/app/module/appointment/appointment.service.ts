@@ -1,30 +1,56 @@
-import Doctor from '../doctor/doctor.model'
-import Patient from '../patient/patient.model'
-import Payment from '../payment/payment.model'
+import { StatusCodes } from 'http-status-codes'
+import AppError from '../../errors/appError'
 import { TAppointment } from './appointment.interface'
 import Appointment from './appointment.model'
+import QueryBuilder from '../../builder/QueryBuilder'
 
-const createAppointment = async (payload: TAppointment) => {
-  const { doctor, patient, payment } = payload || {}
+const getAllAppointments = async (query: Record<string, unknown>) => {
+  const appointmentQuery = new QueryBuilder(Appointment.find(), {
+    ...query,
+    sort: `${query.sort}`,
+  })
+    .filterQuery()
+    .sortQuery()
+    .paginateQuery()
+    .fieldFilteringQuery()
+    .populateQuery([
+      { path: 'doctor', select: '-createdAt -updatedAt -__v' },
+      { path: 'patient', select: '-createdAt -updatedAt -__v' },
+      { path: 'payment', select: '-createdAt -updatedAt -__v' },
+    ])
 
-  const isExistDoctor = await Doctor.findById(doctor)
-  const isExistPatient = await Patient.findById(patient)
-  const isExistPayment = await Payment.findById(payment)
-  if (!isExistDoctor) {
-    throw new Error('Doctor not found')
+  const result = await appointmentQuery?.queryModel
+  const total = await Appointment.countDocuments(
+    appointmentQuery.queryModel.getFilter(),
+  )
+  return { data: result, total }
+}
+
+const getAppointmentById = async (id: string) => {
+  const appointment = await Appointment.findById(id)
+    .select('-__v')
+    .populate('doctor', '-createdAt -updatedAt -__v')
+    .populate('patient', '-createdAt -updatedAt -__v')
+    .populate('payment', '-createdAt -updatedAt -__v')
+
+  if (!appointment) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Appointment not found')
   }
-  if (!isExistPatient) {
-    throw new Error('Patient not found')
-  }
-  if (!isExistPayment) {
-    throw new Error('Payment not found')
-  }
+  return appointment
+}
 
-  const result = await Appointment.create(payload)
-
+const updateAppointmentById = async (id: string, payload: TAppointment) => {
+  const result = await Appointment.findByIdAndUpdate(id, payload, {
+    new: true,
+  })
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Appointment not updated')
+  }
   return result
 }
 
 export const appointmentService = {
-  createAppointment,
+  getAllAppointments,
+  getAppointmentById,
+  updateAppointmentById,
 }

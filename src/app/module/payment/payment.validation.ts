@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const createPaymentZodSchema = z.object({
-  amount: z.string({
+  amount: z.number({
     message: 'Amount is required',
   }),
   paymentMethod: z.enum(['bKash', 'SSLCOMMERZ'], {
@@ -15,7 +15,7 @@ const updatePaymentZodSchema = z.object({
     })
     .optional(),
   amount: z
-    .string({
+    .number({
       message: 'Amount is required',
     })
     .optional(),
@@ -26,7 +26,7 @@ const updatePaymentZodSchema = z.object({
     .optional(),
 })
 
-export const appointmentZodSchema = {
+export const paymentZodSchema = {
   createPaymentZodSchema,
   updatePaymentZodSchema,
 }

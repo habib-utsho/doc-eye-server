@@ -30,6 +30,7 @@ const AppointmentSchema = new Schema<TAppointment>(
     symptoms: {
       type: String,
       trim: true,
+      default: null,
     },
     status: {
       type: String,
