@@ -22,7 +22,16 @@ const createAppointmentZodSchema = z.object({
     .default('online'),
   symptoms: z.string().optional(),
 })
+const updateAppointmentZodSchema = z.object({
+  schedule: z
+    .string({
+      required_error: 'Schedule is required',
+    })
+    .optional(),
+  symptoms: z.string().optional(),
+})
 
 export const appointmentZodSchema = {
   createAppointmentZodSchema,
+  updateAppointmentZodSchema,
 }

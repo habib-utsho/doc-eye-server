@@ -5,12 +5,12 @@ import { appointmentZodSchema } from './appointment.validation'
 
 const router = Router()
 
-router.get('/', auth('admin'), paymentController.getAllPayment)
-router.get('/:id', auth('admin'), paymentController.getPaymentById)
-router.post(
-  '/',
-  zodValidateHandler(appointmentZodSchema.createAppointmentZodSchema),
-  appointmentController.createAppointment,
+router.get('/', appointmentController.getAllAppointment)
+router.get('/:id', appointmentController.getAppointmentById)
+router.patch(
+  '/:id',
+  zodValidateHandler(appointmentZodSchema.updateAppointmentZodSchema),
+  appointmentController.updateAppointmentById,
 )
 
 export { router as appointmentRouter }
