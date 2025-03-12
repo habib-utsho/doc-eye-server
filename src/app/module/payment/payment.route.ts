@@ -13,7 +13,7 @@ router.get('/:id', auth('admin'), paymentController.getPaymentById)
 router.post(
   '/',
   zodValidateHandler(appointmentZodSchema.createAppointmentZodSchema),
-  paymentController.createPayment,
+  paymentController.initPayment,
 )
 
 router.patch(

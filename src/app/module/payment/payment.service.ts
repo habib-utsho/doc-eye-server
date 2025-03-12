@@ -9,7 +9,7 @@ import { TAppointment } from '../appointment/appointment.interface'
 import Doctor from '../doctor/doctor.model'
 import Patient from '../patient/patient.model'
 
-const createPayment = async (payload: Partial<TAppointment>) => {
+const initPayment = async (payload: Partial<TAppointment>) => {
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
@@ -29,6 +29,9 @@ const createPayment = async (payload: Partial<TAppointment>) => {
     )
     const appointmentPayload = {
       ...payload,
+      schedule: payload.schedule
+        ? new Date(new Date(payload.schedule).getTime() + 6 * 60 * 60 * 1000)
+        : new Date(),
       status: 'confirmed',
       payment: payment[0]._id,
     }
@@ -94,7 +97,7 @@ const updatePayment = async (id: string, payload: TPayment) => {
 }
 
 export const paymentService = {
-  createPayment,
+  initPayment,
   updatePayment,
   getAllPayment,
   getPaymentById,

@@ -4,8 +4,8 @@ import sendResponse from '../../utils/sendResponse'
 import { paymentService } from './payment.service'
 import { RequestHandler } from 'express'
 
-const createPayment = catchAsync(async (req, res) => {
-  const result = await paymentService.createPayment(req.body)
+const initPayment = catchAsync(async (req, res) => {
+  const result = await paymentService.initPayment(req.body)
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
@@ -47,7 +47,7 @@ const updatePayment = catchAsync(async (req, res) => {
 })
 
 export const paymentController = {
-  createPayment,
+  initPayment,
   updatePayment,
   getAllPayment,
   getPaymentById,
