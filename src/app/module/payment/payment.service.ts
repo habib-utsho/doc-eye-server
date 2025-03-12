@@ -24,19 +24,6 @@ const initPayment = async (payload: Partial<TAppointment>) => {
       patient: patient,
       schedule: new Date(payload.schedule),
     })
-    console.log(isExistSchedule, 'isExistSchedule')
-    // console.log(
-    //   {
-    //     schedule: payload.schedule,
-    //     updatedSchedule: payload.schedule
-    //       ? new Date(new Date(payload.schedule).getTime() + 6 * 60 * 60 * 1000)
-    //       : new Date(),
-    //     updatedScheduleSametmzn: payload.schedule
-    //       ? new Date(payload.schedule)
-    //       : new Date(),
-    //   },
-    //   'payload.schedule',
-    // )
     if (!isExistDoctor) {
       throw new Error('Doctor not found')
     }
