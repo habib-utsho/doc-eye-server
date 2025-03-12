@@ -16,11 +16,35 @@ const initPayment = async (payload: Partial<TAppointment>) => {
     const { doctor, patient } = payload || {}
     const isExistDoctor = await Doctor.findById(doctor)
     const isExistPatient = await Patient.findById(patient)
+    if (!payload.schedule) {
+      throw new Error('Schedule is required')
+    }
+    const isExistSchedule = await Appointment.findOne({
+      doctor: doctor,
+      patient: patient,
+      schedule: new Date(payload.schedule),
+    })
+    console.log(isExistSchedule, 'isExistSchedule')
+    // console.log(
+    //   {
+    //     schedule: payload.schedule,
+    //     updatedSchedule: payload.schedule
+    //       ? new Date(new Date(payload.schedule).getTime() + 6 * 60 * 60 * 1000)
+    //       : new Date(),
+    //     updatedScheduleSametmzn: payload.schedule
+    //       ? new Date(payload.schedule)
+    //       : new Date(),
+    //   },
+    //   'payload.schedule',
+    // )
     if (!isExistDoctor) {
       throw new Error('Doctor not found')
     }
     if (!isExistPatient) {
       throw new Error('Patient not found')
+    }
+    if (isExistSchedule) {
+      throw new Error('Schedule already exist')
     }
 
     const payment = await Payment.create(
@@ -29,9 +53,7 @@ const initPayment = async (payload: Partial<TAppointment>) => {
     )
     const appointmentPayload = {
       ...payload,
-      schedule: payload.schedule
-        ? new Date(new Date(payload.schedule).getTime() + 6 * 60 * 60 * 1000)
-        : new Date(),
+      schedule: payload.schedule ? new Date(payload.schedule) : new Date(),
       status: 'confirmed',
       payment: payment[0]._id,
     }
