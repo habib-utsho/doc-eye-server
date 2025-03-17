@@ -55,10 +55,13 @@ const getAppointmentById = async (id: string) => {
   return appointment
 }
 
-const updateAppointmentStatusById = async (id: string, status: string) => {
+const updateAppointmentStatusById = async (
+  id: string,
+  payload: { status: 'completed' | 'canceled' },
+) => {
   const result = await Appointment.findByIdAndUpdate(
     id,
-    { status },
+    { status: payload.status },
     {
       new: true,
     },

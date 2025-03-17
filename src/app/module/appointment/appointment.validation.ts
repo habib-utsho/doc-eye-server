@@ -23,11 +23,9 @@ const createAppointmentZodSchema = z.object({
   symptoms: z.string().optional(),
 })
 const updateAppointmentStatusZodSchema = z.object({
-  status: z
-    .string({
-      required_error: 'Status is required',
-    })
-    .optional(),
+  status: z.enum(['completed', 'canceled'], {
+    required_error: 'Status is either completed or canceled',
+  }),
 })
 
 export const appointmentZodSchema = {

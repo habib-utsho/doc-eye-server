@@ -8,9 +8,9 @@ const router = Router()
 router.get('/', appointmentController.getAllAppointment)
 router.get('/:id', appointmentController.getAppointmentById)
 router.patch(
-  '/:id',
-  zodValidateHandler(appointmentZodSchema.updateAppointmentZodSchema),
-  appointmentController.updateAppointmentById,
+  '/update-status/:id',
+  zodValidateHandler(appointmentZodSchema.updateAppointmentStatusZodSchema),
+  appointmentController.updateAppointmentStatusById,
 )
 
 export { router as appointmentRouter }
