@@ -30,8 +30,8 @@ const getAppointmentById: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
-const updateAppointmentById = catchAsync(async (req, res) => {
-  const result = await appointmentService.updateAppointmentById(
+const updateAppointmentStatusById = catchAsync(async (req, res) => {
+  const result = await appointmentService.updateAppointmentStatusById(
     req.params?.id,
     req.body,
   )
@@ -45,5 +45,5 @@ const updateAppointmentById = catchAsync(async (req, res) => {
 export const appointmentController = {
   getAllAppointment,
   getAppointmentById,
-  updateAppointmentById,
+  updateAppointmentStatusById,
 }

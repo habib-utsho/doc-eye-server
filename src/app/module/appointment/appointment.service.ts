@@ -55,10 +55,14 @@ const getAppointmentById = async (id: string) => {
   return appointment
 }
 
-const updateAppointmentById = async (id: string, payload: TAppointment) => {
-  const result = await Appointment.findByIdAndUpdate(id, payload, {
-    new: true,
-  })
+const updateAppointmentStatusById = async (id: string, status: string) => {
+  const result = await Appointment.findByIdAndUpdate(
+    id,
+    { status },
+    {
+      new: true,
+    },
+  )
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Appointment not updated')
   }
@@ -68,5 +72,5 @@ const updateAppointmentById = async (id: string, payload: TAppointment) => {
 export const appointmentService = {
   getAllAppointments,
   getAppointmentById,
-  updateAppointmentById,
+  updateAppointmentStatusById,
 }
