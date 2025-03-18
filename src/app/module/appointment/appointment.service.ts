@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
 import AppError from '../../errors/appError'
-import { TAppointment } from './appointment.interface'
 import Appointment from './appointment.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 
@@ -59,6 +58,46 @@ const updateAppointmentStatusById = async (
   id: string,
   payload: { status: 'completed' | 'canceled' },
 ) => {
+  const appointment = await Appointment.findById(id)
+
+  if (!appointment) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Appointment not found')
+  }
+  if (appointment.status === 'completed' || appointment.status === 'canceled') {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      `Appointment is already ${appointment.status}`,
+    )
+  }
+
+  if (
+    appointment.status === 'pending' &&
+    !['confirmed', 'canceled'].includes(payload.status)
+  ) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Status is either confirmed or canceled while appointment is pending',
+    )
+  }
+
+  if (
+    appointment.status === 'confirmed' &&
+    !['completed', 'canceled'].includes(payload.status)
+  ) {
+    const appointmentScheduleTime = new Date(appointment.schedule).getTime()
+    const currentTime = new Date().getTime()
+    const diff = appointmentScheduleTime - currentTime
+    if (diff < 0) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Only completed status is allowed after appointment time',
+      )
+    }
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Status is either completed or canceled while appointment is confirmed',
+    )
+  }
   const result = await Appointment.findByIdAndUpdate(
     id,
     { status: payload.status },

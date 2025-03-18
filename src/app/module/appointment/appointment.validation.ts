@@ -23,8 +23,8 @@ const createAppointmentZodSchema = z.object({
   symptoms: z.string().optional(),
 })
 const updateAppointmentStatusZodSchema = z.object({
-  status: z.enum(['completed', 'canceled'], {
-    required_error: 'Status is either completed or canceled',
+  status: z.enum(['confirmed', 'canceled'], {
+    required_error: 'Status is either confirmed or canceled',
   }),
 })
 

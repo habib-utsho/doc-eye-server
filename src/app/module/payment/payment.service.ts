@@ -8,6 +8,7 @@ import Appointment from '../appointment/appointment.model'
 import { TAppointment } from '../appointment/appointment.interface'
 import Doctor from '../doctor/doctor.model'
 import Patient from '../patient/patient.model'
+import moment from 'moment-timezone'
 
 const initPayment = async (payload: Partial<TAppointment>) => {
   const session = await mongoose.startSession()
@@ -38,10 +39,11 @@ const initPayment = async (payload: Partial<TAppointment>) => {
       [{ ...payload, status: 'confirmed' }],
       { session },
     )
+    const gmt6Schedule = moment(payload.schedule).tz('Asia/Dhaka').toDate()
     const appointmentPayload = {
       ...payload,
-      schedule: payload.schedule ? new Date(payload.schedule) : new Date(),
-      status: 'confirmed',
+      schedule: gmt6Schedule,
+      status: 'pending',
       payment: payment[0]._id,
     }
     const appointment = await Appointment.create([appointmentPayload], {

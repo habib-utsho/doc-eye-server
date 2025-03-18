@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose'
 import { TAppointment } from './appointment.interface'
+import moment from 'moment-timezone'
 
 const AppointmentSchema = new Schema<TAppointment>(
   {
