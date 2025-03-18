@@ -84,20 +84,24 @@ const updateAppointmentStatusById = async (
     appointment.status === 'confirmed' &&
     !['completed', 'canceled'].includes(payload.status)
   ) {
-    const appointmentScheduleTime = new Date(appointment.schedule).getTime()
-    const currentTime = new Date().getTime()
-    const diff = appointmentScheduleTime - currentTime
-    if (diff < 0) {
-      throw new AppError(
-        StatusCodes.BAD_REQUEST,
-        'Only completed status is allowed after appointment time',
-      )
-    }
     throw new AppError(
       StatusCodes.BAD_REQUEST,
       'Status is either completed or canceled while appointment is confirmed',
     )
   }
+
+  if (appointment.status === 'confirmed' && payload.status === 'completed') {
+    const appointmentScheduleTime = new Date(appointment.schedule).getTime()
+    const currentTime = new Date().getTime()
+    const diff = appointmentScheduleTime - currentTime
+    if (diff > 0) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Only completed status is allowed after appointment time',
+      )
+    }
+  }
+
   const result = await Appointment.findByIdAndUpdate(
     id,
     { status: payload.status },
