@@ -15,7 +15,18 @@ const initPayment = catchAsync(async (req, res) => {
 })
 
 const getAllPayment = catchAsync(async (req, res) => {
-  const { data, total } = await paymentService.getAllPayment(req.query)
+  if (!req.user) {
+    sendResponse(res, StatusCodes.UNAUTHORIZED, {
+      success: false,
+      message: 'You are not authorized to access this route',
+      data: null,
+    })
+    return
+  }
+  const { data, total } = await paymentService.getAllPayment(
+    req.query,
+    req.user,
+  )
 
   const page = req.query?.page ? Number(req.query.page) : 1
   const limit = req.query?.limit ? Number(req.query.limit) : 10
@@ -37,18 +48,10 @@ const getPaymentById: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
-const updatePayment = catchAsync(async (req, res) => {
-  const result = await paymentService.updatePayment(req.params?.id, req.body)
-  sendResponse(res, StatusCodes.OK, {
-    success: true,
-    message: 'Payment is updated successfully',
-    data: result,
-  })
-})
+
 
 export const paymentController = {
   initPayment,
-  updatePayment,
   getAllPayment,
   getPaymentById,
 }

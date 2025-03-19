@@ -8,6 +8,16 @@ const PaymentSchema = new Schema<TPayment>(
       ref: 'Appointment',
       default: null,
     },
+    patient: {
+      type: Schema.Types.ObjectId,
+      ref: 'Patient',
+      default: null,
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      default: null,
+    },
     amount: {
       type: Number,
       required: true,

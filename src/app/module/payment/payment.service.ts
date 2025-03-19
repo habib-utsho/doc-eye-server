@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
 import AppError from '../../errors/appError'
-import { TPayment } from './payment.interface'
 import Payment from './payment.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import mongoose from 'mongoose'
@@ -9,6 +8,7 @@ import { TAppointment } from '../appointment/appointment.interface'
 import Doctor from '../doctor/doctor.model'
 import Patient from '../patient/patient.model'
 import moment from 'moment-timezone'
+import { JwtPayload } from 'jsonwebtoken'
 
 const initPayment = async (payload: Partial<TAppointment>) => {
   const session = await mongoose.startSession()
@@ -67,18 +67,35 @@ const initPayment = async (payload: Partial<TAppointment>) => {
   }
 }
 
-const getAllPayment = async (query: Record<string, unknown>) => {
-  const paymentQuery = new QueryBuilder(Payment.find(), {
+const getAllPayment = async (
+  query: Record<string, unknown>,
+  currentUser: JwtPayload,
+) => {
+  console.log(currentUser, 'currentUser')
+  let filteredQuery = {}
+  if (currentUser.role === 'doctor') {
+    filteredQuery = { doctor: currentUser._id }
+  } else if (currentUser.role === 'patient') {
+    filteredQuery = { patient: currentUser._id }
+  }
+
+  console.log(filteredQuery, 'filteredQuery')
+  const paymentQuery = new QueryBuilder(Payment.find(filteredQuery), {
     ...query,
     sort: `${query.sort}`,
   })
+    .populateQuery([
+      {
+        path: 'appointment',
+        select: '-createdAt -updatedAt -__v',
+      },
+      { path: 'doctor', select: 'name doctorTitle profileImg' },
+      { path: 'patient', select: 'name profileImg' },
+    ])
     .filterQuery()
     .sortQuery()
     .paginateQuery()
     .fieldFilteringQuery()
-    .populateQuery([
-      { path: 'appointment', select: '-createdAt -updatedAt -__v' },
-    ])
 
   const result = await paymentQuery?.queryModel
   const total = await Payment.countDocuments(
@@ -97,19 +114,8 @@ const getPaymentById = async (id: string) => {
   return payment
 }
 
-const updatePayment = async (id: string, payload: TPayment) => {
-  const result = await Payment.findByIdAndUpdate(id, payload, {
-    new: true,
-  })
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Payment not updated')
-  }
-  return result
-}
-
 export const paymentService = {
   initPayment,
-  updatePayment,
   getAllPayment,
   getPaymentById,
 }
