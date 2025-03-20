@@ -29,6 +29,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     // } catch (e) {
     //   throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
     // }
+
     const decoded = (await jwtVerify(
       bearerToken,
       process.env.JWT_ACCESS_SECRET as string,

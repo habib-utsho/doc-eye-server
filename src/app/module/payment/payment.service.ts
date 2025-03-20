@@ -71,7 +71,6 @@ const getAllPayment = async (
   query: Record<string, unknown>,
   currentUser: JwtPayload,
 ) => {
-  console.log(currentUser, 'currentUser')
   let filteredQuery = {}
   if (currentUser.role === 'doctor') {
     filteredQuery = { doctor: currentUser._id }
@@ -79,7 +78,6 @@ const getAllPayment = async (
     filteredQuery = { patient: currentUser._id }
   }
 
-  console.log(filteredQuery, 'filteredQuery')
   const paymentQuery = new QueryBuilder(Payment.find(filteredQuery), {
     ...query,
     sort: `${query.sort}`,

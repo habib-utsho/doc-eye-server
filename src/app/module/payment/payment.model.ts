@@ -29,7 +29,7 @@ const PaymentSchema = new Schema<TPayment>(
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'completed', 'canceled'],
+      enum: ['pending', 'confirmed', 'canceled'],
       default: 'pending',
     },
   },
