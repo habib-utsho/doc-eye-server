@@ -80,7 +80,7 @@ const getAllPayment = async (
 
   const paymentQuery = new QueryBuilder(Payment.find(filteredQuery), {
     ...query,
-    sort: `${query.sort}`,
+    sort: `${query.sort} -createdAt`,
   })
     .populateQuery([
       {
