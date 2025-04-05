@@ -1,5 +1,7 @@
 import { Types } from 'mongoose'
 
+
+
 export type TMedicalReport = {
     appointment: Types.ObjectId
     doctor: Types.ObjectId
