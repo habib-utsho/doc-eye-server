@@ -6,7 +6,10 @@ import { RequestHandler } from 'express'
 import { JwtPayload } from 'jsonwebtoken'
 
 const createReview = catchAsync(async (req, res) => {
-  const review = await reviewService.createReview(req.body, req.user as JwtPayload)
+  const review = await reviewService.createReview(
+    req.body,
+    req.user as JwtPayload,
+  )
 
   sendResponse(res, StatusCodes.CREATED, {
     success: true,
@@ -30,9 +33,7 @@ const getAllReview = catchAsync(async (req, res) => {
 })
 
 const getReviewById: RequestHandler = catchAsync(async (req, res) => {
-  const appointment = await reviewService.getReviewById(
-    req.params?.id,
-  )
+  const appointment = await reviewService.getReviewById(req.params?.id)
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Review is retrieved successfully!',

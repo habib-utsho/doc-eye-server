@@ -3,15 +3,49 @@ import { TMedicalReport } from './medicalReport.interface'
 
 const MedicalReportSchema = new Schema<TMedicalReport>(
   {
-    appointment: {
+    doctor: {
       type: Schema.Types.ObjectId,
-      ref: 'Appointment',
+      ref: 'Doctor',
       default: null,
     },
-    paymentMethod: {
-      type: String,
-      enum: ['bKash', 'SSLCOMMERZ'],
+    patient: {
+      type: Schema.Types.ObjectId,
+      ref: 'Patient',
+      default: null,
+    },
+    problems: {
+      type: [String],
       required: true,
+    },
+    diagnosis: {
+      type: String,
+      required: true,
+    },
+    medications: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        dosage: {
+          type: String,
+          required: true,
+        },
+        frequency: {
+          type: String,
+          required: true,
+        },
+        duration: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    advices: {
+      type: [String],
+    },
+    followUpDate: {
+      type: Date,
     },
   },
   {
