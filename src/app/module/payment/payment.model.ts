@@ -19,8 +19,22 @@ const PaymentSchema = new Schema<TPayment>(
       default: null,
     },
     amount: {
-      type: Number,
-      required: true,
+      consultationFee: {
+        type: Number,
+        required: true,
+      },
+      vat: {
+        type: Number,
+        default: 0,
+      },
+      platformFee: {
+        type: Number,
+        default: 0,
+      },
+      total: {
+        type: Number,
+        required: true,
+      },
     },
     paymentMethod: {
       type: String,
