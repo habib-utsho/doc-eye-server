@@ -3,6 +3,11 @@ import { TMedicalReport } from './medicalReport.interface'
 
 const MedicalReportSchema = new Schema<TMedicalReport>(
   {
+    appointment: {
+      type: Schema.Types.ObjectId,
+      ref: 'Appointment',
+      default: null,
+    },
     doctor: {
       type: Schema.Types.ObjectId,
       ref: 'Doctor',

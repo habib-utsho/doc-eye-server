@@ -67,7 +67,7 @@ const getAppointmentById = async (id: string) => {
 
 const updateAppointmentStatusById = async (
   id: string,
-  payload: { status: 'completed' | 'canceled' },
+  payload: { status: 'confirmed' | 'completed' | 'canceled' },
 ) => {
   const appointment = await Appointment.findById(id)
 

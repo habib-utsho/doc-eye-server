@@ -13,7 +13,7 @@ const createMedicalReport = catchAsync(async (req, res) => {
 
   sendResponse(res, StatusCodes.CREATED, {
     success: true,
-    message: 'Medical report created successfully!',
+    message: 'Appointment completed and medical report inserted successfully!',
     data: report,
   })
 })
