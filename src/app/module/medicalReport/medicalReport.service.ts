@@ -68,8 +68,14 @@ const getAllMedicalReports = async (query: Record<string, unknown>) => {
     .paginateQuery()
     .fieldFilteringQuery()
     .populateQuery([
-      { path: 'doctor', select: '_id doctorTitle name profileImg email' },
-      { path: 'patient', select: '_id name profileImg email' },
+      {
+        path: 'doctor',
+        select: '_id doctorTitle doctorType doctorCode name profileImg email',
+      },
+      {
+        path: 'patient',
+        select: '_id name gender dateOfBirth profileImg weight email',
+      },
       { path: 'appointment', select: '-createdAt -updatedAt -__v' },
     ])
 
