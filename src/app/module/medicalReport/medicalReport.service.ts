@@ -79,6 +79,8 @@ const getAllMedicalReports = async (query: Record<string, unknown>) => {
       { path: 'appointment', select: '-createdAt -updatedAt -__v' },
     ])
 
+
+    
   const result = await reportQuery.queryModel
   const total = await MedicalReport.countDocuments(
     reportQuery.queryModel.getFilter(),
