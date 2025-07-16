@@ -7,6 +7,7 @@ import { TMedicalReport } from './medicalReport.interface'
 import { JwtPayload } from 'jsonwebtoken'
 import Patient from '../patient/patient.model'
 import mongoose from 'mongoose'
+import { populate } from 'dotenv'
 
 const createMedicalReport = async (
   payload: TMedicalReport,
@@ -79,8 +80,6 @@ const getAllMedicalReports = async (query: Record<string, unknown>) => {
       { path: 'appointment', select: '-createdAt -updatedAt -__v' },
     ])
 
-
-    
   const result = await reportQuery.queryModel
   const total = await MedicalReport.countDocuments(
     reportQuery.queryModel.getFilter(),
@@ -92,9 +91,19 @@ const getAllMedicalReports = async (query: Record<string, unknown>) => {
 const getMedicalReportById = async (id: string) => {
   const report = await MedicalReport.findById(id)
     .select('-__v')
-    .populate('doctor', '_id doctorTitle name profileImg email')
-    .populate('patient', '_id name profileImg email')
-    .populate('appointment', '-createdAt -updatedAt -__v')
+    .populate(
+      'doctor',
+      '_id doctorTitle doctorType doctorCode name profileImg email currentWorkplace medicalDegree',
+    )
+    .populate(
+      'patient',
+      '_id name profileImg email gender weight dateOfBirth bloodGroup',
+    )
+    .populate({
+      path: 'appointment',
+      select: '-createdAt -updatedAt -__v',
+      populate: 'payment',
+    })
 
   if (!report) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Medical report not found')
