@@ -19,7 +19,6 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
 
   if (query.state) {
     const currentDate = new Date()
-    currentDate.setHours(currentDate.getHours() + 6) // Convert to GMT+6
     if (query.state === 'upcoming') {
       dateFilter.schedule = { $gte: currentDate }
     } else if (query.state === 'expired') {

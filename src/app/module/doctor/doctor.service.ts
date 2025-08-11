@@ -5,8 +5,13 @@ import { TDoctor } from './doctor.interface'
 import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
 import AppError from '../../errors/appError'
 import { StatusCodes } from 'http-status-codes'
+import moment from 'moment'
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
+  const availabilityQuery = query.availability;
+  delete query.availability
+
+
   const doctorQuery = new QueryBuilder(Doctor.find(), {
     ...query,
     sort: `${query.sort} isDeleted`,
@@ -21,13 +26,72 @@ const getAllDoctor = async (query: Record<string, unknown>) => {
       { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
     ])
 
-  const result = await doctorQuery?.queryModel
-  const total = await Doctor.countDocuments(doctorQuery.queryModel.getFilter())
-  return { data: result, total }
+  let result = await doctorQuery?.queryModel
+
+
+  // Apply custom filtering based on availability
+  if (availabilityQuery == "online_now" || availabilityQuery == " available_today" || availabilityQuery == "available_in_next_three_days" || availabilityQuery == "available_in_next_seven_days") {
+    const now = moment()
+    const todayDay = now.format('dddd')
+    const currentTime = now.format('HH:mm')
+
+
+    result = result.filter((doc: any) => {
+      const { availability } = doc
+      if (!availability) return false
+
+      const { dayStart, dayEnd, timeStart, timeEnd } = availability
+      const daysOfWeek = [
+        'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+      ]
+      const getDayIndex = (day: string) => daysOfWeek.indexOf(day)
+      const dayStartIndex = getDayIndex(dayStart)
+      const dayEndIndex = getDayIndex(dayEnd)
+      const todayIndex = getDayIndex(todayDay)
+
+      const isWithinDayRange = (dayIndex: number) => {
+        if (dayStartIndex <= dayEndIndex) {
+          return dayIndex >= dayStartIndex && dayIndex <= dayEndIndex
+        } else {
+          // Week wraps around
+          return dayIndex >= dayStartIndex || dayIndex <= dayEndIndex
+        }
+      }
+
+      // Online now: doctor is available today AND current time is within the time window
+      if (availabilityQuery == "online_now") {
+        if (!isWithinDayRange(todayIndex)) return false
+        return currentTime >= timeStart && currentTime <= timeEnd
+      }
+
+      // Available today
+      if (availabilityQuery == "available_today") {
+        return isWithinDayRange(todayIndex)
+      }
+
+      // Available in next N days
+      if (availabilityQuery == "available_in_next_three_days" || availabilityQuery == "available_in_next_seven_days") {
+        const range = availabilityQuery == "available_in_next_three_days" ? 3 : 7
+        for (let i = 0; i < range; i++) {
+          const futureDay = now.add(i, 'day').format('dddd')
+          const futureDayIndex = getDayIndex(futureDay)
+          if (isWithinDayRange(futureDayIndex)) return true
+        }
+        return false
+      }
+
+      return true
+    })
+  }
+
+
+  // const total = await Doctor.countDocuments(doctorQuery.queryModel.getFilter())
+  return { data: result, total: result.length }
 }
 
 const getDoctorById = async (id: string) => {
-  const doctor = await Doctor.findById(id)
+  const customDoctorId = id.startsWith("DE-")
+  const doctor = await (customDoctorId ? Doctor.find({ doctorCode: id }) : Doctor.findById(id))
     .select('-__v')
     .populate([
       { path: 'user', select: '-createdAt -updatedAt -__v' },

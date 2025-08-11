@@ -39,10 +39,11 @@ const initPayment = async (payload: Partial<TAppointment>) => {
       [{ ...payload, status: 'confirmed' }],
       { session },
     )
-    const gmt6Schedule = moment(payload.schedule).tz('Asia/Dhaka').toDate()
+    // const gmt6Schedule = moment(payload.schedule).tz('Asia/Dhaka').toDate()
+    // console.log({ schedule: payload.schedule });
     const appointmentPayload = {
       ...payload,
-      schedule: gmt6Schedule,
+      schedule: payload.schedule,
       status: 'pending',
       payment: payment[0]._id,
     }

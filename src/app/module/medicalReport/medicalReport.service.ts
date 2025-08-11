@@ -7,7 +7,6 @@ import { TMedicalReport } from './medicalReport.interface'
 import { JwtPayload } from 'jsonwebtoken'
 import Patient from '../patient/patient.model'
 import mongoose from 'mongoose'
-import { populate } from 'dotenv'
 
 const createMedicalReport = async (
   payload: TMedicalReport,
