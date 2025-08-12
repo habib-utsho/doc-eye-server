@@ -7,7 +7,6 @@ import Appointment from '../appointment/appointment.model'
 import { TAppointment } from '../appointment/appointment.interface'
 import Doctor from '../doctor/doctor.model'
 import Patient from '../patient/patient.model'
-import moment from 'moment-timezone'
 import { JwtPayload } from 'jsonwebtoken'
 
 const initPayment = async (payload: Partial<TAppointment>) => {
@@ -54,6 +53,12 @@ const initPayment = async (payload: Partial<TAppointment>) => {
     const updatedPayment = await Payment.findByIdAndUpdate(
       payment[0]._id,
       { appointment: appointment[0]._id },
+      { new: true, session },
+    )
+
+    await Doctor.findByIdAndUpdate(
+      doctor,
+      { $inc: { patientAttended: 1 } },
       { new: true, session },
     )
 
