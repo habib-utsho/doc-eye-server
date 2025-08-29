@@ -10,6 +10,7 @@ import {
 import router from './app/routes'
 import cookieParser from 'cookie-parser'
 import { Server } from "socket.io"
+import { MessageModel } from './app/module/message/message.model'
 
 const app = express()
 
@@ -42,21 +43,34 @@ app.use(express.json())
 
 // socket.io connection
 io.on("connection", (socket) => {
-  console.log("🔌 User connected:", socket.id);
+  // console.log("🔌 User connected:", socket.id);
 
   socket.on("join_room", (roomId) => {
-    console.log(`🔗 Joining room: ${roomId}`);
+    // console.log(`🔗 Joining room: ${roomId}`);
     socket.join(roomId);
   });
 
-  socket.on("send_message", (data) => {
-    const { appointmentId, ...rest } = data;
-    console.log(`📨 Message for appointment ${appointmentId}`, rest);
-    io.to(appointmentId).emit("receive_message", data);
+  socket.on("send_message", async (data) => {
+    const { chatId, appointmentId, senderId, receiverId, timestamp, text, from, messageType = "text" } = data;
+    console.log(`📨 Message for appointment ${appointmentId}`);
+
+    const messageForDB = {
+      chatId, appointmentId, senderId, receiverId, text, from, messageType
+    }
+
+    try {
+
+      const savedMessage = await MessageModel.create(messageForDB);
+      console.log({ savedMessage });
+      io.to(appointmentId).emit("receive_message", savedMessage);
+    } catch (err: any) {
+      console.error("❌ Error saving message:", err);
+    }
+
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ User disconnected:", socket.id);
+    // console.log("❌ User disconnected:", socket.id);
   });
 });
 
