@@ -69,11 +69,36 @@ io.on("connection", (socket) => {
 
   });
 
+  // --- Video Call Signaling ---
+  socket.on("video-offer", ({ roomId, offer }) => {
+    console.log(`📹 Received video offer in room ${roomId}`);
+    socket.to(roomId).emit("video-offer", offer);
+  });
+
+  socket.on("video-answer", ({ roomId, answer }) => {
+    console.log(`🎥 Received video answer in room ${roomId}`);
+    socket.to(roomId).emit("video-answer", answer);
+  });
+
+  // Notify receiver first
+  socket.on("call-request", ({ roomId, fromUser }) => {
+    socket.to(roomId).emit("call-request", { fromUser });
+  });
+
+  // Handle call rejection
+  socket.on("call-rejected", ({ roomId }) => {
+    socket.to(roomId).emit("call-rejected");
+  });
+
+  socket.on("ice-candidate", ({ roomId, candidate }) => {
+    console.log(`❄️ Received ICE candidate in room ${roomId}`);
+    socket.to(roomId).emit("ice-candidate", candidate);
+  });
+
   socket.on("disconnect", () => {
     // console.log("❌ User disconnected:", socket.id);
   });
 });
-
 
 
 

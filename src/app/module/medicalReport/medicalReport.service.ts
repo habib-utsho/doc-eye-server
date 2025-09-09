@@ -61,7 +61,7 @@ const createMedicalReport = async (
 const getAllMedicalReports = async (query: Record<string, unknown>) => {
   const reportQuery = new QueryBuilder(MedicalReport.find(), {
     ...query,
-    sort: `${query.sort}`,
+    sort: `${query.sort} -createdAt`,
   })
     .filterQuery()
     .sortQuery()
