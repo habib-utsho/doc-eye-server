@@ -32,7 +32,7 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
   const appointmentQuery = new QueryBuilder(Appointment.find(), {
     ...query,
     ...dateFilter,
-    sort: `${query.sort}`,
+    sort: `${query.sort} -schedule`,
   })
     .filterQuery()
     .sortQuery()

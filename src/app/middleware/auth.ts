@@ -11,6 +11,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization
 
+
     if (!token) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
     }
@@ -19,6 +20,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (!bearerToken) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
     }
+
+
 
     // let decoded
     // try {
@@ -30,6 +33,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     //   throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
     // }
 
+    // console.log(bearerToken);
     const decoded = (await jwtVerify(
       bearerToken,
       process.env.JWT_ACCESS_SECRET as string,

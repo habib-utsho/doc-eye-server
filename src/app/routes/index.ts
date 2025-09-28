@@ -10,6 +10,7 @@ import { paymentRouter } from '../module/payment/payment.route'
 import { reviewRouter } from '../module/review/review.route'
 import { medicalReportRouter } from '../module/medicalReport/medicalReport.route'
 import { messageRouter } from '../module/message/message.route'
+import { statsRouter } from '../module/stats/stats.route'
 
 const router = Router()
 const routes = [
@@ -56,6 +57,10 @@ const routes = [
   {
     path: '/message',
     route: messageRouter,
+  },
+  {
+    path: '/stats',
+    route: statsRouter,
   },
 ]
 
