@@ -28,8 +28,6 @@ const getPatientStats = catchAsync(async (req, res) => {
 
 const getDoctorStats = catchAsync(async (req, res) => {
 
-
-
   const pDoctor = req?.user;
 
   if (!pDoctor) {
@@ -50,8 +48,14 @@ const getDoctorStats = catchAsync(async (req, res) => {
 
 const getAdminStats = catchAsync(async (req, res) => {
 
-
-  const data = await statsService.getAdminStats();
+  const pAdmin = req?.user;
+  if (!pAdmin) {
+    throw new AppError(
+      StatusCodes.UNAUTHORIZED,
+      'You are not authorized to access this route',
+    )
+  }
+  const data = await statsService.getAdminStats(pAdmin);
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
