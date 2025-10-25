@@ -50,6 +50,12 @@ const patientSchema = new Schema<TPatient>(
       required: true,
       enum: bloodGroups,
     },
+    favoriteDoctors: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Doctor',
+      },
+    ],
     weight: {
       type: Number,
       default: null,

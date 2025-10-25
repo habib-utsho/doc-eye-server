@@ -28,6 +28,18 @@ const getPatientById: RequestHandler = catchAsync(async (req, res) => {
     data: patient,
   })
 })
+const updateFavoriteDoctors: RequestHandler = catchAsync(async (req, res) => {
+  const patientId = req.user?._id;
+  const { doctorId } = req.body;
+
+  const patient = await patientServices.updateFavoriteDoctors(patientId, doctorId)
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: patient.message,
+    data: patient.patient,
+  })
+})
+
 
 // const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
 //   const patient = await patientServices.updatePatientById( // Change to patientServices.updatePatientById
@@ -62,4 +74,5 @@ export const patientController = {
   getPatientById, // Change to getPatientById
   // updatePatientById, // Change to updatePatientById
   deletePatientById, // Change to deletePatientById
+  updateFavoriteDoctors
 }

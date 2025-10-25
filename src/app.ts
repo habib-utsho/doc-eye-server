@@ -51,7 +51,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send_message", async (data) => {
-    const { chatId, appointmentId, senderId, receiverId, timestamp, text, from, messageType = "text" } = data;
+    const { chatId, appointmentId, senderId, receiverId, text, from, messageType = "text" } = data;
     console.log(`📨 Message for appointment ${appointmentId}`);
 
     const messageForDB = {

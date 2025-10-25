@@ -79,6 +79,7 @@ export type TPatient = {
   district: TDistrict
   dateOfBirth: Date
   bloodGroup: TBloodGroup
+  favoriteDoctors: Types.ObjectId[]
   weight?: number
   height?: number
   allergies?: string

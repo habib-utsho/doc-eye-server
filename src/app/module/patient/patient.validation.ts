@@ -82,10 +82,18 @@ const createPatientZodSchema = z.object({
   bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'], {
     required_error: 'Blood group is required.',
   }),
+  favoriteDoctors: z.array(z.string()).optional(),
   weight: z.number().optional(), // Optional field
   height: z.number().optional(), // Optional field
   allergies: z.string().optional(), // Optional field
   isDeleted: z.boolean().default(false), // Default value
 })
 
-export { createPatientZodSchema }
+const favoriteDoctorParamsZodSchema = z.object({
+  doctorId: z.string({
+    required_error: 'Doctor ID is required.',
+  })
+})
+
+
+export { createPatientZodSchema, favoriteDoctorParamsZodSchema }
