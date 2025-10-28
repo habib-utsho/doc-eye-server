@@ -15,7 +15,13 @@ const getAllPatients = async (query: Record<string, unknown>) => {
     .sortQuery()
     .paginateQuery()
     .fieldFilteringQuery()
-    .populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }, { path: 'favoriteDoctors', select: '-createdAt -updatedAt -__v' }])
+    .populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }, {
+      path: 'favoriteDoctors', select: '-createdAt -updatedAt -__v',
+      // populate: {
+      //   path: 'medicalSpecialties',
+      //   select: '-createdAt -updatedAt -__v',
+      // },
+    }])
 
   const result = await patientQuery?.queryModel
   const total = await Patient.countDocuments(
@@ -28,7 +34,14 @@ const getPatientById = async (id: string) => {
   const patient = await Patient.findOne({ _id: id }) // Use _id instead of id
     .select('-__v')
     .populate('user', '-createdAt -updatedAt -__v')
-    .populate('favoriteDoctors', '-createdAt -updatedAt -__v')
+    .populate({
+      path: 'favoriteDoctors',
+      select: '-createdAt -updatedAt -__v',
+      populate: {
+        path: 'medicalSpecialties',
+        select: '-createdAt -updatedAt -__v',
+      },
+    });
   return patient
 }
 
@@ -44,8 +57,8 @@ const updateFavoriteDoctors = async (patientId: string, doctorId: string) => {
   // Check 10 favorite doctors limit
   if (!patient.favoriteDoctors.some(
     (favDoctorId) => favDoctorId.toString() === doctorId
-  ) && patient.favoriteDoctors.length >= 2) {
-    throw new AppError(StatusCodes.BAD_REQUEST, "You can only have up to 2 favorite doctors");
+  ) && patient.favoriteDoctors.length >= 10) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "You can only have up to 10 favorite doctors.");
 
   }
 
