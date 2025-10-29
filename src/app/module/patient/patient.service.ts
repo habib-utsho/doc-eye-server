@@ -1,9 +1,11 @@
-import { Types } from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { patientSearchableFields } from './patient.constant'
 import Patient from './patient.model' // Import Patient model
 import AppError from '../../errors/appError'
 import { StatusCodes } from 'http-status-codes'
+import User from '../user/user.model'
+import Admin from '../admin/admin.model'
 
 const getAllPatients = async (query: Record<string, unknown>) => {
   const patientQuery = new QueryBuilder(Patient.find(), {
@@ -44,6 +46,45 @@ const getPatientById = async (id: string) => {
     });
   return patient
 }
+
+
+
+const makePatientAdmin = async (patientId: string) => {
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Find patient and linked user
+    const patient = await Patient.findById(patientId).session(session);
+    if (!patient) throw new Error("Patient not found");
+
+    const user = await User.findById(patient.user).session(session);
+    if (!user) throw new Error("User not found");
+
+    // 1️⃣ Update user role
+    user.role = "admin";
+    await user.save({ session });
+
+
+    const adminData = patient.toObject();
+    // now create admin
+    const admin = await Admin.create([adminData], { session });
+
+
+    // 3️⃣ Optional: remove from patient collection
+    await Patient.deleteOne({ _id: patientId }, { session });
+
+    await session.commitTransaction();
+    return admin[0];
+  } catch (error: any) {
+    await session.abortTransaction();
+    throw new AppError(StatusCodes.NOT_FOUND, error);
+
+  } finally {
+    session.endSession();
+  }
+};
 
 
 const updateFavoriteDoctors = async (patientId: string, doctorId: string) => {
@@ -126,6 +167,7 @@ export const patientServices = {
   getAllPatients, // Change to getAllPatients
   getPatientById, // Change to getPatientById
   // updatePatientById, // Change to updatePatientById
+  makePatientAdmin,
   deletePatientById, // Change to deletePatientById
   updateFavoriteDoctors
 }

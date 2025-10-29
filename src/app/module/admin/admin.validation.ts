@@ -9,7 +9,10 @@ const createAdminZodSchema = z.object({
   gender: z.enum(['Male', 'Female', 'Other'], {
     required_error: 'Gender is required.',
   }),
-  dateOfBirth: z.string({required_error: 'Date of birth is required.'}),
+  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'], {
+    required_error: 'Blood group is required.',
+  }),
+  dateOfBirth: z.string({ required_error: 'Date of birth is required.' }),
   district: z.enum(
     [
       'Dhaka',

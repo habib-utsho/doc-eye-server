@@ -1,5 +1,5 @@
 import { Types } from 'mongoose'
-import { TDistrict, TGender } from '../patient/patient.interface'
+import { TBloodGroup, TDistrict, TGender } from '../patient/patient.interface'
 
 export type TAdmin = {
   _id: Types.ObjectId
@@ -9,6 +9,7 @@ export type TAdmin = {
   phone: string
   gender: TGender
   profileImg?: string
+  bloodGroup: TBloodGroup
   dateOfBirth: Date
   district: TDistrict
   nid: number

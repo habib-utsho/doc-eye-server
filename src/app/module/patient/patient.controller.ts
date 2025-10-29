@@ -40,6 +40,20 @@ const updateFavoriteDoctors: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
+const makePatientAdmin: RequestHandler = catchAsync(async (req, res) => {
+  const admin = await patientServices.makePatientAdmin(
+    req.params?.id,
+  )
+  if (!admin) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Patient not updated!') // Update message
+  }
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: 'Patient promoted to admin successfully', // Update message
+    data: admin,
+  })
+})
+
 
 // const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
 //   const patient = await patientServices.updatePatientById( // Change to patientServices.updatePatientById
@@ -72,6 +86,7 @@ export const patientController = {
   // Change export name to patientController
   getAllPatients, // Change to getAllPatients
   getPatientById, // Change to getPatientById
+  makePatientAdmin,
   // updatePatientById, // Change to updatePatientById
   deletePatientById, // Change to deletePatientById
   updateFavoriteDoctors

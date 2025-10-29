@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { TAdmin } from './admin.interface'
+import { bloodGroups } from '../patient/patient.constant'
 
 const AdminSchema = new Schema<TAdmin>(
   {
@@ -17,6 +18,11 @@ const AdminSchema = new Schema<TAdmin>(
       required: true,
       unique: true,
       trim: true,
+    },
+    bloodGroup: {
+      type: String,
+      required: true,
+      enum: bloodGroups,
     },
     phone: {
       type: String,

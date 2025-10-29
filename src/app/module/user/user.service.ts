@@ -26,6 +26,13 @@ const insertPatient = async (file: any, payload: TPatient & Partial<TUser>) => {
         'Email is already exist. Try with different email!',
       )
     }
+    const alreadyExistPhone = await Patient.findOne({ phone: payload.phone })
+    if (alreadyExistPhone) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Phone is already exist. Try with different phone!',
+      )
+    }
 
     // file upload
     if (file?.path) {

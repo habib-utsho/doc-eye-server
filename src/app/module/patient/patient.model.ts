@@ -23,6 +23,7 @@ const patientSchema = new Schema<TPatient>(
     phone: {
       type: String,
       required: true,
+      unique: true,
       trim: true,
     },
     profileImg: {

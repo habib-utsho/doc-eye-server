@@ -1,6 +1,7 @@
+
 import QueryBuilder from '../../builder/QueryBuilder'
 import { adminSearchableFields } from './admin.constant'
-import Admin from './admin.model' // Import Admin model
+import Admin from './admin.model' 
 
 const getAllAdmins = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), {
@@ -25,6 +26,7 @@ const getAdminById = async (id: string) => {
     .populate('user', '-createdAt -updatedAt -__v')
   return admin
 }
+
 
 // const updateAdminById = async (id: string, payload: Partial<TAdmin>) => {
 //   const { name, guardian, ...restAdminData } = payload
