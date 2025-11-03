@@ -125,7 +125,7 @@ const login = async (payload: TLoginUser) => {
 }
 
 const refreshToken = async (token: string) => {
-  // checking if the given token is valid
+
 
   let decoded
   try {

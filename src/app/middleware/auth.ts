@@ -22,7 +22,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
 
-
     // let decoded
     // try {
     //   decoded = jwt.verify(
@@ -34,10 +33,13 @@ const auth = (...requiredRoles: TUserRole[]) => {
     // }
 
     // console.log(bearerToken);
+
     const decoded = (await jwtVerify(
       bearerToken,
       process.env.JWT_ACCESS_SECRET as string,
     )) as JwtPayload
+
+
 
     const { userId, role } = decoded
 

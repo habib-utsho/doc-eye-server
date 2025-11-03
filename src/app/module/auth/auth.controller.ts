@@ -9,11 +9,22 @@ const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
 
-  res.cookie('refreshToken', refreshToken, {
-    secure: process.env.NODE_ENV === 'production',
+  const isProd = process.env.NODE_ENV === 'production';
+  const secure = isProd;
+
+
+
+  res.cookie('DErefreshToken', refreshToken, {
     httpOnly: true,
-    sameSite: 'none',
-  })
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+  });
+  res.cookie('DEaccessToken', accessToken, {
+    httpOnly: true,
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+
+  });
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
@@ -22,13 +33,20 @@ const login = catchAsync(async (req, res) => {
   })
 })
 const refreshToken = catchAsync(async (req, res) => {
-  const { refreshToken } = req.cookies || {}
-
-  if (!refreshToken) {
+  const { DErefreshToken } = req.body || req.cookies || {}
+  if (!DErefreshToken) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Refresh token is required')
   }
 
-  const result = await authServices.refreshToken(refreshToken)
+  const result = await authServices.refreshToken(DErefreshToken)
+
+  const isProd = process.env.NODE_ENV === 'production';
+  const secure = isProd;
+  res.cookie('DErefreshToken', refreshToken, {
+    httpOnly: true,
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+  });
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
