@@ -1,7 +1,11 @@
 
 import QueryBuilder from '../../builder/QueryBuilder'
+import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
 import { adminSearchableFields } from './admin.constant'
-import Admin from './admin.model' 
+import { TAdmin } from './admin.interface'
+import Admin from './admin.model'
+import jwt from 'jsonwebtoken'
+
 
 const getAllAdmins = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), {
@@ -28,36 +32,61 @@ const getAdminById = async (id: string) => {
 }
 
 
-// const updateAdminById = async (id: string, payload: Partial<TAdmin>) => {
-//   const { name, guardian, ...restAdminData } = payload
-//   const modifiedUpdatedData: Record<string, unknown> = {
-//     ...restAdminData,
-//   }
+const updateAdminById = async (id: string, file: any, payload: Partial<TAdmin>) => {
+  const { ...restAdminData } = payload
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...restAdminData,
+  }
 
-//   // update non primitive values
-//   // Update name
-//   if (name && Object.keys(name)?.length > 0) {
-//     for (const [key, value] of Object.entries(name)) {
-//       modifiedUpdatedData[`name.${key}`] = value
-//     }
-//   }
-//   // update guardian
-//   if (guardian && Object.keys(guardian)?.length > 0) {
-//     for (const [key, value] of Object.entries(guardian)) {
-//       modifiedUpdatedData[`guardian.${key}`] = value
-//     }
-//   }
 
-//   const admin = await Admin.findByIdAndUpdate(id, modifiedUpdatedData, {
-//     new: true,
-//   })
-//     .select('-__v')
-//     .populate('user', '-createdAt -updatedAt -__v -department')
-//     .populate('academicInfo.department')
-//     .populate('academicInfo.batch')
+  // file upload
+  if (file?.path) {
+    const cloudinaryRes = await uploadImgToCloudinary(
+      `${payload.name}-${Date.now()}`,
+      file.path,
+    )
+    if (cloudinaryRes?.secure_url) {
+      modifiedUpdatedData.profileImg = cloudinaryRes.secure_url
+    }
+  }
 
-//   return admin
-// }
+  const admin = await Admin.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+  })
+    .select('-__v')
+    .populate('user', '-createdAt -updatedAt -__v')
+
+
+  const jwtPayload = {
+    userId: admin?.user?._id,
+    _id: admin?._id,
+    email: admin?.email,
+    role: 'admin',
+    name: admin?.name,
+    profileImg: admin?.profileImg,
+  }
+
+
+
+  const accessToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_ACCESS_SECRET as string,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
+    },
+  )
+
+  const refreshToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_REFRESH_SECRET as string,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string,
+    },
+  )
+
+
+  return { admin, accessToken, refreshToken }
+}
 
 const deleteAdminById = async (id: string) => {
   const admin = await Admin.findByIdAndUpdate(
@@ -71,6 +100,6 @@ const deleteAdminById = async (id: string) => {
 export const adminServices = {
   getAllAdmins,
   getAdminById,
-  // updateAdminById,
+  updateAdminById,
   deleteAdminById,
 }

@@ -37,8 +37,8 @@ const getDoctorByDoctorCode: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
-const updateDoctorStatusById: RequestHandler = catchAsync(async (req, res) => {
-  const doctor = await doctorServices.updateDoctorById(
+const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
+  const { doctor, accessToken, refreshToken } = await doctorServices.updateDoctorById(
     req.params?.id,
     req.file,
     req.body,
@@ -47,9 +47,24 @@ const updateDoctorStatusById: RequestHandler = catchAsync(async (req, res) => {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Doctor is not updated!')
   }
 
+
+  const isProd = process.env.NODE_ENV === 'production';
+  const secure = isProd;
+  res.cookie('DErefreshToken', refreshToken, {
+    httpOnly: true,
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+  });
+  res.cookie('DEaccessToken', accessToken, {
+    httpOnly: true,
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+
+  });
+
   sendResponse(res, StatusCodes.OK, {
     success: true,
-    message: `${doctor.name} is updated successfully!`,
+    message: `${doctor.name}, your profile is updated successfully!`,
     data: doctor,
   })
 })
@@ -70,6 +85,6 @@ export const doctorController = {
   getAllDoctor,
   getDoctorById,
   getDoctorByDoctorCode,
-  updateDoctorById: updateDoctorStatusById,
+  updateDoctorById,
   deleteDoctorById,
 }

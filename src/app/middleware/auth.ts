@@ -6,10 +6,15 @@ import { StatusCodes } from 'http-status-codes'
 import { JwtPayload } from 'jsonwebtoken'
 import User from '../module/user/user.model'
 import jwtVerify from '../utils/jwtVerify'
+import * as cookie from "cookie";
+
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization
+
+    // Parse cookies from header
+    const token = req.headers.authorization || `Bearer ${cookie.parse(req.headers?.cookie || "")?.DEaccessToken}`;
+
 
 
     if (!token) {

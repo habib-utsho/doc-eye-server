@@ -6,6 +6,9 @@ import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
 import AppError from '../../errors/appError'
 import { StatusCodes } from 'http-status-codes'
 import moment from 'moment'
+import Specialty from '../specialty/specialty.model'
+import jwt from 'jsonwebtoken'
+
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
   const availabilityQuery = query.availability;
@@ -129,6 +132,7 @@ const updateDoctorById = async (
     ...restDoctorData,
   }
 
+  // console.log(payload);
   // update non primitive values
   // Update availability
   if (availability && Object.keys(availability)?.length > 0) {
@@ -142,6 +146,33 @@ const updateDoctorById = async (
       modifiedUpdatedData[`currentWorkplace.${key}`] = value
     }
   }
+
+  // Update/replace entire workingExperiences
+  if (Array.isArray(workingExperiences)) {
+    modifiedUpdatedData.workingExperiences = workingExperiences
+  }
+
+
+  // console.log(modifiedUpdatedData);
+
+
+  if (payload.followupFee && payload.consultationFee && (payload?.followupFee > payload?.consultationFee)) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "Follow up fee should be less than or equal to consultation fee")
+  }
+
+
+  // Validate medicalSpecialties IDs
+  const validSpecialties = await Specialty.find({
+    _id: { $in: payload.medicalSpecialties },
+  }).select('_id')
+
+  if (validSpecialties?.length !== medicalSpecialties?.length) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'One or more medical specialty IDs are invalid!',
+    )
+  }
+  modifiedUpdatedData.medicalSpecialties = medicalSpecialties;
 
   // file upload
   if (file?.path) {
@@ -158,10 +189,41 @@ const updateDoctorById = async (
     new: true,
   })
     .select('-__v')
-    .populate('user', '-createdAt -updatedAt -__v -department')
+    .populate('user', '-createdAt -updatedAt -__v')
     .populate('medicalSpecialties')
 
-  return doctor
+
+
+
+  const jwtPayload = {
+    userId: (doctor?.user as { _id: string })._id,
+    _id: doctor?._id,
+    email: doctor?.email,
+    role: 'doctor',
+    name: doctor?.name,
+    profileImg: doctor?.profileImg,
+  }
+
+
+
+  const accessToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_ACCESS_SECRET as string,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
+    },
+  )
+
+  const refreshToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_REFRESH_SECRET as string,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string,
+    },
+  )
+
+
+  return { doctor, accessToken, refreshToken }
 }
 
 const deleteDoctorById = async (id: string) => {

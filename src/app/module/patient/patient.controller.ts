@@ -55,20 +55,37 @@ const makePatientAdmin: RequestHandler = catchAsync(async (req, res) => {
 })
 
 
-// const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
-//   const patient = await patientServices.updatePatientById( // Change to patientServices.updatePatientById
-//     req.params?.id,
-//     req.body,
-//   )
-//   if (!patient) {
-//     throw new AppError(StatusCodes.BAD_REQUEST, 'Patient not updated!') // Update message
-//   }
-//   sendResponse(res, StatusCodes.OK, {
-//     success: true,
-//     message: 'Patient updated successfully!', // Update message
-//     data: patient,
-//   })
-// })
+const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
+  const { patient, accessToken, refreshToken } = await patientServices.updatePatientById(
+    req.params?.id,
+    req.file,
+    req.body,
+  )
+  if (!patient) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Patient not updated!') // Update message
+  }
+
+
+
+  const isProd = process.env.NODE_ENV === 'production';
+  const secure = isProd;
+  res.cookie('DErefreshToken', refreshToken, {
+    httpOnly: true,
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+  });
+  res.cookie('DEaccessToken', accessToken, {
+    httpOnly: true,
+    secure,
+    sameSite: isProd ? 'none' : 'lax',
+
+  });
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: 'Patient updated successfully!', // Update message
+    data: patient,
+  })
+})
 
 const deletePatientById = catchAsync(async (req, res) => {
   const patient = await patientServices.deletePatientById(req.params.id) // Change to deletePatientById
@@ -83,11 +100,10 @@ const deletePatientById = catchAsync(async (req, res) => {
 })
 
 export const patientController = {
-  // Change export name to patientController
-  getAllPatients, // Change to getAllPatients
-  getPatientById, // Change to getPatientById
+  getAllPatients,
+  getPatientById,
   makePatientAdmin,
-  // updatePatientById, // Change to updatePatientById
-  deletePatientById, // Change to deletePatientById
+  updatePatientById,
+  deletePatientById,
   updateFavoriteDoctors
 }

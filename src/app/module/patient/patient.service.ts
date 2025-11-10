@@ -6,6 +6,11 @@ import AppError from '../../errors/appError'
 import { StatusCodes } from 'http-status-codes'
 import User from '../user/user.model'
 import Admin from '../admin/admin.model'
+import { TPatient } from './patient.interface'
+import Doctor from '../doctor/doctor.model'
+import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
+import jwt from 'jsonwebtoken'
+
 
 const getAllPatients = async (query: Record<string, unknown>) => {
   const patientQuery = new QueryBuilder(Patient.find(), {
@@ -122,36 +127,87 @@ const updateFavoriteDoctors = async (patientId: string, doctorId: string) => {
   return { patient, message };
 }
 
-// const updatePatientById = async (id: string, payload: Partial<TPatient>) => {
-//   const { name, guardian, ...restPatientData } = payload
-//   const modifiedUpdatedData: Record<string, unknown> = {
-//     ...restPatientData,
-//   }
+const updatePatientById = async (id: string, file: any, payload: Partial<TPatient>) => {
 
-//   // update non-primitive values
-//   // Update name
-//   if (name && Object.keys(name)?.length > 0) {
-//     for (const [key, value] of Object.entries(name)) {
-//       modifiedUpdatedData[`name.${key}`] = value
-//     }
-//   }
-//   // update guardian
-//   if (guardian && Object.keys(guardian)?.length > 0) {
-//     for (const [key, value] of Object.entries(guardian)) {
-//       modifiedUpdatedData[`guardian.${key}`] = value
-//     }
-//   }
+  // console.log({ file, payload });
 
-//   const patient = await Patient.findByIdAndUpdate(id, modifiedUpdatedData, {
-//     new: true,
-//   })
-//     .select('-__v')
-//     .populate('user', '-createdAt -updatedAt -__v -department')
-//     .populate('academicInfo.department')
-//     .populate('academicInfo.batch')
 
-//   return patient
-// }
+  const { favoriteDoctors, ...restPatientData } = payload
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...restPatientData,
+  }
+
+
+  // Non primitive handle
+  // Fav doctors handled by different api, but if client side provides fav doctors when user update then verify it for safety. so it possible to update fav doctors when user updates also.
+  if (favoriteDoctors) {
+    if (!Array.isArray(favoriteDoctors)) {
+      throw new AppError(StatusCodes.BAD_REQUEST, "Favorite doctors should be an array")
+    }
+    // Validate fav doctors IDs
+    const validFavDoctors = await Doctor.find({
+      _id: { $in: favoriteDoctors },
+    }).select('_id')
+
+    if (validFavDoctors?.length !== favoriteDoctors?.length) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'One or more fav doctors IDs are invalid!',
+      )
+    }
+    throw new AppError(StatusCodes.BAD_REQUEST, "Favorite doctors should be an array")
+  }
+
+  // file upload
+  if (file?.path) {
+    const cloudinaryRes = await uploadImgToCloudinary(
+      `${payload.name}-${Date.now()}`,
+      file.path,
+    )
+    if (cloudinaryRes?.secure_url) {
+      modifiedUpdatedData.profileImg = cloudinaryRes.secure_url
+    }
+  }
+
+
+  const patient = await Patient.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+  })
+    .select('-__v')
+    .populate('user', '-createdAt -updatedAt -__v')
+
+
+
+  const jwtPayload = {
+    userId: patient?.user?._id,
+    _id: patient?._id,
+    email: patient?.email,
+    role: 'patient',
+    name: patient?.name,
+    profileImg: patient?.profileImg,
+  }
+
+
+
+  const accessToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_ACCESS_SECRET as string,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
+    },
+  )
+
+  const refreshToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_REFRESH_SECRET as string,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string,
+    },
+  )
+
+
+  return { patient, accessToken, refreshToken }
+}
 
 const deletePatientById = async (id: string) => {
   const patient = await Patient.findByIdAndUpdate(
@@ -163,11 +219,10 @@ const deletePatientById = async (id: string) => {
 }
 
 export const patientServices = {
-  // Change export name to patientServices
-  getAllPatients, // Change to getAllPatients
-  getPatientById, // Change to getPatientById
-  // updatePatientById, // Change to updatePatientById
+  getAllPatients,
+  getPatientById,
+  updatePatientById,
   makePatientAdmin,
-  deletePatientById, // Change to deletePatientById
+  deletePatientById,
   updateFavoriteDoctors
 }

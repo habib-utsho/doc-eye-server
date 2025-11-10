@@ -88,6 +88,95 @@ const createPatientZodSchema = z.object({
   allergies: z.string().optional(), // Optional field
   isDeleted: z.boolean().default(false), // Default value
 })
+const updatePatientZodSchema = z.object({
+  name: z.string().min(1, 'Name is required.').optional(),
+  email: z.string().email('Invalid email format.').optional(),
+  phone: z
+    .string()
+    .min(10, 'Phone number must be at least 10 characters long.').optional(),
+  gender: z.enum(['Male', 'Female', 'Other'], {
+    required_error: 'Gender is required.',
+  }).optional(),
+  district: z.enum(
+    [
+      'Dhaka',
+      'Faridpur',
+      'Gazipur',
+      'Gopalganj',
+      'Jamalpur',
+      'Kishoreganj',
+      'Madaripur',
+      'Manikganj',
+      'Munshiganj',
+      'Mymensingh',
+      'Narayanganj',
+      'Narsingdi',
+      'Netrokona',
+      'Rajbari',
+      'Shariatpur',
+      'Sherpur',
+      'Tangail',
+      'Bogra',
+      'Joypurhat',
+      'Naogaon',
+      'Natore',
+      'Chapainawabganj',
+      'Pabna',
+      'Rajshahi',
+      'Sirajganj',
+      'Dinajpur',
+      'Gaibandha',
+      'Kurigram',
+      'Lalmonirhat',
+      'Nilphamari',
+      'Panchagarh',
+      'Rangpur',
+      'Thakurgaon',
+      'Barguna',
+      'Barishal',
+      'Bhola',
+      'Jhalokati',
+      'Patuakhali',
+      'Pirojpur',
+      'Bandarban',
+      'Brahmanbaria',
+      'Chandpur',
+      'Chattogram',
+      'Cumilla',
+      "Cox's Bazar",
+      'Feni',
+      'Khagrachari',
+      'Lakshmipur',
+      'Noakhali',
+      'Rangamati',
+      'Habiganj',
+      'Moulvibazar',
+      'Sunamganj',
+      'Sylhet',
+      'Bagerhat',
+      'Chuadanga',
+      'Jessore',
+      'Jhenaidah',
+      'Khulna',
+      'Kushtia',
+      'Magura',
+      'Meherpur',
+      'Narail',
+      'Satkhira',
+    ],
+    { required_error: 'District is required.' },
+  ).optional(),
+  dateOfBirth: z.string({ required_error: 'Date of birth is required.' }).optional(),
+  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'], {
+    required_error: 'Blood group is required.',
+  }).optional(),
+  favoriteDoctors: z.array(z.string()).optional(),
+  weight: z.number().optional(),
+  height: z.number().optional(),
+  allergies: z.string().optional(),
+})
+
+
 
 const favoriteDoctorParamsZodSchema = z.object({
   doctorId: z.string({
@@ -96,4 +185,4 @@ const favoriteDoctorParamsZodSchema = z.object({
 })
 
 
-export { createPatientZodSchema, favoriteDoctorParamsZodSchema }
+export { createPatientZodSchema, updatePatientZodSchema, favoriteDoctorParamsZodSchema }
