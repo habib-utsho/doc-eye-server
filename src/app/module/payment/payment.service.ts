@@ -4,12 +4,13 @@ import Payment from './payment.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import mongoose from 'mongoose'
 import Appointment from '../appointment/appointment.model'
-import { TAppointment } from '../appointment/appointment.interface'
 import Doctor from '../doctor/doctor.model'
 import Patient from '../patient/patient.model'
 import { JwtPayload } from 'jsonwebtoken'
+import { TPayment } from '../paymentGateway/payment.interface'
 
-const initPayment = async (payload: Partial<TAppointment>) => {
+const initPayment = async (payload: TPayment) => {
+
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
@@ -35,7 +36,7 @@ const initPayment = async (payload: Partial<TAppointment>) => {
     }
 
     const payment = await Payment.create(
-      [{ ...payload, status: 'confirmed' }],
+      [{ ...payload, amount: typeof payload.amount === 'string' ? JSON.parse(decodeURIComponent(payload.amount)) : payload.amount, status: 'confirmed' }],
       { session },
     )
     // const gmt6Schedule = moment(payload.schedule).tz('Asia/Dhaka').toDate()
@@ -43,7 +44,7 @@ const initPayment = async (payload: Partial<TAppointment>) => {
     const appointmentPayload = {
       ...payload,
       schedule: payload.schedule,
-      status: 'pending',
+      status: payload?.status || 'pending',
       payment: payment[0]._id,
     }
     const appointment = await Appointment.create([appointmentPayload], {
@@ -72,6 +73,7 @@ const initPayment = async (payload: Partial<TAppointment>) => {
     throw new AppError(StatusCodes.BAD_REQUEST, err.message)
   }
 }
+
 
 const getAllPayment = async (
   query: Record<string, unknown>,

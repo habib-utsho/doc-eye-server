@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 const createPaymentZodSchema = z.object({
+  trans_id: z.string(),
   amount: z.object({
     consultationFee: z.number(),
     vat: z.number().optional(),
@@ -9,7 +10,7 @@ const createPaymentZodSchema = z.object({
   }),
   paymentMethod: z.enum(['bKash', 'SSLCOMMERZ'], {
     message: 'Payment method is either bKash or SSLCOMMERZ',
-  }),
+  }).optional(),
 })
 
 export const paymentZodSchema = {

@@ -27,7 +27,7 @@ const getAllAdmins = async (query: Record<string, unknown>) => {
 const getAdminById = async (id: string) => {
   const admin = await Admin.findOne({ _id: id }) // Use _id instead of id
     .select('-__v')
-    .populate('user', '-createdAt -updatedAt -__v')
+    .populate('user', '-createdAt -password -updatedAt -__v')
   return admin
 }
 
@@ -54,7 +54,7 @@ const updateAdminById = async (id: string, file: any, payload: Partial<TAdmin>) 
     new: true,
   })
     .select('-__v')
-    .populate('user', '-createdAt -updatedAt -__v')
+    .populate('user', '-createdAt -password -updatedAt -__v')
 
 
   const jwtPayload = {

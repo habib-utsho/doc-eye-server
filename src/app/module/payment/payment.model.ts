@@ -3,6 +3,11 @@ import { TPayment } from './payment.interface'
 
 const PaymentSchema = new Schema<TPayment>(
   {
+    trans_id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     appointment: {
       type: Schema.Types.ObjectId,
       ref: 'Appointment',
@@ -39,7 +44,6 @@ const PaymentSchema = new Schema<TPayment>(
     paymentMethod: {
       type: String,
       enum: ['bKash', 'SSLCOMMERZ'],
-      required: true,
     },
     status: {
       type: String,

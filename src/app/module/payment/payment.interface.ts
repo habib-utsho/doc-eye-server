@@ -2,6 +2,7 @@ import { Types } from 'mongoose'
 
 export type TPayment = {
   _id: Types.ObjectId
+  trans_id: string
   appointment: Types.ObjectId
   patient: Types.ObjectId
   doctor: Types.ObjectId

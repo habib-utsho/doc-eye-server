@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { paymentController } from './payment.controller'
-import zodValidateHandler from '../../middleware/zodValidateHandler'
+// import zodValidateHandler from '../../middleware/zodValidateHandler'
 import auth from '../../middleware/auth'
-import { appointmentZodSchema } from '../appointment/appointment.validation'
+// import { appointmentZodSchema } from '../appointment/appointment.validation'
 
 const router = Router()
 
@@ -15,7 +15,7 @@ router.get('/:id', auth('admin'), paymentController.getPaymentById)
 
 router.post(
   '/',
-  zodValidateHandler(appointmentZodSchema.createAppointmentZodSchema),
+  // zodValidateHandler(appointmentZodSchema.createAppointmentZodSchema),
   paymentController.initPayment,
 )
 

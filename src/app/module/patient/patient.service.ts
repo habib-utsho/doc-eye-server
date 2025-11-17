@@ -40,7 +40,7 @@ const getAllPatients = async (query: Record<string, unknown>) => {
 const getPatientById = async (id: string) => {
   const patient = await Patient.findOne({ _id: id }) // Use _id instead of id
     .select('-__v')
-    .populate('user', '-createdAt -updatedAt -__v')
+    .populate('user', '-createdAt -updatedAt -password -__v')
     .populate({
       path: 'favoriteDoctors',
       select: '-createdAt -updatedAt -__v',
@@ -174,7 +174,7 @@ const updatePatientById = async (id: string, file: any, payload: Partial<TPatien
     new: true,
   })
     .select('-__v')
-    .populate('user', '-createdAt -updatedAt -__v')
+    .populate('user', '-createdAt -updatedAt -password -__v')
 
 
 

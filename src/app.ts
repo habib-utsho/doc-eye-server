@@ -27,17 +27,28 @@ const io = new Server(server, {
 
 // parser
 const ALLOWED_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://your-frontend-domain.com'
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://your-frontend-domain.com",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (ALLOWED_ORIGINS.includes(origin)) return callback(null, origin);
-      return callback(new Error('Not allowed by CORS'), false);
+      // console.log("Incoming Origin:", origin);
+
+      // Allow requests from servers (no browser)
+      if (!origin || origin === "null") {
+        return callback(null, true);
+      }
+
+      // Allow frontend origins
+      if (ALLOWED_ORIGINS.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Block everything else
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })

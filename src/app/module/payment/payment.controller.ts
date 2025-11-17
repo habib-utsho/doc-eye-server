@@ -5,13 +5,17 @@ import { paymentService } from './payment.service'
 import { RequestHandler } from 'express'
 
 const initPayment = catchAsync(async (req, res) => {
-  const result = await paymentService.initPayment(req.body)
 
-  sendResponse(res, StatusCodes.OK, {
-    success: true,
-    message: 'Payment success and appointment is confirmed!',
-    data: result,
-  })
+  // Cast req.query to the expected payment payload type (use a proper type instead of `any` if available)
+  const result = await paymentService.initPayment(req.query as any)
+
+  // sendResponse(res, StatusCodes.OK, {
+  //   success: true,
+  //   message: 'Payment success and appointment is confirmed!',
+  //   data: result,
+  // })
+
+  return res.redirect(`http://localhost:3000/doctor/${req.query?.doctorCode}/checkout/success?transactionId=${req?.query?.trans_id}&appointmentId=${result.appointment._id}`);
 })
 
 const getAllPayment = catchAsync(async (req, res) => {

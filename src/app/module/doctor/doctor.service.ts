@@ -97,7 +97,7 @@ const getDoctorById = async (id: string) => {
   const doctor = await (customDoctorId ? Doctor.find({ doctorCode: id }) : Doctor.findById(id))
     .select('-__v')
     .populate([
-      { path: 'user', select: '-createdAt -updatedAt -__v' },
+      { path: 'user', select: '-createdAt -updatedAt -password -__v' },
       { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
     ])
   return doctor
@@ -106,7 +106,7 @@ const getDoctorByDoctorCode = async (id: string) => {
   const doctor = await Doctor.findOne({ doctorCode: id })
     .select('-__v')
     .populate([
-      { path: 'user', select: '-createdAt -updatedAt -__v' },
+      { path: 'user', select: '-createdAt -updatedAt -password -__v' },
       { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
     ])
   if (!doctor) {
