@@ -40,20 +40,53 @@ const getPatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: patient,
     });
 }));
-// const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
-//   const patient = await patientServices.updatePatientById( // Change to patientServices.updatePatientById
-//     req.params?.id,
-//     req.body,
-//   )
-//   if (!patient) {
-//     throw new AppError(StatusCodes.BAD_REQUEST, 'Patient not updated!') // Update message
-//   }
-//   sendResponse(res, StatusCodes.OK, {
-//     success: true,
-//     message: 'Patient updated successfully!', // Update message
-//     data: patient,
-//   })
-// })
+const updateFavoriteDoctors = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const patientId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+    const { doctorId } = req.body;
+    const patient = yield patient_service_1.patientServices.updateFavoriteDoctors(patientId, doctorId);
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: patient.message,
+        data: patient.patient,
+    });
+}));
+const makePatientAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const admin = yield patient_service_1.patientServices.makePatientAdmin((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    if (!admin) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Patient not updated!'); // Update message
+    }
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: 'Patient promoted to admin successfully', // Update message
+        data: admin,
+    });
+}));
+const updatePatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { patient, accessToken, refreshToken } = yield patient_service_1.patientServices.updatePatientById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.file, req.body);
+    if (!patient) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Patient not updated!'); // Update message
+    }
+    const isProd = process.env.NODE_ENV === 'production';
+    const secure = isProd;
+    res.cookie('DErefreshToken', refreshToken, {
+        httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
+    });
+    res.cookie('DEaccessToken', accessToken, {
+        httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
+    });
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: 'Patient updated successfully!', // Update message
+        data: patient,
+    });
+}));
 const deletePatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const patient = yield patient_service_1.patientServices.deletePatientById(req.params.id); // Change to deletePatientById
     if (!patient) {
@@ -66,9 +99,10 @@ const deletePatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
 }));
 exports.patientController = {
-    // Change export name to patientController
-    getAllPatients, // Change to getAllPatients
-    getPatientById, // Change to getPatientById
-    // updatePatientById, // Change to updatePatientById
-    deletePatientById, // Change to deletePatientById
+    getAllPatients,
+    getPatientById,
+    makePatientAdmin,
+    updatePatientById,
+    deletePatientById,
+    updateFavoriteDoctors
 };

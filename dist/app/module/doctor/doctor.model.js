@@ -73,8 +73,9 @@ const DoctorSchema = new mongoose_1.Schema({
         enum: ['Medical', 'Dental', 'Veterinary'],
         required: true,
     },
-    medicalSpecialty: {
+    medicalSpecialties: {
         type: [mongoose_1.Types.ObjectId],
+        ref: 'Specialty',
         required: true,
     },
     totalExperienceYear: {
@@ -122,8 +123,25 @@ const DoctorSchema = new mongoose_1.Schema({
         required: true,
     },
     currentWorkplace: {
-        type: String,
-        required: true,
+        workPlace: {
+            type: String,
+            required: true,
+        },
+        department: {
+            type: String,
+            required: true,
+        },
+        designation: {
+            type: String,
+            required: true,
+        },
+        workingPeriodStart: {
+            type: Date,
+            required: true,
+        },
+        workingPeriodEnd: {
+            type: Date,
+        },
     },
     availability: {
         dayStart: {
@@ -171,6 +189,8 @@ const DoctorSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+}, {
+    timestamps: true,
 });
 DoctorSchema.pre('save', function (next) {
     // Add any pre-save logic here

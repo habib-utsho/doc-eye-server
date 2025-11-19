@@ -12,6 +12,6 @@ export type TPayment = {
     platformFee: number
     total: number
   }
-  paymentMethod: 'bKash' | 'SSLCOMMERZ'
+  paymentMethod: 'bKash' | 'SSLCOMMERZ' | 'aamarPay'
   status: 'pending' | 'confirmed' | 'canceled'
 }

@@ -30,6 +30,10 @@ const insertPatient = (file, payload) => __awaiter(void 0, void 0, void 0, funct
         if (alreadyExistEmail) {
             throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Email is already exist. Try with different email!');
         }
+        const alreadyExistPhone = yield patient_model_1.default.findOne({ phone: payload.phone });
+        if (alreadyExistPhone) {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Phone is already exist. Try with different phone!');
+        }
         // file upload
         if (file === null || file === void 0 ? void 0 : file.path) {
             const cloudinaryRes = yield (0, uploadImgToCloudinary_1.uploadImgToCloudinary)(`${payload.name}-${Date.now()}`, file.path);
@@ -65,7 +69,7 @@ const insertPatient = (file, payload) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 const insertDoctor = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { medicalSpecialty } = payload;
+    const { medicalSpecialties } = payload;
     const session = yield mongoose_1.default.startSession();
     try {
         session.startTransaction();
@@ -85,11 +89,11 @@ const insertDoctor = (file, payload) => __awaiter(void 0, void 0, void 0, functi
         if (alreadyExistBmdc) {
             throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'BMDC is already exist. Try with different BMDC!');
         }
-        // Validate medicalSpecialty IDs
+        // Validate medicalSpecialties IDs
         const validSpecialties = yield specialty_model_1.default.find({
-            _id: { $in: payload.medicalSpecialty },
+            _id: { $in: payload.medicalSpecialties },
         }).select('_id');
-        if (validSpecialties.length !== medicalSpecialty.length) {
+        if ((validSpecialties === null || validSpecialties === void 0 ? void 0 : validSpecialties.length) !== (medicalSpecialties === null || medicalSpecialties === void 0 ? void 0 : medicalSpecialties.length)) {
             throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'One or more medical specialty IDs are invalid!');
         }
         // file upload
@@ -252,6 +256,16 @@ const getSingleUserById = (id) => __awaiter(void 0, void 0, void 0, function* ()
     const user = yield user_model_1.default.findById(id).select('-__v');
     return user;
 });
+const toggleUserStatus = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(id).select('-__v');
+    if (!user) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found');
+    }
+    // Toggle user status
+    user.status = user.status === 'active' ? 'inactive' : 'active';
+    yield user.save();
+    return user;
+});
 const getMe = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     let result;
     if (payload.role === 'doctor') {
@@ -272,5 +286,6 @@ exports.userServices = {
     // insertAdminToDb,
     getAllUser,
     getSingleUserById,
+    toggleUserStatus,
     getMe,
 };

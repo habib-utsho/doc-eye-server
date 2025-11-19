@@ -40,20 +40,39 @@ const getDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: doctor,
     });
 }));
-// const updateStudentById: RequestHandler = catchAsync(async (req, res) => {
-//   const student = await doctorServices.updateStudentById(
-//     req.params?.id,
-//     req.body,
-//   )
-//   if (!student) {
-//     throw new AppError(StatusCodes.BAD_REQUEST, 'Student not updated!')
-//   }
-//   sendResponse(res, StatusCodes.OK, {
-//     success: true,
-//     message: 'Student updated successfully!',
-//     data: student,
-//   })
-// })
+const getDoctorByDoctorCode = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const doctor = yield doctor_service_1.doctorServices.getDoctorByDoctorCode((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: 'Doctor is retrieved successfully!',
+        data: doctor,
+    });
+}));
+const updateDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { doctor, accessToken, refreshToken } = yield doctor_service_1.doctorServices.updateDoctorById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.file, req.body);
+    if (!doctor) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Doctor is not updated!');
+    }
+    const isProd = process.env.NODE_ENV === 'production';
+    const secure = isProd;
+    res.cookie('DErefreshToken', refreshToken, {
+        httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
+    });
+    res.cookie('DEaccessToken', accessToken, {
+        httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
+    });
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: `${doctor.name}, your profile is updated successfully!`,
+        data: doctor,
+    });
+}));
 const deleteDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const doctor = yield doctor_service_1.doctorServices.deleteDoctorById(req.params.id);
     if (!doctor) {
@@ -68,6 +87,7 @@ const deleteDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 exports.doctorController = {
     getAllDoctor,
     getDoctorById,
-    // updateDoctorById,
+    getDoctorByDoctorCode,
+    updateDoctorById,
     deleteDoctorById,
 };

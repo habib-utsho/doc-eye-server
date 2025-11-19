@@ -9,9 +9,14 @@ const createAppointmentZodSchema = zod_1.z.object({
     patient: zod_1.z.string({
         required_error: 'Patient is required',
     }),
-    appointmentDateTime: zod_1.z.string({
-        required_error: 'Appointment date is required',
+    schedule: zod_1.z.string({
+        required_error: 'Schedule is required',
     }),
+    status: zod_1.z
+        .enum(['pending', 'confirmed', 'completed', 'canceled'], {
+        message: 'Status is either pending, confirmed, completed, or canceled',
+    })
+        .default('pending'),
     appointmentType: zod_1.z
         .enum(['in-person', 'online'], {
         message: 'Appointment type is either in-person or online',
@@ -19,6 +24,12 @@ const createAppointmentZodSchema = zod_1.z.object({
         .default('online'),
     symptoms: zod_1.z.string().optional(),
 });
+const updateAppointmentStatusZodSchema = zod_1.z.object({
+    status: zod_1.z.enum(['completed', 'confirmed', 'canceled'], {
+        required_error: 'Status is either confirmed or canceled',
+    }),
+});
 exports.appointmentZodSchema = {
     createAppointmentZodSchema,
+    updateAppointmentStatusZodSchema,
 };

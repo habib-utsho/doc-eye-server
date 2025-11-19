@@ -30,6 +30,10 @@ const UserSchema = new mongoose_1.Schema({
 UserSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const user = yield User.findById(this === null || this === void 0 ? void 0 : this._id);
+            if (user && user.password === this.password) {
+                return next();
+            }
             const hashPass = yield bcrypt_1.default.hash(this.password, Number(process.env.SALT_ROUNDS));
             this.password = hashPass;
             next();

@@ -38,5 +38,6 @@ router.post('/create-admin', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN
 //   userController.insertAdmin,
 // )
 router.get('/me', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN, user_constant_1.USER_ROLE.PATIENT, user_constant_1.USER_ROLE.DOCTOR), user_controller_1.userController.getMe);
+router.patch('/toggle-status/:id', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), user_controller_1.userController.toggleUserStatus);
 router.get('/', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), user_controller_1.userController.getAllUsers);
 router.get('/:id', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), user_controller_1.userController.getUserById);

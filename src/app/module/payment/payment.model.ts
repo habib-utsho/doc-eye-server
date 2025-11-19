@@ -43,7 +43,8 @@ const PaymentSchema = new Schema<TPayment>(
     },
     paymentMethod: {
       type: String,
-      enum: ['bKash', 'SSLCOMMERZ'],
+      enum: ['bKash', 'SSLCOMMERZ', 'aamarPay'],
+      default: 'aamarPay',
     },
     status: {
       type: String,

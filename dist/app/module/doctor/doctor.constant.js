@@ -7,6 +7,6 @@ exports.doctorSearchableFields = [
     'phone',
     'doctorTitle',
     'doctorType',
-    'medicalSpecialty',
     'medicalDegree',
+    'doctorCode',
 ];

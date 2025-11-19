@@ -63,6 +63,18 @@ const getUserById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: user,
     });
 }));
+const toggleUserStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const user = yield user_service_1.userServices.toggleUserStatus((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    if (!user) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found!');
+    }
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: `User is ${user.status} successfully!`,
+        data: user,
+    });
+}));
 const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_service_1.userServices.getMe(req.user);
     if (!user) {
@@ -80,5 +92,6 @@ exports.userController = {
     insertAdmin,
     getAllUsers,
     getUserById,
+    toggleUserStatus,
     getMe,
 };

@@ -12,7 +12,12 @@ const AppointmentSchema = new mongoose_1.Schema({
         ref: 'Patient',
         required: true,
     },
-    appointmentDateTime: {
+    payment: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Payment',
+        required: true,
+    },
+    schedule: {
         type: Date,
         required: true,
     },
@@ -24,6 +29,7 @@ const AppointmentSchema = new mongoose_1.Schema({
     symptoms: {
         type: String,
         trim: true,
+        default: null,
     },
     status: {
         type: String,

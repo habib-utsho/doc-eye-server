@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const patient_constant_1 = require("../patient/patient.constant");
 const AdminSchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
@@ -39,6 +40,11 @@ const AdminSchema = new mongoose_1.Schema({
         required: true,
         unique: true,
         trim: true,
+    },
+    bloodGroup: {
+        type: String,
+        required: true,
+        enum: patient_constant_1.bloodGroups,
     },
     phone: {
         type: String,
@@ -67,6 +73,8 @@ const AdminSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+}, {
+    timestamps: true,
 });
 const Admin = mongoose_1.default.model('Admin', AdminSchema);
 exports.default = Admin;

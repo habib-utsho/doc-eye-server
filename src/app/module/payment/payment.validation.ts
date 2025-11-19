@@ -8,8 +8,8 @@ const createPaymentZodSchema = z.object({
     platformFee: z.number().optional(),
     total: z.number(),
   }),
-  paymentMethod: z.enum(['bKash', 'SSLCOMMERZ'], {
-    message: 'Payment method is either bKash or SSLCOMMERZ',
+  paymentMethod: z.enum(['bKash', 'SSLCOMMERZ', 'aamarPay'], {
+    message: 'Payment method is either bKash, SSLCOMMERZ or aamarPay',
   }).optional(),
 })
 

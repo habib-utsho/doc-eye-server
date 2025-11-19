@@ -13,22 +13,91 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.appointmentService = void 0;
-const doctor_model_1 = __importDefault(require("../doctor/doctor.model"));
-const patient_model_1 = __importDefault(require("../patient/patient.model"));
+const http_status_codes_1 = require("http-status-codes");
+const appError_1 = __importDefault(require("../../errors/appError"));
 const appointment_model_1 = __importDefault(require("./appointment.model"));
-const createAppointment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { doctor, patient } = payload;
-    const isExistDoctor = yield doctor_model_1.default.findById(doctor);
-    const isExistPatient = yield patient_model_1.default.findById(patient);
-    if (!isExistDoctor) {
-        throw new Error('Doctor not found');
+const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
+const getAllAppointments = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const dateFilter = {};
+    if (query.date) {
+        const date = new Date(query.date);
+        const nextDay = new Date(date);
+        nextDay.setDate(date.getDate() + 1);
+        dateFilter.schedule = {
+            $gte: date.toISOString(),
+            $lt: nextDay.toISOString(),
+        };
     }
-    if (!isExistPatient) {
-        throw new Error('Patient not found');
+    if (query.state) {
+        const currentDate = new Date();
+        if (query.state === 'upcoming') {
+            dateFilter.schedule = { $gte: currentDate };
+        }
+        else if (query.state === 'expired') {
+            dateFilter.schedule = { $lt: currentDate };
+        }
     }
-    const result = yield appointment_model_1.default.create(payload);
+    delete query.date;
+    delete query.state;
+    const appointmentQuery = new QueryBuilder_1.default(appointment_model_1.default.find(), Object.assign(Object.assign(Object.assign({}, query), dateFilter), { sort: `${query.sort} -schedule` }))
+        .filterQuery()
+        .sortQuery()
+        .paginateQuery()
+        .fieldFilteringQuery()
+        .populateQuery([
+        { path: 'doctor', select: '-createdAt -updatedAt -__v' },
+        { path: 'patient', select: '-createdAt -updatedAt -__v' },
+        { path: 'payment', select: '-createdAt -updatedAt -__v' },
+    ]);
+    const result = yield (appointmentQuery === null || appointmentQuery === void 0 ? void 0 : appointmentQuery.queryModel);
+    const total = yield appointment_model_1.default.countDocuments(appointmentQuery.queryModel.getFilter());
+    return { data: result, total };
+});
+const getAppointmentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const appointment = yield appointment_model_1.default.findById(id)
+        .select('-__v')
+        .populate('doctor', '-createdAt -updatedAt -__v')
+        .populate('patient', '-createdAt -updatedAt -__v')
+        .populate('payment', '-createdAt -updatedAt -__v');
+    if (!appointment) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'Appointment not found');
+    }
+    return appointment;
+});
+const updateAppointmentStatusById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const appointment = yield appointment_model_1.default.findById(id);
+    if (!appointment) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'Appointment not found');
+    }
+    if (appointment.status === 'completed' || appointment.status === 'canceled') {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, `Appointment is already ${appointment.status}`);
+    }
+    if (appointment.status === 'pending' &&
+        !['confirmed', 'canceled'].includes(payload.status)) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Status is either confirmed or canceled while appointment is pending');
+    }
+    if (appointment.status === 'confirmed' &&
+        !['completed', 'canceled'].includes(payload.status)) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Status is either completed or canceled while appointment is confirmed');
+    }
+    if (appointment.status === 'confirmed' && payload.status === 'completed') {
+        const appointmentScheduleTime = new Date(appointment.schedule).getTime();
+        const currentTime = new Date().getTime();
+        const diff = appointmentScheduleTime - currentTime;
+        if (diff > 0) {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Only completed status is allowed after appointment time');
+        }
+    }
+    const result = yield appointment_model_1.default.findByIdAndUpdate(id, { status: payload.status }, {
+        new: true,
+    });
+    if (!result) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'Appointment not updated');
+    }
     return result;
 });
 exports.appointmentService = {
-    createAppointment,
+    getAllAppointments,
+    getAppointmentById,
+    updateAppointmentStatusById,
 };

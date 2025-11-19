@@ -20,9 +20,17 @@ const auth_service_1 = require("./auth.service");
 const appError_1 = __importDefault(require("../../errors/appError"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken, needsPasswordChange } = yield auth_service_1.authServices.login(req.body);
-    res.cookie('refreshToken', refreshToken, {
-        secure: process.env.NODE_ENV === 'production',
+    const isProd = process.env.NODE_ENV === 'production';
+    const secure = isProd;
+    res.cookie('DErefreshToken', refreshToken, {
         httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
+    });
+    res.cookie('DEaccessToken', accessToken, {
+        httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
     });
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
@@ -31,11 +39,18 @@ const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
     });
 }));
 const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { refreshToken } = req.cookies || {};
-    if (!refreshToken) {
+    const { DErefreshToken } = req.body || req.cookies || {};
+    if (!DErefreshToken) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Refresh token is required');
     }
-    const result = yield auth_service_1.authServices.refreshToken(refreshToken);
+    const result = yield auth_service_1.authServices.refreshToken(DErefreshToken);
+    const isProd = process.env.NODE_ENV === 'production';
+    const secure = isProd;
+    res.cookie('DErefreshToken', refreshToken, {
+        httpOnly: true,
+        secure,
+        sameSite: isProd ? 'none' : 'lax',
+    });
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Access token is retrieved successfully',

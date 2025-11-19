@@ -22,11 +22,13 @@ const patientSchema = new mongoose_1.Schema({
     phone: {
         type: String,
         required: true,
+        unique: true,
         trim: true,
     },
     profileImg: {
         type: String,
         trim: true,
+        default: 'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper.png',
     },
     gender: {
         type: String,
@@ -47,6 +49,12 @@ const patientSchema = new mongoose_1.Schema({
         required: true,
         enum: patient_constant_1.bloodGroups,
     },
+    favoriteDoctors: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Doctor',
+        },
+    ],
     weight: {
         type: Number,
         default: null,
