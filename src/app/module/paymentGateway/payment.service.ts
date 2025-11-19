@@ -64,11 +64,11 @@ const initPayment = async (payload: TPayment) => {
       delete queryParams[key];
     }
   });
-  const queryString = new URLSearchParams(queryParams).toString();;
+  const queryString = new URLSearchParams(queryParams).toString();
 
 
 
-  
+
   try {
 
     const paymentInfo = {
