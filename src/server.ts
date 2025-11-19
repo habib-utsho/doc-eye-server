@@ -1,8 +1,10 @@
 import mongoose from 'mongoose'
-import app from './app'
+import { ioServer } from './app'
 import { Server } from 'http'
 
-const server: Server = app.listen(process.env.PORT, async () => {
+
+const PORT = Number(process.env.PORT || process.env.SOCKET_PORT || 3000)
+const server: Server = ioServer.listen(PORT, '0.0.0.0', async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI as string)
     console.log(`😀 Database connected at port ${process.env.PORT}`)
@@ -10,6 +12,14 @@ const server: Server = app.listen(process.env.PORT, async () => {
     console.log(`😡 Failed to connect with db - ${error.message}`)
   }
 })
+// const server: Server = app.listen(process.env.PORT, async () => {
+//   try {
+//     await mongoose.connect(process.env.MONGO_URI as string)
+//     console.log(`😀 Database connected at port ${process.env.PORT}`)
+//   } catch (error: any) {
+//     console.log(`😡 Failed to connect with db - ${error.message}`)
+//   }
+// })
 
 // stop server when async errors
 process.on('unhandledRejection', () => {

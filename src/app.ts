@@ -108,11 +108,13 @@ app.use(notFoundErrHandler)
 app.use(globalErrHandler)
 
 
-// socket server error handling
-// server.listen(process.env.SOCKET_PORT || 5500, () => {
-const PORT = Number(process.env.SOCKET_PORT) || 3000;  // Render sets PORT dynamically (e.g., 10000)
-server.listen(PORT, '0.0.0.0', () => {  // Add '0.0.0.0' for Render proxy
-  console.log(`Socket server is running on port ${PORT}`);
-})
+// // socket server error handling
+// // server.listen(process.env.SOCKET_PORT || 5500, () => {
+// const PORT = Number(process.env.SOCKET_PORT) || 3000;  // Render sets PORT dynamically (e.g., 10000)
+// server.listen(PORT, '0.0.0.0', () => {  // Add '0.0.0.0' for Render proxy
+//   console.log(`Socket server is running on port ${PORT}`);
+// })
 
+
+export { server as ioServer };
 export default app
