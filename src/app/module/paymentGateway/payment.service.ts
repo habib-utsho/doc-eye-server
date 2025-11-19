@@ -67,6 +67,8 @@ const initPayment = async (payload: TPayment) => {
   const queryString = new URLSearchParams(queryParams).toString();;
 
 
+
+  
   try {
 
     const paymentInfo = {
