@@ -39,8 +39,8 @@ const getAllMessages = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     });
 }));
 const getMessageById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const message = yield message_service_1.messageService.getMessageById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    var _c;
+    const message = yield message_service_1.messageService.getMessageById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: "Message retrieved successfully!",

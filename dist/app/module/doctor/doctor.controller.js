@@ -32,8 +32,8 @@ const getAllDoctor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const doctor = yield doctor_service_1.doctorServices.getDoctorById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    var _c;
+    const doctor = yield doctor_service_1.doctorServices.getDoctorById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Doctor is retrieved successfully!',
@@ -41,8 +41,8 @@ const getDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const getDoctorByDoctorCode = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const doctor = yield doctor_service_1.doctorServices.getDoctorByDoctorCode((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    var _d;
+    const doctor = yield doctor_service_1.doctorServices.getDoctorByDoctorCode((_d = req.params) === null || _d === void 0 ? void 0 : _d.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Doctor is retrieved successfully!',
@@ -50,8 +50,8 @@ const getDoctorByDoctorCode = (0, catchAsync_1.default)((req, res) => __awaiter(
     });
 }));
 const updateDoctorById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { doctor, accessToken, refreshToken } = yield doctor_service_1.doctorServices.updateDoctorById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.file, req.body);
+    var _e;
+    const { doctor, accessToken, refreshToken } = yield doctor_service_1.doctorServices.updateDoctorById((_e = req.params) === null || _e === void 0 ? void 0 : _e.id, req.file, req.body);
     if (!doctor) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Doctor is not updated!');
     }

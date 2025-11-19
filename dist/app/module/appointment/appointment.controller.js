@@ -31,8 +31,8 @@ const getAllAppointment = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
 }));
 const getAppointmentById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const appointment = yield appointment_service_1.appointmentService.getAppointmentById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+    var _c;
+    const appointment = yield appointment_service_1.appointmentService.getAppointmentById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Appointment is retrieved successfully!',
@@ -40,8 +40,8 @@ const getAppointmentById = (0, catchAsync_1.default)((req, res) => __awaiter(voi
     });
 }));
 const updateAppointmentStatusById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const result = yield appointment_service_1.appointmentService.updateAppointmentStatusById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.body);
+    var _d;
+    const result = yield appointment_service_1.appointmentService.updateAppointmentStatusById((_d = req.params) === null || _d === void 0 ? void 0 : _d.id, req.body);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Appointment is updated successfully',

@@ -68,7 +68,6 @@ const initPayment = (payload) => __awaiter(void 0, void 0, void 0, function* () 
         }
     });
     const queryString = new URLSearchParams(queryParams).toString();
-    ;
     try {
         const paymentInfo = {
             store_id: 'aamarpaytest',

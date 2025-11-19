@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ioServer = void 0;
 const http_1 = __importDefault(require("http"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
@@ -23,6 +24,7 @@ const socket_io_1 = require("socket.io");
 const message_model_1 = require("./app/module/message/message.model");
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
+exports.ioServer = server;
 const io = new socket_io_1.Server(server, {
     cors: {
         origin: '*',
@@ -89,8 +91,4 @@ app.use('/api/v1', routes_1.default);
 // error handler
 app.use(errHandler_1.notFoundErrHandler);
 app.use(errHandler_1.globalErrHandler);
-// socket server error handling
-server.listen(process.env.SOCKET_PORT || 5500, () => {
-    console.log(`Socket server is running on port ${process.env.SOCKET_PORT || 5500}`);
-});
 exports.default = app;
