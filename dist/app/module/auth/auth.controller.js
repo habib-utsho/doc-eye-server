@@ -27,6 +27,8 @@ const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
         httpOnly: true,
         secure: isProduction && !isLocalhost, // false for localhost
         sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax'), // 'lax' for localhost
+        domain: undefined,
+        partitioned: true
     };
     res.cookie('DEaccessToken', accessToken, cookieOptions);
     res.cookie('DErefreshToken', refreshToken, cookieOptions);
@@ -49,6 +51,8 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         httpOnly: true,
         secure: isProduction && !isLocalhost, // false for localhost
         sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax'), // 'lax' for localhost
+        domain: undefined,
+        partitioned: true
     };
     // Set both new tokens
     res.cookie('DEaccessToken', result.accessToken, cookieOptions);

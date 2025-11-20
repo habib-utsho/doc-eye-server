@@ -18,6 +18,8 @@ const login = catchAsync(async (req, res) => {
 
     secure: isProduction && !isLocalhost,     // false for localhost
     sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
+    domain: undefined,
+    partitioned: true
   };
 
   res.cookie('DEaccessToken', accessToken, cookieOptions);
@@ -45,6 +47,8 @@ const refreshToken = catchAsync(async (req, res) => {
     httpOnly: true,
     secure: isProduction && !isLocalhost,     // false for localhost
     sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
+    domain: undefined,
+    partitioned: true
   };
 
   // Set both new tokens
