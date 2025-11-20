@@ -12,8 +12,10 @@ const login = catchAsync(async (req, res) => {
   const isProduction = process.env.NODE_ENV === 'production';
   const origin = req.headers.origin || '';
   const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+
   const cookieOptions: CookieOptions = {
     httpOnly: true,
+
     secure: isProduction && !isLocalhost,     // false for localhost
     sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
   };
@@ -38,6 +40,7 @@ const refreshToken = catchAsync(async (req, res) => {
   const isProduction = process.env.NODE_ENV === 'production';
   const origin = req.headers.origin || '';
   const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction && !isLocalhost,     // false for localhost

@@ -35,7 +35,7 @@ const io = new socket_io_1.Server(server, {
 const ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://your-frontend-domain.com",
+    "https://doc-eye.vercel.app",
 ];
 app.use((0, cors_1.default)({
     origin: (origin, callback) => {

@@ -29,7 +29,7 @@ const io = new Server(server, {
 const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:5173",
-  "https://your-frontend-domain.com",
+  "https://doc-eye.vercel.app",
 ];
 
 app.use(
