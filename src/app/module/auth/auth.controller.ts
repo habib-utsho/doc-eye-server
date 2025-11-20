@@ -9,17 +9,23 @@ import { JwtPayload } from 'jsonwebtoken'
 const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
+
+
   const isProduction = process.env.NODE_ENV === 'production';
-  const origin = req.headers.origin || '';
-  const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+  const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
 
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-
-    secure: isProduction && !isLocalhost,     // false for localhost
-    sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
-    domain: undefined,
-    partitioned: true
+    secure: isSecure,                    // true on Render/Vercel
+    sameSite: isSecure ? 'none' : 'lax', // None only when secure
+    path: '/',
+    partitioned: isProduction,                   // Required for Chrome 2025+
+    // THIS IS THE KEY FIX:
+    domain: isProduction
+      ? new URL(process.env.BACKEND_URL || req.headers.origin || '').hostname
+      : undefined,
+    // Optional: prevent duplicates
+    maxAge: 30 * 24 * 60 * 60 * 1000,     // 30 days for refresh
   };
 
   res.cookie('DEaccessToken', accessToken, cookieOptions);
@@ -40,15 +46,20 @@ const refreshToken = catchAsync(async (req, res) => {
   const result = await authServices.refreshToken(DErefreshToken)
 
   const isProduction = process.env.NODE_ENV === 'production';
-  const origin = req.headers.origin || '';
-  const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+  const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
 
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure: isProduction && !isLocalhost,     // false for localhost
-    sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
-    domain: undefined,
-    partitioned: true
+    secure: isSecure,                    // true on Render/Vercel
+    sameSite: isSecure ? 'none' : 'lax', // None only when secure
+    path: '/',
+    partitioned: isProduction,                   // Required for Chrome 2025+
+    // THIS IS THE KEY FIX:
+    domain: isProduction
+      ? new URL(process.env.BACKEND_URL || req.headers.origin || '').hostname
+      : undefined,
+    // Optional: prevent duplicates
+    maxAge: 30 * 24 * 60 * 60 * 1000,     // 30 days for refresh
   };
 
   // Set both new tokens
