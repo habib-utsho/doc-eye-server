@@ -44,7 +44,9 @@ const refreshToken = catchAsync(async (req, res) => {
     sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
   };
 
-  res.cookie('DErefreshToken', refreshToken, cookieOptions);
+  // Set both new tokens
+  res.cookie('DEaccessToken', result.accessToken, cookieOptions);
+  res.cookie('DErefreshToken', result.refreshToken, cookieOptions);
 
   sendResponse(res, StatusCodes.OK, {
     success: true,

@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = require("./app");
 const PORT = Number(process.env.PORT || process.env.SOCKET_PORT || 3000);
-const server = app_1.ioServer.listen(PORT, '0.0.0.0', () => __awaiter(void 0, void 0, void 0, function* () {
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : undefined;
+const server = app_1.ioServer.listen(PORT, HOST, () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(process.env.MONGO_URI);
         console.log(`😀 Database connected at port ${process.env.PORT}`);

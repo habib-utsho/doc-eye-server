@@ -200,8 +200,13 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_ACCESS_SECRET, {
         expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
     });
+    //  Generate new refresh token for token rotation
+    const newRefreshToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_REFRESH_SECRET, {
+        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+    });
     return {
         accessToken,
+        refreshToken: newRefreshToken, // Return new refresh token
     };
 });
 const forgetPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {

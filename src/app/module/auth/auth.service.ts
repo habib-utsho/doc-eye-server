@@ -231,9 +231,18 @@ const refreshToken = async (token: string) => {
       expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
     } as jwt.SignOptions,
   )
-
+  //  Generate new refresh token for token rotation
+  const newRefreshToken = jwt.sign(
+    jwtPayload,
+    process.env.JWT_REFRESH_SECRET as string,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string,
+    } as jwt.SignOptions,
+  )
   return {
     accessToken,
+    refreshToken: newRefreshToken, // Return new refresh token
+
   }
 }
 

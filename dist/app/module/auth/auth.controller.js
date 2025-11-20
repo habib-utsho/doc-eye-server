@@ -20,18 +20,16 @@ const auth_service_1 = require("./auth.service");
 const appError_1 = __importDefault(require("../../errors/appError"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken, needsPasswordChange } = yield auth_service_1.authServices.login(req.body);
-    const isProd = process.env.NODE_ENV === 'production';
-    const secure = isProd;
-    res.cookie('DErefreshToken', refreshToken, {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const origin = req.headers.origin || '';
+    const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+    const cookieOptions = {
         httpOnly: true,
-        secure,
-        sameSite: isProd ? 'none' : 'lax',
-    });
-    res.cookie('DEaccessToken', accessToken, {
-        httpOnly: true,
-        secure,
-        sameSite: isProd ? 'none' : 'lax',
-    });
+        secure: isProduction && !isLocalhost, // false for localhost
+        sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax'), // 'lax' for localhost
+    };
+    res.cookie('DEaccessToken', accessToken, cookieOptions);
+    res.cookie('DErefreshToken', refreshToken, cookieOptions);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'User is logged in successfully',
@@ -44,13 +42,17 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Refresh token is required');
     }
     const result = yield auth_service_1.authServices.refreshToken(DErefreshToken);
-    const isProd = process.env.NODE_ENV === 'production';
-    const secure = isProd;
-    res.cookie('DErefreshToken', refreshToken, {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const origin = req.headers.origin || '';
+    const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+    const cookieOptions = {
         httpOnly: true,
-        secure,
-        sameSite: isProd ? 'none' : 'lax',
-    });
+        secure: isProduction && !isLocalhost, // false for localhost
+        sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax'), // 'lax' for localhost
+    };
+    // Set both new tokens
+    res.cookie('DEaccessToken', result.accessToken, cookieOptions);
+    res.cookie('DErefreshToken', result.refreshToken, cookieOptions);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Access token is retrieved successfully',
