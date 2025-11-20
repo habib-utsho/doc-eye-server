@@ -22,7 +22,7 @@ const login = catchAsync(async (req, res) => {
     partitioned: isProduction,                   // Required for Chrome 2025+
     // THIS IS THE KEY FIX:
     domain: isProduction
-      ? new URL(process.env.BACKEND_URL || req.headers.origin || '').hostname
+      ? new URL(process.env.SERVER_URL || req.headers.origin || '').hostname
       : undefined,
     // Optional: prevent duplicates
     maxAge: 30 * 24 * 60 * 60 * 1000,     // 30 days for refresh
@@ -56,7 +56,7 @@ const refreshToken = catchAsync(async (req, res) => {
     partitioned: isProduction,                   // Required for Chrome 2025+
     // THIS IS THE KEY FIX:
     domain: isProduction
-      ? new URL(process.env.BACKEND_URL || req.headers.origin || '').hostname
+      ? new URL(process.env.SERVER_URL || req.headers.origin || '').hostname
       : undefined,
     // Optional: prevent duplicates
     maxAge: 30 * 24 * 60 * 60 * 1000,     // 30 days for refresh
