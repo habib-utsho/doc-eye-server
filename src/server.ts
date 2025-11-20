@@ -4,7 +4,9 @@ import { Server } from 'http'
 
 
 const PORT = Number(process.env.PORT || process.env.SOCKET_PORT || 3000)
-const server: Server = ioServer.listen(PORT, '0.0.0.0', async () => {
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : undefined
+
+const server: Server = ioServer.listen(PORT, HOST, async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI as string)
     console.log(`😀 Database connected at port ${process.env.PORT}`)

@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
+import { CookieOptions } from 'express'
 import catchAsync from '../../utils/catchAsync'
 import sendResponse from '../../utils/sendResponse'
 import { authServices } from './auth.service'
@@ -8,23 +9,17 @@ import { JwtPayload } from 'jsonwebtoken'
 const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
-
-  const isProd = process.env.NODE_ENV === 'production';
-  const secure = isProd;
-
-
-
-  res.cookie('DErefreshToken', refreshToken, {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const origin = req.headers.origin || '';
+  const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+  const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure,
-    sameSite: isProd ? 'none' : 'lax',
-  });
-  res.cookie('DEaccessToken', accessToken, {
-    httpOnly: true,
-    secure,
-    sameSite: isProd ? 'none' : 'lax',
+    secure: isProduction && !isLocalhost,     // false for localhost
+    sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
+  };
 
-  });
+  res.cookie('DEaccessToken', accessToken, cookieOptions);
+  res.cookie('DErefreshToken', refreshToken, cookieOptions);
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
@@ -40,13 +35,16 @@ const refreshToken = catchAsync(async (req, res) => {
 
   const result = await authServices.refreshToken(DErefreshToken)
 
-  const isProd = process.env.NODE_ENV === 'production';
-  const secure = isProd;
-  res.cookie('DErefreshToken', refreshToken, {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const origin = req.headers.origin || '';
+  const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+  const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure,
-    sameSite: isProd ? 'none' : 'lax',
-  });
+    secure: isProduction && !isLocalhost,     // false for localhost
+    sameSite: ((isProduction && !isLocalhost) ? 'none' : 'lax') as CookieOptions['sameSite'],  // 'lax' for localhost
+  };
+
+  res.cookie('DErefreshToken', refreshToken, cookieOptions);
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
