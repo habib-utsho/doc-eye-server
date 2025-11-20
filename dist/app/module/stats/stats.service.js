@@ -119,7 +119,7 @@ const getPatientStats = (pPatient) => __awaiter(void 0, void 0, void 0, function
     };
 });
 const getDoctorStats = (pDoctor) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d, _e, _f;
+    var _a, _b, _c, _d;
     const doctor = yield doctor_model_1.default.findById(pDoctor === null || pDoctor === void 0 ? void 0 : pDoctor._id);
     if (!doctor)
         throw new Error("Doctor not found");
@@ -142,10 +142,10 @@ const getDoctorStats = (pDoctor) => __awaiter(void 0, void 0, void 0, function* 
         rating: { $lte: 2 },
     }).countDocuments();
     const totalReviews = yield review_model_1.default.find({ doctor: doctor === null || doctor === void 0 ? void 0 : doctor._id }).countDocuments();
-    const averageRating = totalReviews > 0 ? (_d = (_c = (yield review_model_1.default.aggregate([
+    const averageRating = totalReviews > 0 ? (_b = (_a = (yield review_model_1.default.aggregate([
         { $match: { doctor: new mongoose_1.Types.ObjectId(pDoctor._id) } },
         { $group: { _id: null, avgRating: { $avg: "$rating" } } }
-    ]))[0]) === null || _c === void 0 ? void 0 : _c.avgRating) === null || _d === void 0 ? void 0 : _d.toFixed(2) : 0;
+    ]))[0]) === null || _a === void 0 ? void 0 : _a.avgRating) === null || _b === void 0 ? void 0 : _b.toFixed(2) : 0;
     // Payment stats
     const paymentsAgg = yield payment_model_1.default.aggregate([
         {
@@ -162,12 +162,12 @@ const getDoctorStats = (pDoctor) => __awaiter(void 0, void 0, void 0, function* 
             }
         }
     ]);
-    const totalAmount = ((_e = paymentsAgg[0]) === null || _e === void 0 ? void 0 : _e.totalAmount) || 0;
-    const totalPayments = ((_f = paymentsAgg[0]) === null || _f === void 0 ? void 0 : _f.totalPayments) || 0;
+    const totalAmount = ((_c = paymentsAgg[0]) === null || _c === void 0 ? void 0 : _c.totalAmount) || 0;
+    const totalPayments = ((_d = paymentsAgg[0]) === null || _d === void 0 ? void 0 : _d.totalPayments) || 0;
     return { doctor, totalAppointments, totalPendingAppointments, totalConfirmedAppointments, totalCanceledAppointments, totalCompletedAppointments, totalAmount, totalPayments, highlySatisfiedPatients, moderatelySatisfiedPatients, dissatisfiedPatients, totalReviews, averageRating };
 });
 const getAdminStats = (pAdmin) => __awaiter(void 0, void 0, void 0, function* () {
-    var _g, _h, _j, _k;
+    var _a, _b, _c, _d;
     const admin = yield admin_model_1.default.findById(pAdmin === null || pAdmin === void 0 ? void 0 : pAdmin._id);
     if (!admin)
         throw new Error("Admin not found");
@@ -189,9 +189,9 @@ const getAdminStats = (pAdmin) => __awaiter(void 0, void 0, void 0, function* ()
         rating: { $lte: 2 },
     }).countDocuments();
     const totalReviews = yield review_model_1.default.find().countDocuments();
-    const averageRating = totalReviews > 0 ? (_h = (_g = (yield review_model_1.default.aggregate([
+    const averageRating = totalReviews > 0 ? (_b = (_a = (yield review_model_1.default.aggregate([
         { $group: { _id: null, avgRating: { $avg: "$rating" } } }
-    ]))[0]) === null || _g === void 0 ? void 0 : _g.avgRating) === null || _h === void 0 ? void 0 : _h.toFixed(2) : 0;
+    ]))[0]) === null || _a === void 0 ? void 0 : _a.avgRating) === null || _b === void 0 ? void 0 : _b.toFixed(2) : 0;
     // Payment stats
     const paymentsAgg = yield payment_model_1.default.aggregate([
         {
@@ -207,8 +207,8 @@ const getAdminStats = (pAdmin) => __awaiter(void 0, void 0, void 0, function* ()
             }
         }
     ]);
-    const totalAmount = ((_j = paymentsAgg[0]) === null || _j === void 0 ? void 0 : _j.totalAmount) || 0;
-    const totalPayments = ((_k = paymentsAgg[0]) === null || _k === void 0 ? void 0 : _k.totalPayments) || 0;
+    const totalAmount = ((_c = paymentsAgg[0]) === null || _c === void 0 ? void 0 : _c.totalAmount) || 0;
+    const totalPayments = ((_d = paymentsAgg[0]) === null || _d === void 0 ? void 0 : _d.totalPayments) || 0;
     return { admin, totalAppointments, totalPendingAppointments, totalConfirmedAppointments, totalCanceledAppointments, totalCompletedAppointments, totalAmount, totalPayments, highlySatisfiedPatients, moderatelySatisfiedPatients, dissatisfiedPatients, totalReviews, averageRating, totalPatients, totalDoctors };
 });
 exports.statsService = {

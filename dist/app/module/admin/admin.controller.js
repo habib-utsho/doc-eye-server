@@ -32,8 +32,8 @@ const getAllAdmins = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getAdminById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const admin = yield admin_service_1.adminServices.getAdminById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
+    var _a;
+    const admin = yield admin_service_1.adminServices.getAdminById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Admin is retrieved successfully!',
@@ -41,8 +41,8 @@ const getAdminById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const updateAdminById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const { admin, accessToken, refreshToken } = yield admin_service_1.adminServices.updateAdminById((_d = req.params) === null || _d === void 0 ? void 0 : _d.id, req.file, req.body);
+    var _a;
+    const { admin, accessToken, refreshToken } = yield admin_service_1.adminServices.updateAdminById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.file, req.body);
     if (!admin) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Admin not updated!');
     }

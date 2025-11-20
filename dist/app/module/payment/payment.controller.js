@@ -29,7 +29,7 @@ const initPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     return res.redirect(`http://localhost:3000/doctor/${(_a = req.query) === null || _a === void 0 ? void 0 : _a.doctorCode}/checkout/success?transactionId=${(_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.trans_id}&appointmentId=${result.appointment._id}`);
 }));
 const getAllPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _a, _b;
     if (!req.user) {
         (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.UNAUTHORIZED, {
             success: false,
@@ -39,8 +39,8 @@ const getAllPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         return;
     }
     const { data, total } = yield payment_service_1.paymentService.getAllPayment(req.query, req.user);
-    const page = ((_c = req.query) === null || _c === void 0 ? void 0 : _c.page) ? Number(req.query.page) : 1;
-    const limit = ((_d = req.query) === null || _d === void 0 ? void 0 : _d.limit) ? Number(req.query.limit) : 10;
+    const page = ((_a = req.query) === null || _a === void 0 ? void 0 : _a.page) ? Number(req.query.page) : 1;
+    const limit = ((_b = req.query) === null || _b === void 0 ? void 0 : _b.limit) ? Number(req.query.limit) : 10;
     const totalPage = Math.ceil(total / limit);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
@@ -50,8 +50,8 @@ const getAllPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const getPaymentById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
-    const patient = yield payment_service_1.paymentService.getPaymentById((_e = req.params) === null || _e === void 0 ? void 0 : _e.id);
+    var _a;
+    const patient = yield payment_service_1.paymentService.getPaymentById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Payment is retrieved successfully!',

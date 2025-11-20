@@ -194,7 +194,7 @@ const updatePatientById = async (id: string, file: any, payload: Partial<TPatien
     process.env.JWT_ACCESS_SECRET as string,
     {
       expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
-    },
+    } as jwt.SignOptions,
   )
 
   const refreshToken = jwt.sign(
@@ -202,7 +202,7 @@ const updatePatientById = async (id: string, file: any, payload: Partial<TPatien
     process.env.JWT_REFRESH_SECRET as string,
     {
       expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string,
-    },
+    } as jwt.SignOptions,
   )
 
 

@@ -32,8 +32,8 @@ const getAllPatients = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     });
 }));
 const getPatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const patient = yield patient_service_1.patientServices.getPatientById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id); // Change to getPatientById
+    var _a;
+    const patient = yield patient_service_1.patientServices.getPatientById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id); // Change to getPatientById
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Patient is retrieved successfully!', // Update message
@@ -41,8 +41,8 @@ const getPatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     });
 }));
 const updateFavoriteDoctors = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const patientId = (_d = req.user) === null || _d === void 0 ? void 0 : _d._id;
+    var _a;
+    const patientId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const { doctorId } = req.body;
     const patient = yield patient_service_1.patientServices.updateFavoriteDoctors(patientId, doctorId);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
@@ -52,8 +52,8 @@ const updateFavoriteDoctors = (0, catchAsync_1.default)((req, res) => __awaiter(
     });
 }));
 const makePatientAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
-    const admin = yield patient_service_1.patientServices.makePatientAdmin((_e = req.params) === null || _e === void 0 ? void 0 : _e.id);
+    var _a;
+    const admin = yield patient_service_1.patientServices.makePatientAdmin((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
     if (!admin) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Patient not updated!'); // Update message
     }
@@ -64,8 +64,8 @@ const makePatientAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const updatePatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _f;
-    const { patient, accessToken, refreshToken } = yield patient_service_1.patientServices.updatePatientById((_f = req.params) === null || _f === void 0 ? void 0 : _f.id, req.file, req.body);
+    var _a;
+    const { patient, accessToken, refreshToken } = yield patient_service_1.patientServices.updatePatientById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.file, req.body);
     if (!patient) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Patient not updated!'); // Update message
     }

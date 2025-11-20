@@ -40,8 +40,8 @@ const getAllSpecialties = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
 }));
 const getSpecialtyById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const specialty = yield specialty_service_1.specialtyService.getSpecialtyById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
+    var _a;
+    const specialty = yield specialty_service_1.specialtyService.getSpecialtyById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Specialty is retrieved successfully!',
@@ -49,8 +49,8 @@ const getSpecialtyById = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const updateSpecialtyById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const specialty = yield specialty_service_1.specialtyService.updateSpecialtyById(req.file, (_d = req.params) === null || _d === void 0 ? void 0 : _d.id, req.body);
+    var _a;
+    const specialty = yield specialty_service_1.specialtyService.updateSpecialtyById(req.file, (_a = req.params) === null || _a === void 0 ? void 0 : _a.id, req.body);
     if (!specialty) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Specialty not updated!');
     }

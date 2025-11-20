@@ -39,8 +39,8 @@ const getAllMedicalReports = (0, catchAsync_1.default)((req, res) => __awaiter(v
     });
 }));
 const getMedicalReportById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const report = yield medicalReport_service_1.medicalReportService.getMedicalReportById((_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
+    var _a;
+    const report = yield medicalReport_service_1.medicalReportService.getMedicalReportById((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Medical report retrieved successfully!',

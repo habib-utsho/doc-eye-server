@@ -105,7 +105,7 @@ const login = async (payload: TLoginUser) => {
     process.env.JWT_ACCESS_SECRET as string,
     {
       expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
-    },
+    } as jwt.SignOptions,
   )
 
   const refreshToken = jwt.sign(
@@ -113,7 +113,7 @@ const login = async (payload: TLoginUser) => {
     process.env.JWT_REFRESH_SECRET as string,
     {
       expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string,
-    },
+    } as jwt.SignOptions,
   )
 
   return {
@@ -229,7 +229,7 @@ const refreshToken = async (token: string) => {
     process.env.JWT_ACCESS_SECRET as string,
     {
       expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string,
-    },
+    } as jwt.SignOptions,
   )
 
   return {
@@ -250,7 +250,7 @@ const forgetPassword = async (payload: Record<string, unknown>) => {
     process.env.JWT_ACCESS_SECRET as string,
     {
       expiresIn: '10m' as string,
-    },
+    } as jwt.SignOptions,
   )
   const resetLink = `${process.env.CLIENT_URL}/reset-password?email=${user.email}&token=${accessToken}`
   await sendEmail({

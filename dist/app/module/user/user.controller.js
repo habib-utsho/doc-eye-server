@@ -64,8 +64,8 @@ const getUserById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     });
 }));
 const toggleUserStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    const user = yield user_service_1.userServices.toggleUserStatus((_b = req.params) === null || _b === void 0 ? void 0 : _b.id);
+    var _a;
+    const user = yield user_service_1.userServices.toggleUserStatus((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
     if (!user) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found!');
     }
