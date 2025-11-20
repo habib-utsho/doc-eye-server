@@ -9,23 +9,11 @@ import { JwtPayload } from 'jsonwebtoken'
 const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
-
-
   const isProduction = process.env.NODE_ENV === 'production';
-  const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
-
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure: isSecure,                    // true on Render/Vercel
-    sameSite: isSecure ? 'none' : 'lax', // None only when secure
-    path: '/',
-    partitioned: isProduction,                   // Required for Chrome 2025+
-    // THIS IS THE KEY FIX:
-    domain: isProduction
-      ? new URL(process.env.SERVER_URL || req.headers.origin || '').hostname
-      : undefined,
-    // Optional: prevent duplicates
-    maxAge: 30 * 24 * 60 * 60 * 1000,     // 30 days for refresh
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   res.cookie('DEaccessToken', accessToken, cookieOptions);
@@ -46,20 +34,10 @@ const refreshToken = catchAsync(async (req, res) => {
   const result = await authServices.refreshToken(DErefreshToken)
 
   const isProduction = process.env.NODE_ENV === 'production';
-  const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
-
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure: isSecure,                    // true on Render/Vercel
-    sameSite: isSecure ? 'none' : 'lax', // None only when secure
-    path: '/',
-    partitioned: isProduction,                   // Required for Chrome 2025+
-    // THIS IS THE KEY FIX:
-    domain: isProduction
-      ? new URL(process.env.SERVER_URL || req.headers.origin || '').hostname
-      : undefined,
-    // Optional: prevent duplicates
-    maxAge: 30 * 24 * 60 * 60 * 1000,     // 30 days for refresh
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   // Set both new tokens
