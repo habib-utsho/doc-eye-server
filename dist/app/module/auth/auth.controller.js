@@ -21,13 +21,13 @@ const appError_1 = __importDefault(require("../../errors/appError"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken, needsPasswordChange } = yield auth_service_1.authServices.login(req.body);
     const isProduction = process.env.NODE_ENV === 'production';
+    res.clearCookie('DEaccessToken');
+    res.clearCookie('DErefreshToken');
     const cookieOptions = {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
-        partitioned: true,
-        domain: process.env.SERVER_DOMAIN,
-        path: '/',
+        // sameSite: isProduction ? 'none' : 'lax',
+        sameSite: "lax"
     };
     // Set both new tokens
     res.cookie('DEaccessToken', accessToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 15 * 24 * 60 * 60 * 1000 })); // 15 days for access token
@@ -49,8 +49,6 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'none' : 'lax',
-        partitioned: true,
-        domain: process.env.SERVER_DOMAIN,
     };
     // Set both new tokens
     res.cookie('DEaccessToken', result.accessToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 15 * 24 * 60 * 60 * 1000 })); // 15 days for access token
