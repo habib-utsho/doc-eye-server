@@ -10,11 +10,12 @@ const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
   const isProduction = process.env.NODE_ENV === 'production';
-  console.log({ isProduction, env: process.env.NODE_ENV });
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days (matches JWT_ACCESS_EXPIRES_IN)
+    path: '/',
   };
 
   res.cookie('DEaccessToken', accessToken, cookieOptions);
@@ -37,13 +38,11 @@ const refreshToken = catchAsync(async (req, res) => {
 
   const isProduction = process.env.NODE_ENV === 'production';
 
-  console.log('NODE_ENV:', process.env.NODE_ENV);
-  console.log('Origin:', req.headers.origin);
-  console.log('Cookie sameSite:', isProduction ? 'none' : 'lax');
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 35 * 24 * 60 * 60 * 1000, // 35 days (matches JWT_REFRESH_EXPIRES_IN)
   };
 
   // Set both new tokens
