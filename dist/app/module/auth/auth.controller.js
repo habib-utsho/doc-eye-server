@@ -21,10 +21,11 @@ const appError_1 = __importDefault(require("../../errors/appError"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken, needsPasswordChange } = yield auth_service_1.authServices.login(req.body);
     const isProduction = process.env.NODE_ENV === 'production';
+    console.log({ isProduction, env: process.env.NODE_ENV });
     const cookieOptions = {
         httpOnly: true,
         secure: isProduction,
-        // sameSite: isProduction ? 'none' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
     };
     res.cookie('DEaccessToken', accessToken, cookieOptions);
     res.cookie('DErefreshToken', refreshToken, cookieOptions);
@@ -41,10 +42,13 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     }
     const result = yield auth_service_1.authServices.refreshToken(DErefreshToken);
     const isProduction = process.env.NODE_ENV === 'production';
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('Origin:', req.headers.origin);
+    console.log('Cookie sameSite:', isProduction ? 'none' : 'lax');
     const cookieOptions = {
         httpOnly: true,
         secure: isProduction,
-        // sameSite: isProduction ? 'none' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
     };
     // Set both new tokens
     res.cookie('DEaccessToken', result.accessToken, cookieOptions);

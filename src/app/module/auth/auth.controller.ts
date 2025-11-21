@@ -10,10 +10,11 @@ const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
   const isProduction = process.env.NODE_ENV === 'production';
+  console.log({ isProduction, env: process.env.NODE_ENV });
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    // sameSite: isProduction ? 'none' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   res.cookie('DEaccessToken', accessToken, cookieOptions);
@@ -33,11 +34,16 @@ const refreshToken = catchAsync(async (req, res) => {
 
   const result = await authServices.refreshToken(DErefreshToken)
 
+
   const isProduction = process.env.NODE_ENV === 'production';
+
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('Origin:', req.headers.origin);
+  console.log('Cookie sameSite:', isProduction ? 'none' : 'lax');
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    // sameSite: isProduction ? 'none' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   // Set both new tokens
