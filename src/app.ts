@@ -11,6 +11,8 @@ import router from './app/routes'
 import cookieParser from 'cookie-parser'
 import { Server } from "socket.io"
 import { MessageModel } from './app/module/message/message.model'
+import cron from "node-cron"
+import axios from 'axios'
 
 const app = express()
 
@@ -23,7 +25,23 @@ const io = new Server(server, {
   }
 })
 
+// Create an axios instance with a longer timeout
+const axiosInstance = axios.create({
+  timeout: 30000, // 30 seconds timeout
+})
 
+
+// Schedule the self-ping every 10 minutes (you can adjust the frequency)
+cron.schedule('*/10 * * * *', () => {
+  axiosInstance
+    .get(process.env.SERVER_URL as string)
+    .then((response) => {
+      console.log('😀🎉 Self-ping successful:', response.status)
+    })
+    .catch((error) => {
+      console.error('😡 Self-ping failed:', error.message)
+    })
+})
 
 // parser
 const ALLOWED_ORIGINS = [

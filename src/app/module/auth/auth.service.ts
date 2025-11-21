@@ -126,7 +126,6 @@ const login = async (payload: TLoginUser) => {
 
 const refreshToken = async (token: string) => {
 
-
   let decoded
   try {
     decoded = jwt.verify(
