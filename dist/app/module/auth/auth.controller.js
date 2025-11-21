@@ -21,19 +21,10 @@ const appError_1 = __importDefault(require("../../errors/appError"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken, needsPasswordChange } = yield auth_service_1.authServices.login(req.body);
     const isProduction = process.env.NODE_ENV === 'production';
-    const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
     const cookieOptions = {
         httpOnly: true,
-        secure: isSecure, // true on Render/Vercel
-        sameSite: isSecure ? 'none' : 'lax', // None only when secure
-        path: '/',
-        partitioned: isProduction, // Required for Chrome 2025+
-        // THIS IS THE KEY FIX:
-        domain: isProduction
-            ? new URL(process.env.BACKEND_URL || req.headers.origin || '').hostname
-            : undefined,
-        // Optional: prevent duplicates
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days for refresh
+        secure: isProduction,
+        // sameSite: isProduction ? 'none' : 'lax',
     };
     res.cookie('DEaccessToken', accessToken, cookieOptions);
     res.cookie('DErefreshToken', refreshToken, cookieOptions);
@@ -50,19 +41,10 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     }
     const result = yield auth_service_1.authServices.refreshToken(DErefreshToken);
     const isProduction = process.env.NODE_ENV === 'production';
-    const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
     const cookieOptions = {
         httpOnly: true,
-        secure: isSecure, // true on Render/Vercel
-        sameSite: isSecure ? 'none' : 'lax', // None only when secure
-        path: '/',
-        partitioned: isProduction, // Required for Chrome 2025+
-        // THIS IS THE KEY FIX:
-        domain: isProduction
-            ? new URL(process.env.BACKEND_URL || req.headers.origin || '').hostname
-            : undefined,
-        // Optional: prevent duplicates
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days for refresh
+        secure: isProduction,
+        // sameSite: isProduction ? 'none' : 'lax',
     };
     // Set both new tokens
     res.cookie('DEaccessToken', result.accessToken, cookieOptions);

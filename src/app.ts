@@ -96,7 +96,7 @@ io.on("connection", (socket) => {
 
 // Router
 app.get('/', async (req, res) => {
-  res.send('DocEye home route!')
+  res.send('DocEye home route!!!')
 })
 
 app.use('/api/v1', router)

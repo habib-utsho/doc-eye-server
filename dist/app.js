@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
 });
 // Router
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('DocEye home route!');
+    res.send('DocEye home route!!!');
 }));
 app.use('/api/v1', routes_1.default);
 // app.use('/api/v1/students', studentRouter)

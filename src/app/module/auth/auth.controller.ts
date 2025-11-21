@@ -13,7 +13,7 @@ const login = catchAsync(async (req, res) => {
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    // sameSite: isProduction ? 'none' : 'lax',
   };
 
   res.cookie('DEaccessToken', accessToken, cookieOptions);
@@ -37,7 +37,7 @@ const refreshToken = catchAsync(async (req, res) => {
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    // sameSite: isProduction ? 'none' : 'lax',
   };
 
   // Set both new tokens
