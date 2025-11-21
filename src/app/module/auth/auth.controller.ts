@@ -9,20 +9,20 @@ import { JwtPayload } from 'jsonwebtoken'
 const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
-  const isProduction = process.env.NODE_ENV === 'production';
+  // const isProduction = process.env.NODE_ENV === 'production';
 
-  res.clearCookie('DEaccessToken');
-  res.clearCookie('DErefreshToken');
+  // res.clearCookie('DEaccessToken');
+  // res.clearCookie('DErefreshToken');
 
-  const cookieOptions: CookieOptions = {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-  };
+  // const cookieOptions: CookieOptions = {
+  //   httpOnly: true,
+  //   secure: isProduction,
+  //   sameSite: isProduction ? 'none' : 'lax',
+  // };
 
-  // Set both new tokens
-  res.cookie('DEaccessToken', accessToken, { ...cookieOptions, maxAge: 15 * 24 * 60 * 60 * 1000 }); // 15 days for access token
-  res.cookie('DErefreshToken', refreshToken, { ...cookieOptions, maxAge: 35 * 24 * 60 * 60 * 1000 }); // 35 days for refresh token
+  // // Set both new tokens
+  // res.cookie('DEaccessToken', accessToken, { ...cookieOptions, maxAge: 15 * 24 * 60 * 60 * 1000 }); // 15 days for access token
+  // res.cookie('DErefreshToken', refreshToken, { ...cookieOptions, maxAge: 35 * 24 * 60 * 60 * 1000 }); // 35 days for refresh token
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
@@ -39,17 +39,17 @@ const refreshToken = catchAsync(async (req, res) => {
   const result = await authServices.refreshToken(DErefreshToken)
 
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  // const isProduction = process.env.NODE_ENV === 'production';
 
-  const cookieOptions: CookieOptions = {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-  };
+  // const cookieOptions: CookieOptions = {
+  //   httpOnly: true,
+  //   secure: isProduction,
+  //   sameSite: isProduction ? 'none' : 'lax',
+  // };
 
-  // Set both new tokens
-  res.cookie('DEaccessToken', result.accessToken, { ...cookieOptions, maxAge: 15 * 24 * 60 * 60 * 1000 }); // 15 days for access token
-  res.cookie('DErefreshToken', result.refreshToken, { ...cookieOptions, maxAge: 35 * 24 * 60 * 60 * 1000 }); // 35 days for refresh token
+  // // Set both new tokens
+  // res.cookie('DEaccessToken', result.accessToken, { ...cookieOptions, maxAge: 15 * 24 * 60 * 60 * 1000 }); // 15 days for access token
+  // res.cookie('DErefreshToken', result.refreshToken, { ...cookieOptions, maxAge: 35 * 24 * 60 * 60 * 1000 }); // 35 days for refresh token
 
   sendResponse(res, StatusCodes.OK, {
     success: true,

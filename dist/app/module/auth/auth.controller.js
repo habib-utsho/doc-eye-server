@@ -20,17 +20,17 @@ const auth_service_1 = require("./auth.service");
 const appError_1 = __importDefault(require("../../errors/appError"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken, needsPasswordChange } = yield auth_service_1.authServices.login(req.body);
-    const isProduction = process.env.NODE_ENV === 'production';
-    res.clearCookie('DEaccessToken');
-    res.clearCookie('DErefreshToken');
-    const cookieOptions = {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
-    };
-    // Set both new tokens
-    res.cookie('DEaccessToken', accessToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 15 * 24 * 60 * 60 * 1000 })); // 15 days for access token
-    res.cookie('DErefreshToken', refreshToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 35 * 24 * 60 * 60 * 1000 })); // 35 days for refresh token
+    // const isProduction = process.env.NODE_ENV === 'production';
+    // res.clearCookie('DEaccessToken');
+    // res.clearCookie('DErefreshToken');
+    // const cookieOptions: CookieOptions = {
+    //   httpOnly: true,
+    //   secure: isProduction,
+    //   sameSite: isProduction ? 'none' : 'lax',
+    // };
+    // // Set both new tokens
+    // res.cookie('DEaccessToken', accessToken, { ...cookieOptions, maxAge: 15 * 24 * 60 * 60 * 1000 }); // 15 days for access token
+    // res.cookie('DErefreshToken', refreshToken, { ...cookieOptions, maxAge: 35 * 24 * 60 * 60 * 1000 }); // 35 days for refresh token
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'User is logged in successfully',
@@ -43,15 +43,15 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Refresh token is required');
     }
     const result = yield auth_service_1.authServices.refreshToken(DErefreshToken);
-    const isProduction = process.env.NODE_ENV === 'production';
-    const cookieOptions = {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
-    };
-    // Set both new tokens
-    res.cookie('DEaccessToken', result.accessToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 15 * 24 * 60 * 60 * 1000 })); // 15 days for access token
-    res.cookie('DErefreshToken', result.refreshToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 35 * 24 * 60 * 60 * 1000 })); // 35 days for refresh token
+    // const isProduction = process.env.NODE_ENV === 'production';
+    // const cookieOptions: CookieOptions = {
+    //   httpOnly: true,
+    //   secure: isProduction,
+    //   sameSite: isProduction ? 'none' : 'lax',
+    // };
+    // // Set both new tokens
+    // res.cookie('DEaccessToken', result.accessToken, { ...cookieOptions, maxAge: 15 * 24 * 60 * 60 * 1000 }); // 15 days for access token
+    // res.cookie('DErefreshToken', result.refreshToken, { ...cookieOptions, maxAge: 35 * 24 * 60 * 60 * 1000 }); // 35 days for refresh token
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Access token is retrieved successfully',

@@ -34,7 +34,6 @@ const ALLOWED_ORIGINS = [
 ];
 
 
-app.set('trust proxy', true)
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -53,8 +52,7 @@ app.use(
       // Block everything else
       return callback(new Error("Not allowed by CORS"));
     },
-    credentials: true,
-    exposedHeaders: ["set-cookie"]
+    credentials: true
   }),
 );
 
