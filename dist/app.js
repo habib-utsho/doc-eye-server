@@ -38,6 +38,7 @@ const ALLOWED_ORIGINS = [
     "https://doc-eye.vercel.app",
     "https://doc-eye-client.onrender.com",
 ];
+app.set("trust proxy", 1);
 app.use((0, cors_1.default)({
     origin: (origin, callback) => {
         // console.log("Incoming Origin:", origin);

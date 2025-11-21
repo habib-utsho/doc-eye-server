@@ -26,7 +26,7 @@ const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
     const cookieOptions = {
         httpOnly: true,
         secure: isProduction,
-        // sameSite: isProduction ? 'none' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
     };
     // Set both new tokens
     res.cookie('DEaccessToken', accessToken, Object.assign(Object.assign({}, cookieOptions), { maxAge: 15 * 24 * 60 * 60 * 1000 })); // 15 days for access token

@@ -33,6 +33,8 @@ const ALLOWED_ORIGINS = [
   "https://doc-eye-client.onrender.com",
 ];
 
+
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -52,7 +54,7 @@ app.use(
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  })
+  }),
 );
 
 
