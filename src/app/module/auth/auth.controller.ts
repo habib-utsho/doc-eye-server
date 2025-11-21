@@ -9,19 +9,15 @@ import { JwtPayload } from 'jsonwebtoken'
 const login = catchAsync(async (req, res) => {
   const { accessToken, refreshToken, needsPasswordChange } =
     await authServices.login(req.body)
-  // Detect secure connection (works behind Render proxy)
-  const isSecure = req.headers['x-forwarded-proto'] === 'https' || req.secure;
+  const isProduction = process.env.NODE_ENV === 'production';
 
-  // Clear any old cookies to prevent dups (one-time fix)
   res.clearCookie('DEaccessToken');
   res.clearCookie('DErefreshToken');
 
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure: isSecure,  // true on Render
-    sameSite: isSecure ? 'none' : 'lax',
-    path: '/',
-    partitioned: isSecure,  
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   // Set both new tokens

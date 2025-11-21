@@ -30,6 +30,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://doc-eye.vercel.app",
+  "https://doc-eye-client.onrender.com",
 ];
 
 app.use(
