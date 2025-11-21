@@ -14,7 +14,8 @@ const login = catchAsync(async (req, res) => {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
-
+    partitioned: true,
+    domain: process.env.SERVER_DOMAIN,
     path: '/',
   };
 
@@ -43,6 +44,8 @@ const refreshToken = catchAsync(async (req, res) => {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    partitioned: true,
+    domain: process.env.SERVER_DOMAIN,
   };
 
   // Set both new tokens
