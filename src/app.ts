@@ -43,36 +43,43 @@ cron.schedule('*/10 * * * *', () => {
     })
 })
 
+
+
+// Add gateway domains
+const PAYMENT_GATEWAY_ORIGINS = [
+  'https://sandbox.aamarpay.com',
+  'https://secure.aamarpay.com',
+];
 // parser
 const ALLOWED_ORIGINS = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://doc-eye.vercel.app",
-  "https://doc-eye-client.onrender.com",
-];
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://doc-eye.vercel.app',
+  'https://doc-eye-client.onrender.com',
+  process.env.CLIENT_URL,
+  process.env.SERVER_URL,
+  ...PAYMENT_GATEWAY_ORIGINS,
+].filter(Boolean);
 
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // console.log("Incoming Origin:", origin);
+      const requestPath = (typeof origin === 'string') ? origin : '';
 
-      // Allow requests from servers (no browser)
-      if (!origin || origin === "null") {
-        return callback(null, true);
-      }
+      // Allow server-to-server / missing origin
+      if (!origin) return callback(null, true);
 
-      // Allow frontend origins
-      if (ALLOWED_ORIGINS.includes(origin)) {
-        return callback(null, true);
-      }
+      // Permit payment callback hits even if origin is gateway
+      if (PAYMENT_GATEWAY_ORIGINS.includes(origin)) return callback(null, true);
 
-      // Block everything else
-      return callback(new Error("Not allowed by CORS"));
+      if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+
+      return callback(new Error('Not allowed by CORS'));
     },
-    credentials: true
+    credentials: true,
   }),
-);
+)
 
 
 app.use(cookieParser())
