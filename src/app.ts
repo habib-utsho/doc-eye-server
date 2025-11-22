@@ -50,7 +50,7 @@ const PAYMENT_GATEWAY_ORIGINS = [
   'https://sandbox.aamarpay.com',
   'https://secure.aamarpay.com',
 ];
-// parser
+// Add frontend domains and backend domain
 const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:5173',
@@ -65,7 +65,6 @@ const ALLOWED_ORIGINS = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      const requestPath = (typeof origin === 'string') ? origin : '';
 
       // Allow server-to-server / missing origin
       if (!origin) return callback(null, true);

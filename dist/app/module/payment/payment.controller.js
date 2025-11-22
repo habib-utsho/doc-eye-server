@@ -26,7 +26,7 @@ const initPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     //   message: 'Payment success and appointment is confirmed!',
     //   data: result,
     // })
-    return res.redirect(`http://localhost:3000/doctor/${(_a = req.query) === null || _a === void 0 ? void 0 : _a.doctorCode}/checkout/success?transactionId=${(_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.trans_id}&appointmentId=${result.appointment._id}`);
+    return res.redirect(`${process.env.CLIENT_URL}/doctor/${(_a = req.query) === null || _a === void 0 ? void 0 : _a.doctorCode}/checkout/success?transactionId=${(_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.trans_id}&appointmentId=${result.appointment._id}`);
 }));
 const getAllPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;

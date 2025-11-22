@@ -15,7 +15,7 @@ const initPayment = catchAsync(async (req, res) => {
   //   data: result,
   // })
 
-  return res.redirect(`http://localhost:3000/doctor/${req.query?.doctorCode}/checkout/success?transactionId=${req?.query?.trans_id}&appointmentId=${result.appointment._id}`);
+  return res.redirect(`${process.env.CLIENT_URL}/doctor/${req.query?.doctorCode}/checkout/success?transactionId=${req?.query?.trans_id}&appointmentId=${result.appointment._id}`);
 })
 
 const getAllPayment = catchAsync(async (req, res) => {
