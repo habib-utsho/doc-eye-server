@@ -67,23 +67,25 @@ const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
 
 
 
-  const isProd = process.env.NODE_ENV === 'production';
-  const secure = isProd;
-  res.cookie('DErefreshToken', refreshToken, {
-    httpOnly: true,
-    secure,
-    sameSite: isProd ? 'none' : 'lax',
-  });
-  res.cookie('DEaccessToken', accessToken, {
-    httpOnly: true,
-    secure,
-    sameSite: isProd ? 'none' : 'lax',
+  // const isProd = process.env.NODE_ENV === 'production';
+  // const secure = isProd;
+  // res.cookie('DErefreshToken', refreshToken, {
+  //   httpOnly: true,
+  //   secure,
+  //   sameSite: isProd ? 'none' : 'lax',
+  // });
+  // res.cookie('DEaccessToken', accessToken, {
+  //   httpOnly: true,
+  //   secure,
+  //   sameSite: isProd ? 'none' : 'lax',
 
-  });
+  // });
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Patient updated successfully!', // Update message
     data: patient,
+    accessToken,
+    refreshToken,
   })
 })
 

@@ -69,22 +69,24 @@ const updatePatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void
     if (!patient) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Patient not updated!'); // Update message
     }
-    const isProd = process.env.NODE_ENV === 'production';
-    const secure = isProd;
-    res.cookie('DErefreshToken', refreshToken, {
-        httpOnly: true,
-        secure,
-        sameSite: isProd ? 'none' : 'lax',
-    });
-    res.cookie('DEaccessToken', accessToken, {
-        httpOnly: true,
-        secure,
-        sameSite: isProd ? 'none' : 'lax',
-    });
+    // const isProd = process.env.NODE_ENV === 'production';
+    // const secure = isProd;
+    // res.cookie('DErefreshToken', refreshToken, {
+    //   httpOnly: true,
+    //   secure,
+    //   sameSite: isProd ? 'none' : 'lax',
+    // });
+    // res.cookie('DEaccessToken', accessToken, {
+    //   httpOnly: true,
+    //   secure,
+    //   sameSite: isProd ? 'none' : 'lax',
+    // });
     (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
         success: true,
         message: 'Patient updated successfully!', // Update message
         data: patient,
+        accessToken,
+        refreshToken,
     });
 }));
 const deletePatientById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

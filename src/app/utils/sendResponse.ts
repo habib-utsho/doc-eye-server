@@ -7,6 +7,8 @@ const sendResponse = (
     success: boolean
     message: string
     data: any
+    accessToken?: string
+    refreshToken?: string
     meta?: { total: number; page: number; totalPage: number; limit: number }
   },
 ) => {
@@ -15,6 +17,8 @@ const sendResponse = (
     message: format?.message,
     data: format?.data || null,
     meta: format?.meta || null,
+    accessToken: format?.accessToken || null,
+    refreshToken: format?.refreshToken || null,
   })
 }
 
