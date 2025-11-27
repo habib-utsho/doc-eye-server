@@ -10,6 +10,15 @@ const router = Router()
 
 router.get('/', auth(USER_ROLE.ADMIN), patientController.getAllPatients)
 router.get('/:id', auth(USER_ROLE.ADMIN, USER_ROLE.PATIENT), patientController.getPatientById)
+
+
+
+router.patch('/favorite-doctors',
+  auth(USER_ROLE.PATIENT),
+  zodValidateHandler(favoriteDoctorParamsZodSchema),
+  patientController.updateFavoriteDoctors,
+)
+
 router.patch(
   '/:id',
   auth(USER_ROLE.PATIENT, USER_ROLE.ADMIN),
@@ -25,11 +34,6 @@ router.patch(
 router.patch('/make-patient-admin/:id', auth(USER_ROLE.ADMIN), patientController.makePatientAdmin)
 
 
-router.patch('/favorite-doctors',
-  auth(USER_ROLE.PATIENT),
-  zodValidateHandler(favoriteDoctorParamsZodSchema),
-  patientController.updateFavoriteDoctors,
-)
 
 router.delete(
   '/:id',

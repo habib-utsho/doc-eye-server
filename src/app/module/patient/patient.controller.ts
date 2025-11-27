@@ -32,6 +32,7 @@ const updateFavoriteDoctors: RequestHandler = catchAsync(async (req, res) => {
   const patientId = req.user?._id;
   const { doctorId } = req.body;
 
+
   const patient = await patientServices.updateFavoriteDoctors(patientId, doctorId)
   sendResponse(res, StatusCodes.OK, {
     success: true,
