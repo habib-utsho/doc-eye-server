@@ -10,8 +10,7 @@ export const sendEmail = async (payload: TPayload) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    // secure: process.env.NODE_ENV === "production", // true for port 465, false for other ports
-    secure: false,
+    secure: process.env.NODE_ENV === "production", // true for port 465, false for other ports
     auth: {
       user: process.env.NODE_MAILER_USER,
       pass: process.env.NODE_MAILER_PASSWORD,
