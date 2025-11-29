@@ -24,12 +24,13 @@ const sendEmail = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             pass: process.env.NODE_MAILER_PASSWORD,
         },
     });
-    yield transporter.sendMail({
+    const mailData = {
         from: '"DocEye 🩺" <utsho926@gmail.com>', // sender address
         to: payload.toEmail, // list of receivers
         subject: payload.subject, // Subject line
         text: payload.text,
         html: payload.html,
-    });
+    };
+    yield transporter.sendMail(mailData);
 });
 exports.sendEmail = sendEmail;

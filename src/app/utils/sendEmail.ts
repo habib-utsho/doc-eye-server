@@ -17,11 +17,13 @@ export const sendEmail = async (payload: TPayload) => {
     },
   });
 
-  await transporter.sendMail({
+  const mailData = {
     from: '"DocEye 🩺" <utsho926@gmail.com>', // sender address
     to: payload.toEmail, // list of receivers
     subject: payload.subject, // Subject line
     text: payload.text,
     html: payload.html,
-  });
+  }
+  await transporter.sendMail(mailData);
+
 };
