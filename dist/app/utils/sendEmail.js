@@ -18,11 +18,15 @@ const sendEmail = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const transporter = nodemailer_1.default.createTransport({
         host: "smtp.gmail.com",
         port: 587,
-        secure: process.env.NODE_ENV === "production", // true for port 465, false for other ports
+        // secure: process.env.NODE_ENV === "production", // true for port 465, false for other ports
+        secure: false,
         auth: {
             user: process.env.NODE_MAILER_USER,
             pass: process.env.NODE_MAILER_PASSWORD,
         },
+        tls: {
+            rejectUnauthorized: false // Sometimes helps on some hosts
+        }
     });
     const mailData = {
         from: '"DocEye 🩺" <utsho926@gmail.com>', // sender address
