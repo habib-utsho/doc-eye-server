@@ -354,7 +354,6 @@ const resetPassword = async (
   payload: TResetPassword,
   jwtPayload: JwtPayload,
 ) => {
-  console.log({ payload, jwtPayload });
   const user = await User.findOne({ email: payload.email })
 
   if (!user) {

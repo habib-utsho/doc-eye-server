@@ -214,7 +214,69 @@ const forgetPassword = (payload) => __awaiter(void 0, void 0, void 0, function* 
     if (!user) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found!');
     }
-    const jwtPayload = { _id: user === null || user === void 0 ? void 0 : user._id, email: user.email, role: user.role };
+    let updatedUser;
+    const isDoctor = (user === null || user === void 0 ? void 0 : user.role) === 'doctor';
+    const isPatient = (user === null || user === void 0 ? void 0 : user.role) === 'patient';
+    const isAdmin = (user === null || user === void 0 ? void 0 : user.role) === 'admin';
+    if (isDoctor) {
+        const doctor = (yield doctor_model_1.default.findOne({ user: user === null || user === void 0 ? void 0 : user._id }));
+        const doctorStatus = doctor === null || doctor === void 0 ? void 0 : doctor.status;
+        const isDoctorDeleted = doctor === null || doctor === void 0 ? void 0 : doctor.isDeleted;
+        if (isDoctorDeleted) {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'This doctor is deleted!');
+        }
+        if (doctorStatus !== 'approve') {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, doctorStatus === 'pending'
+                ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
+                : 'Your account is rejected by admin!');
+        }
+        updatedUser = {
+            userId: user === null || user === void 0 ? void 0 : user._id,
+            _id: doctor === null || doctor === void 0 ? void 0 : doctor._id,
+            email: user === null || user === void 0 ? void 0 : user.email,
+            role: user === null || user === void 0 ? void 0 : user.role,
+            name: doctor.name,
+            profileImg: doctor.profileImg,
+        };
+    }
+    if (isPatient) {
+        const patient = (yield patient_model_1.default.findOne({ user: user === null || user === void 0 ? void 0 : user._id }));
+        const isPatientDeleted = patient === null || patient === void 0 ? void 0 : patient.isDeleted;
+        if (isPatientDeleted) {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'This patient is deleted!');
+        }
+        updatedUser = {
+            userId: user === null || user === void 0 ? void 0 : user._id,
+            _id: patient === null || patient === void 0 ? void 0 : patient._id,
+            email: user === null || user === void 0 ? void 0 : user.email,
+            role: user === null || user === void 0 ? void 0 : user.role,
+            name: patient.name,
+            profileImg: patient.profileImg,
+        };
+    }
+    if (isAdmin) {
+        const admin = (yield admin_model_1.default.findOne({ user: user === null || user === void 0 ? void 0 : user._id }));
+        const isAdminDeleted = admin === null || admin === void 0 ? void 0 : admin.isDeleted;
+        if (isAdminDeleted) {
+            throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'This admin is deleted!');
+        }
+        updatedUser = {
+            userId: user === null || user === void 0 ? void 0 : user._id,
+            _id: admin === null || admin === void 0 ? void 0 : admin._id,
+            email: user === null || user === void 0 ? void 0 : user.email,
+            role: user === null || user === void 0 ? void 0 : user.role,
+            name: admin.name,
+            profileImg: admin.profileImg,
+        };
+    }
+    const jwtPayload = {
+        userId: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.userId,
+        _id: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser._id,
+        email: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.email,
+        role: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.role,
+        name: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.name,
+        profileImg: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.profileImg,
+    };
     const accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_ACCESS_SECRET, {
         expiresIn: '10m',
     });
@@ -260,7 +322,7 @@ const changePassword = (userPayload, payload) => __awaiter(void 0, void 0, void 
     }
     const decryptPass = yield bcrypt_1.default.compare(payload.oldPassword, user.password);
     if (!decryptPass) {
-        throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'Password is not match');
+        throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'Old password is incorrect!');
     }
     const hashedPass = yield bcrypt_1.default.hash(payload.newPassword, Number(process.env.SALT_ROUNDS));
     const result = yield user_model_1.default.findOneAndUpdate({ email: userPayload.email }, { password: hashedPass, needsPasswordChange: false }, { new: true }).select('-password');
