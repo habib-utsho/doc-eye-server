@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import QueryBuilder from '../../builder/QueryBuilder'
 import Doctor from './doctor.model'
 import { doctorSearchableFields } from './doctor.constant'
@@ -8,6 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import moment from 'moment'
 import Specialty from '../specialty/specialty.model'
 import jwt from 'jsonwebtoken'
+import { sendEmail } from '../../utils/sendEmail'
 
 
 const getAllDoctor = async (query: Record<string, unknown>) => {
@@ -121,7 +123,7 @@ const updateDoctorById = async (
   file: any,
   payload: Partial<TDoctor>,
 ) => {
-  const {
+  let {
     availability,
     currentWorkplace,
     workingExperiences,
@@ -130,6 +132,11 @@ const updateDoctorById = async (
   } = payload
   const modifiedUpdatedData: Record<string, unknown> = {
     ...restDoctorData,
+  }
+
+  let existDoctor = await Doctor.findById(id)
+  if (!existDoctor) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Doctor not found!')
   }
 
   // console.log(payload);
@@ -162,9 +169,17 @@ const updateDoctorById = async (
 
 
   // Validate medicalSpecialties IDs
-  const validSpecialties = await Specialty.find({
-    _id: { $in: payload.medicalSpecialties },
-  }).select('_id')
+  let validSpecialties: any[];
+
+  if (!payload.medicalSpecialties || medicalSpecialties?.length === 0) {
+    validSpecialties = [];
+    medicalSpecialties = [];
+  } else {
+    validSpecialties = await Specialty.find({
+      _id: { $in: payload.medicalSpecialties },
+    }).select('_id')
+  }
+
 
   if (validSpecialties?.length !== medicalSpecialties?.length) {
     throw new AppError(
@@ -183,6 +198,15 @@ const updateDoctorById = async (
     if (cloudinaryRes?.secure_url) {
       modifiedUpdatedData.profileImg = cloudinaryRes.secure_url
     }
+  }
+
+  if (payload.status && payload.status === 'approve') {
+    await sendEmail({
+      toEmail: existDoctor.email as string,
+      subject: 'Doctor Account Approved',
+      text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nCongratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.\n\nBest regards,\nDocEye Team`,
+      html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>Congratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.</p><p>Best regards,<br/>DocEye Team</p>`,
+    })
   }
 
   const doctor = await Doctor.findByIdAndUpdate(id, modifiedUpdatedData, {

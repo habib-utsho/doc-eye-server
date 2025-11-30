@@ -46,7 +46,7 @@ const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         }
         if (doctorStatus !== 'approve') {
             throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, doctorStatus === 'pending'
-                ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
+                ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!`
                 : 'Your account is rejected by admin!');
         }
         updatedUser = {

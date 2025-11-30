@@ -40,7 +40,7 @@ const login = async (payload: TLoginUser) => {
       throw new AppError(
         StatusCodes.FORBIDDEN,
         doctorStatus === 'pending'
-          ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!'`
+          ? `Dear ${doctor.doctorTitle} ${doctor.name}, wait for admin approval. You will be notified via email!`
           : 'Your account is rejected by admin!',
       )
     }

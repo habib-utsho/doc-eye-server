@@ -24,6 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.doctorServices = void 0;
+/* eslint-disable prefer-const */
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const doctor_model_1 = __importDefault(require("./doctor.model"));
 const doctor_constant_1 = require("./doctor.constant");
@@ -33,6 +34,7 @@ const http_status_codes_1 = require("http-status-codes");
 const moment_1 = __importDefault(require("moment"));
 const specialty_model_1 = __importDefault(require("../specialty/specialty.model"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const sendEmail_1 = require("../../utils/sendEmail");
 const getAllDoctor = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const availabilityQuery = query.availability;
     delete query.availability;
@@ -125,8 +127,12 @@ const getDoctorByDoctorCode = (id) => __awaiter(void 0, void 0, void 0, function
 // TODO: need to handle workingExperiences and medicalSpecialties for update doctor
 const updateDoctorById = (id, file, payload) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    const { availability, currentWorkplace, workingExperiences, medicalSpecialties } = payload, restDoctorData = __rest(payload, ["availability", "currentWorkplace", "workingExperiences", "medicalSpecialties"]);
+    let { availability, currentWorkplace, workingExperiences, medicalSpecialties } = payload, restDoctorData = __rest(payload, ["availability", "currentWorkplace", "workingExperiences", "medicalSpecialties"]);
     const modifiedUpdatedData = Object.assign({}, restDoctorData);
+    let existDoctor = yield doctor_model_1.default.findById(id);
+    if (!existDoctor) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'Doctor not found!');
+    }
     // console.log(payload);
     // update non primitive values
     // Update availability
@@ -150,9 +156,16 @@ const updateDoctorById = (id, file, payload) => __awaiter(void 0, void 0, void 0
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, "Follow up fee should be less than or equal to consultation fee");
     }
     // Validate medicalSpecialties IDs
-    const validSpecialties = yield specialty_model_1.default.find({
-        _id: { $in: payload.medicalSpecialties },
-    }).select('_id');
+    let validSpecialties;
+    if (!payload.medicalSpecialties || (medicalSpecialties === null || medicalSpecialties === void 0 ? void 0 : medicalSpecialties.length) === 0) {
+        validSpecialties = [];
+        medicalSpecialties = [];
+    }
+    else {
+        validSpecialties = yield specialty_model_1.default.find({
+            _id: { $in: payload.medicalSpecialties },
+        }).select('_id');
+    }
     if ((validSpecialties === null || validSpecialties === void 0 ? void 0 : validSpecialties.length) !== (medicalSpecialties === null || medicalSpecialties === void 0 ? void 0 : medicalSpecialties.length)) {
         throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'One or more medical specialty IDs are invalid!');
     }
@@ -163,6 +176,14 @@ const updateDoctorById = (id, file, payload) => __awaiter(void 0, void 0, void 0
         if (cloudinaryRes === null || cloudinaryRes === void 0 ? void 0 : cloudinaryRes.secure_url) {
             modifiedUpdatedData.profileImg = cloudinaryRes.secure_url;
         }
+    }
+    if (payload.status && payload.status === 'approve') {
+        yield (0, sendEmail_1.sendEmail)({
+            toEmail: existDoctor.email,
+            subject: 'Doctor Account Approved',
+            text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nCongratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.\n\nBest regards,\nDocEye Team`,
+            html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>Congratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.</p><p>Best regards,<br/>DocEye Team</p>`,
+        });
     }
     const doctor = yield doctor_model_1.default.findByIdAndUpdate(id, modifiedUpdatedData, {
         new: true,
