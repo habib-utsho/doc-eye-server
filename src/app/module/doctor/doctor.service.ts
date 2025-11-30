@@ -200,13 +200,22 @@ const updateDoctorById = async (
     }
   }
 
-  if (payload.status && payload.status === 'approve') {
-    await sendEmail({
-      toEmail: existDoctor.email as string,
-      subject: 'Doctor Account Approved',
-      text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nCongratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.\n\nBest regards,\nDocEye Team`,
-      html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>Congratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.</p><p>Best regards,<br/>DocEye Team</p>`,
-    })
+  if (payload.status) {
+    if (payload?.status === 'approve' && existDoctor.status !== 'approve') {
+      await sendEmail({
+        toEmail: existDoctor.email as string,
+        subject: 'Doctor Account Approved',
+        text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nCongratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.\n\nBest regards,\nDocEye Team`,
+        html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>Congratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.</p><p>Best regards,<br/>DocEye Team</p>`,
+      })
+    } else if (payload?.status === 'reject' && existDoctor.status !== 'reject') {
+      await sendEmail({
+        toEmail: existDoctor.email as string,
+        subject: 'Doctor Account Rejected',
+        text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nWe regret to inform you that your doctor account application has been rejected by the admin. For more information, please contact our support team.\n\nBest regards,\nDocEye Team`,
+        html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>We regret to inform you that your doctor account application has been rejected by the admin. For more information, please contact our support team.</p><p>Best regards,<br/>DocEye Team</p>`,
+      })
+    }
   }
 
   const doctor = await Doctor.findByIdAndUpdate(id, modifiedUpdatedData, {
