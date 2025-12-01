@@ -38,8 +38,12 @@ class QueryBuilder<T> {
 
   //   Sort method
   public sortQuery() {
-    const sort =
+    let sort =
       (this.query?.sort as string)?.split(',')?.join(' ') || '-createdAt'
+
+    if (!sort.includes('_id') && !sort.includes('-_id')) {
+      sort = `${sort} _id`
+    }
 
     this.queryModel = this.queryModel.sort(sort)
     return this

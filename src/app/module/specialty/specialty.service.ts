@@ -21,10 +21,7 @@ const createSpecialty = async (file: any, payload: TSpecialty) => {
   return result
 }
 const getAllSpecialty = async (query: Record<string, unknown>) => {
-  const specialtyQuery = new QueryBuilder(Specialty.find(), {
-    ...query,
-    sort: `${query.sort} isDeleted`,
-  })
+  const specialtyQuery = new QueryBuilder(Specialty.find(), query)
     .searchQuery(specialtySearchableField)
     .filterQuery()
     .sortQuery()
