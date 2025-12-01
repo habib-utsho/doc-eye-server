@@ -177,13 +177,23 @@ const updateDoctorById = (id, file, payload) => __awaiter(void 0, void 0, void 0
             modifiedUpdatedData.profileImg = cloudinaryRes.secure_url;
         }
     }
-    if (payload.status && payload.status === 'approve') {
-        yield (0, sendEmail_1.sendEmail)({
-            toEmail: existDoctor.email,
-            subject: 'Doctor Account Approved',
-            text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nCongratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.\n\nBest regards,\nDocEye Team`,
-            html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>Congratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.</p><p>Best regards,<br/>DocEye Team</p>`,
-        });
+    if (payload.status) {
+        if ((payload === null || payload === void 0 ? void 0 : payload.status) === 'approve' && existDoctor.status !== 'approve') {
+            yield (0, sendEmail_1.sendEmail)({
+                toEmail: existDoctor.email,
+                subject: 'Doctor Account Approved',
+                text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nCongratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.\n\nBest regards,\nDocEye Team`,
+                html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>Congratulations! Your doctor account has been approved by the admin. You can now log in and start using our services.</p><p>Best regards,<br/>DocEye Team</p>`,
+            });
+        }
+        else if ((payload === null || payload === void 0 ? void 0 : payload.status) === 'reject' && existDoctor.status !== 'reject') {
+            yield (0, sendEmail_1.sendEmail)({
+                toEmail: existDoctor.email,
+                subject: 'Doctor Account Rejected',
+                text: `Dear ${existDoctor.doctorTitle} ${existDoctor.name},\n\nWe regret to inform you that your doctor account application has been rejected by the admin. For more information, please contact our support team.\n\nBest regards,\nDocEye Team`,
+                html: `<p>Dear ${existDoctor.doctorTitle} ${existDoctor.name},</p><p>We regret to inform you that your doctor account application has been rejected by the admin. For more information, please contact our support team.</p><p>Best regards,<br/>DocEye Team</p>`,
+            });
+        }
     }
     const doctor = yield doctor_model_1.default.findByIdAndUpdate(id, modifiedUpdatedData, {
         new: true,

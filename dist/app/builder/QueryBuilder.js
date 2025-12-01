@@ -29,7 +29,10 @@ class QueryBuilder {
     //   Sort method
     sortQuery() {
         var _a, _b, _c;
-        const sort = ((_c = (_b = (_a = this.query) === null || _a === void 0 ? void 0 : _a.sort) === null || _b === void 0 ? void 0 : _b.split(',')) === null || _c === void 0 ? void 0 : _c.join(' ')) || '-createdAt';
+        let sort = ((_c = (_b = (_a = this.query) === null || _a === void 0 ? void 0 : _a.sort) === null || _b === void 0 ? void 0 : _b.split(',')) === null || _c === void 0 ? void 0 : _c.join(' ')) || '-createdAt';
+        if (!sort.includes('_id') && !sort.includes('-_id')) {
+            sort = `${sort} _id`;
+        }
         this.queryModel = this.queryModel.sort(sort);
         return this;
     }

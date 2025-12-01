@@ -30,7 +30,7 @@ const createSpecialty = (file, payload) => __awaiter(void 0, void 0, void 0, fun
     return result;
 });
 const getAllSpecialty = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const specialtyQuery = new QueryBuilder_1.default(specialty_model_1.default.find(), Object.assign(Object.assign({}, query), { sort: `${query.sort} isDeleted` }))
+    const specialtyQuery = new QueryBuilder_1.default(specialty_model_1.default.find(), query)
         .searchQuery(specialty_constant_1.specialtySearchableField)
         .filterQuery()
         .sortQuery()
