@@ -65,6 +65,27 @@ const getAdminStats = catchAsync(async (req, res) => {
 })
 
 
+const getEarningsStats = catchAsync(async (req, res) => {
+  const pUser = req?.user;
+  if (!pUser) {
+    throw new AppError(
+      StatusCodes.UNAUTHORIZED,
+      'You are not authorized to access this route',
+    )
+  }
+
+  const year = req.query.year ? parseInt(req.query.year as string, 10) : undefined;
+
+  const data = await statsService.getEarningsStats(pUser, year);
+
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: `${pUser.role === "patient" ? "Expenses" : "Earnings"} stats retrieved successfully${pUser.role === "admin" ? "!" : ` for ${pUser.name}!`}`,
+    data,
+  })
+})
+
+
 export const statsController = {
-  getPatientStats, getDoctorStats, getAdminStats
+  getPatientStats, getDoctorStats, getAdminStats, getEarningsStats
 }

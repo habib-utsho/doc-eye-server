@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtPayload } from 'jsonwebtoken'
 import Patient from '../patient/patient.model'
 import Doctor from '../doctor/doctor.model'
@@ -6,13 +7,17 @@ import Appointment from '../appointment/appointment.model'
 import Payment from '../payment/payment.model'
 import { Types } from 'mongoose'
 import Review from '../review/review.model'
+import AppError from '../../errors/appError'
+import { StatusCodes } from 'http-status-codes'
 
 
 
 const getPatientStats = async (pPatient: JwtPayload) => {
 
   const patient = await Patient.findById(pPatient?._id)
-  if (!patient) throw new Error("Patient not found")
+  if (!patient) throw new AppError(StatusCodes.UNAUTHORIZED, "Patient not found")
+
+
 
   // Appointment stats
   const totalAppointments = await Appointment.find({ patient: patient?._id }).countDocuments();
@@ -119,7 +124,8 @@ const getPatientStats = async (pPatient: JwtPayload) => {
 
 const getDoctorStats = async (pDoctor: JwtPayload) => {
   const doctor = await Doctor.findById(pDoctor?._id)
-  if (!doctor) throw new Error("Doctor not found")
+  if (!doctor) throw new AppError(StatusCodes.UNAUTHORIZED, "Doctor not found")
+
 
   const totalAppointments = await Appointment.find({ doctor: doctor?._id }).countDocuments();
   const totalPendingAppointments = await Appointment.find({ status: "pending", doctor: doctor?._id }).countDocuments();
@@ -177,7 +183,7 @@ const getDoctorStats = async (pDoctor: JwtPayload) => {
 
 const getAdminStats = async (pAdmin: JwtPayload) => {
   const admin = await Admin.findById(pAdmin?._id)
-  if (!admin) throw new Error("Admin not found")
+  if (!admin) throw new AppError(StatusCodes.UNAUTHORIZED, "Admin not found")
 
   const totalAppointments = await Appointment.find().countDocuments();
   const totalPendingAppointments = await Appointment.find({ status: "pending" }).countDocuments();
@@ -230,8 +236,106 @@ const getAdminStats = async (pAdmin: JwtPayload) => {
 }
 
 
+
+const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+const getEarningsStats = async (pUser: JwtPayload, yearParam?: number) => {
+
+
+  const { role, _id } = pUser || {}
+
+  let user: any;
+  if (role === "admin") {
+    user = await Admin.findById(_id)
+  } else if (role === 'doctor') {
+    user = await Doctor.findById(_id)
+  } else if (role === 'patient') {
+    user = await Patient.findById(_id)
+  }
+
+  if (!user) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized to access this route')
+  }
+
+  // Determine year and month range
+  const now = new Date()
+  const year = yearParam ?? now.getFullYear()
+  const isCurrentYear = year === now.getFullYear()
+  const lastMonth = isCurrentYear ? now.getMonth() + 1 : 12 // 1..n inclusive
+
+  // Range for the selected year
+  const start = new Date(year, 0, 1)
+  const end = new Date(year + 1, 0, 1)
+
+
+  // Build match condition
+  const match: any = {
+    status: "confirmed",
+    createdAt: { $gte: start, $lt: end },
+  };
+
+  if (role === "doctor") {
+    match["doctor"] = user._id;
+  } else if (role === "patient") {
+    match["patient"] = user._id
+  }
+
+  // Aggregate confirmed payments by month for given year
+  const monthlyAgg = await Payment.aggregate([
+    {
+      $match: match
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$createdAt" } },
+        totalAmount: { $sum: "$amount.total" },
+        totalPayments: { $sum: 1 },
+      },
+    },
+  ])
+
+  // Map results by month number
+  const byMonth: Record<number, { totalAmount: number; totalPayments: number }> = {}
+  for (const m of monthlyAgg) {
+    byMonth[m._id.month] = {
+      totalAmount: m.totalAmount || 0,
+      totalPayments: m.totalPayments || 0,
+    }
+  }
+
+  // Build series from Jan to lastMonth (current year) or 12 (other years)
+  const months = Array.from({ length: lastMonth }, (_, i) => {
+    const monthNum = i + 1 // 1..lastMonth
+    const data = byMonth[monthNum] ?? { totalAmount: 0, totalPayments: 0 }
+    return {
+      monthIndex: monthNum,            // 1-12
+      month: monthNames[i],            // "January", ...
+      totalAmount: data.totalAmount,
+      totalPayments: data.totalPayments,
+    }
+  })
+
+  const totals = months.reduce(
+    (acc, m) => {
+      acc.totalAmount += m.totalAmount
+      acc.totalPayments += m.totalPayments
+      return acc
+    },
+    { totalAmount: 0, totalPayments: 0 },
+  )
+
+  return {
+    // user,
+    year,
+    months,                // month-wise series (Jan..current or full 12)
+    totalAmount: totals.totalAmount,
+    totalPayments: totals.totalPayments,
+  }
+}
+
 export const statsService = {
   getPatientStats,
   getDoctorStats,
-  getAdminStats
+  getAdminStats,
+  getEarningsStats
 }

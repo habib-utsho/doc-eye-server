@@ -54,6 +54,19 @@ const getAdminStats = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data,
     });
 }));
+const getEarningsStats = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const pUser = req === null || req === void 0 ? void 0 : req.user;
+    if (!pUser) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'You are not authorized to access this route');
+    }
+    const year = req.query.year ? parseInt(req.query.year, 10) : undefined;
+    const data = yield stats_service_1.statsService.getEarningsStats(pUser, year);
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: `${pUser.role === "patient" ? "Expenses" : "Earnings"} stats retrieved successfully${pUser.role === "admin" ? "!" : ` for ${pUser.name}!`}`,
+        data,
+    });
+}));
 exports.statsController = {
-    getPatientStats, getDoctorStats, getAdminStats
+    getPatientStats, getDoctorStats, getAdminStats, getEarningsStats
 };

@@ -13,3 +13,4 @@ exports.statsRouter = router;
 router.get('/patient', (0, auth_1.default)(user_constant_1.USER_ROLE.PATIENT), stats_controller_1.statsController.getPatientStats);
 router.get('/doctor', (0, auth_1.default)(user_constant_1.USER_ROLE.DOCTOR), stats_controller_1.statsController.getDoctorStats);
 router.get('/admin', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), stats_controller_1.statsController.getAdminStats);
+router.get('/earnings', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN, user_constant_1.USER_ROLE.DOCTOR, user_constant_1.USER_ROLE.PATIENT), stats_controller_1.statsController.getEarningsStats);
