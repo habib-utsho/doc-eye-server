@@ -16,9 +16,9 @@ router.post(
 );
 
 // Get all messages with pagination & filters
-router.get("/", messageController.getAllMessages);
+router.get("/", auth(USER_ROLE.PATIENT, USER_ROLE.DOCTOR, USER_ROLE.ADMIN), messageController.getAllMessages);
 
 // Get a single message by ID
-router.get("/:id", messageController.getMessageById);
+router.get("/:id", auth(USER_ROLE.PATIENT, USER_ROLE.DOCTOR, USER_ROLE.ADMIN), messageController.getMessageById);
 
 export { router as messageRouter };
