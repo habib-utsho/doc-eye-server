@@ -15,6 +15,6 @@ exports.messageRouter = router;
 // Send a new message
 router.post("/", (0, auth_1.default)(user_constant_1.USER_ROLE.PATIENT), (0, zodValidateHandler_1.default)(message_validation_1.messageZodSchema.createMessageZodSchema), message_controller_1.messageController.createMessage);
 // Get all messages with pagination & filters
-router.get("/", message_controller_1.messageController.getAllMessages);
+router.get("/", (0, auth_1.default)(user_constant_1.USER_ROLE.PATIENT, user_constant_1.USER_ROLE.DOCTOR, user_constant_1.USER_ROLE.ADMIN), message_controller_1.messageController.getAllMessages);
 // Get a single message by ID
-router.get("/:id", message_controller_1.messageController.getMessageById);
+router.get("/:id", (0, auth_1.default)(user_constant_1.USER_ROLE.PATIENT, user_constant_1.USER_ROLE.DOCTOR, user_constant_1.USER_ROLE.ADMIN), message_controller_1.messageController.getMessageById);

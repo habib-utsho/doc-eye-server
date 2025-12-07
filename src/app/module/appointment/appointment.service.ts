@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes'
 import AppError from '../../errors/appError'
 import Appointment from './appointment.model'
 import QueryBuilder from '../../builder/QueryBuilder'
-import { appointmentSearchableFields } from './appointment.constant'
 
 const getAllAppointments = async (query: Record<string, unknown>) => {
   const dateFilter: any = {}
