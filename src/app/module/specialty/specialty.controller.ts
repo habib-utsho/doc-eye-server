@@ -30,7 +30,7 @@ const getAllSpecialties = catchAsync(async (req, res) => {
 })
 
 const getSpecialtyById = catchAsync(async (req, res) => {
-  const specialty = await specialtyService.getSpecialtyById(req.params?.id)
+  const specialty = await specialtyService.getSpecialtyById(req.params?.id as string)
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Specialty is retrieved successfully!',
@@ -41,7 +41,7 @@ const getSpecialtyById = catchAsync(async (req, res) => {
 const updateSpecialtyById = catchAsync(async (req, res) => {
   const specialty = await specialtyService.updateSpecialtyById(
     req.file,
-    req.params?.id,
+    req.params?.id as string,
     req.body,
   )
   if (!specialty) {
@@ -55,7 +55,7 @@ const updateSpecialtyById = catchAsync(async (req, res) => {
 })
 
 const deleteSpecialtyById = catchAsync(async (req, res) => {
-  const specialty = await specialtyService.deleteSpecialtyById(req.params.id)
+  const specialty = await specialtyService.deleteSpecialtyById(req.params?.id as string)
   if (!specialty) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Specialty not found!')
   }

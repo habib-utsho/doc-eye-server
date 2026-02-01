@@ -21,7 +21,7 @@ const getAllAdmins: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const getAdminById: RequestHandler = catchAsync(async (req, res) => {
-  const admin = await adminServices.getAdminById(req.params?.id)
+  const admin = await adminServices.getAdminById(req.params?.id as string)
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Admin is retrieved successfully!',
@@ -32,7 +32,7 @@ const getAdminById: RequestHandler = catchAsync(async (req, res) => {
 
 const updateAdminById: RequestHandler = catchAsync(async (req, res) => {
   const { admin, accessToken, refreshToken } = await adminServices.updateAdminById(
-    req.params?.id,
+    req.params?.id as string,
     req.file,
     req.body,
   )
@@ -65,7 +65,7 @@ const updateAdminById: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const deleteAdminById = catchAsync(async (req, res) => {
-  const admin = await adminServices.deleteAdminById(req.params.id)
+  const admin = await adminServices.deleteAdminById(req.params?.id as string)
   if (!admin) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Admin not found!')
   }

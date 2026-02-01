@@ -21,7 +21,7 @@ const getAllPatients: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const getPatientById: RequestHandler = catchAsync(async (req, res) => {
-  const patient = await patientServices.getPatientById(req.params?.id) // Change to getPatientById
+  const patient = await patientServices.getPatientById(req.params?.id as string) // Change to getPatientById
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Patient is retrieved successfully!', // Update message
@@ -42,9 +42,7 @@ const updateFavoriteDoctors: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const makePatientAdmin: RequestHandler = catchAsync(async (req, res) => {
-  const admin = await patientServices.makePatientAdmin(
-    req.params?.id,
-  )
+  const admin = await patientServices.makePatientAdmin(req.params?.id as string) // Change to makePatientAdmin
   if (!admin) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Patient not updated!') // Update message
   }
@@ -58,7 +56,7 @@ const makePatientAdmin: RequestHandler = catchAsync(async (req, res) => {
 
 const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
   const { patient, accessToken, refreshToken } = await patientServices.updatePatientById(
-    req.params?.id,
+    req.params?.id as string,
     req.file,
     req.body,
   )
@@ -91,7 +89,7 @@ const updatePatientById: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const deletePatientById = catchAsync(async (req, res) => {
-  const patient = await patientServices.deletePatientById(req.params.id) // Change to deletePatientById
+  const patient = await patientServices.deletePatientById(req.params?.id as string) // Change to deletePatientById
   if (!patient) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Patient not found!') // Update message
   }

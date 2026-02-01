@@ -20,9 +20,7 @@ const getAllAppointment = catchAsync(async (req, res) => {
 })
 
 const getAppointmentById: RequestHandler = catchAsync(async (req, res) => {
-  const appointment = await appointmentService.getAppointmentById(
-    req.params?.id,
-  )
+  const appointment = await appointmentService.getAppointmentById(req.params?.id as string);
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Appointment is retrieved successfully!',
@@ -32,7 +30,7 @@ const getAppointmentById: RequestHandler = catchAsync(async (req, res) => {
 
 const updateAppointmentStatusById = catchAsync(async (req, res) => {
   const result = await appointmentService.updateAppointmentStatusById(
-    req.params?.id,
+    req.params?.id as string,
     req.body,
   )
   sendResponse(res, StatusCodes.OK, {

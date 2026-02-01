@@ -47,7 +47,7 @@ const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const getUserById: RequestHandler = catchAsync(async (req, res) => {
-  const user = await userServices.getSingleUserById(req.params?.id)
+  const user = await userServices.getSingleUserById(req.params?.id as string)
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
   }
@@ -58,7 +58,7 @@ const getUserById: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 const toggleUserStatus: RequestHandler = catchAsync(async (req, res) => {
-  const user = await userServices.toggleUserStatus(req.params?.id)
+  const user = await userServices.toggleUserStatus(req.params?.id as string)
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
   }

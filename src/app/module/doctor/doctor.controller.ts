@@ -21,7 +21,7 @@ const getAllDoctor: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const getDoctorById: RequestHandler = catchAsync(async (req, res) => {
-  const doctor = await doctorServices.getDoctorById(req.params?.id)
+  const doctor = await doctorServices.getDoctorById(req.params?.id as string);
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Doctor is retrieved successfully!',
@@ -29,7 +29,7 @@ const getDoctorById: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 const getDoctorByDoctorCode: RequestHandler = catchAsync(async (req, res) => {
-  const doctor = await doctorServices.getDoctorByDoctorCode(req.params?.id)
+  const doctor = await doctorServices.getDoctorByDoctorCode(req.params?.id as string);
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Doctor is retrieved successfully!',
@@ -39,7 +39,7 @@ const getDoctorByDoctorCode: RequestHandler = catchAsync(async (req, res) => {
 
 const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
   const { doctor, accessToken, refreshToken } = await doctorServices.updateDoctorById(
-    req.params?.id,
+    req.params?.id as string,
     req.file,
     req.body,
   )
@@ -71,7 +71,7 @@ const updateDoctorById: RequestHandler = catchAsync(async (req, res) => {
 })
 
 const deleteDoctorById = catchAsync(async (req, res) => {
-  const doctor = await doctorServices.deleteDoctorById(req.params.id)
+  const doctor = await doctorServices.deleteDoctorById(req.params?.id as string);
   if (!doctor) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Doctor not found!')
   }

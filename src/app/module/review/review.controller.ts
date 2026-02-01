@@ -33,7 +33,7 @@ const getAllReview = catchAsync(async (req, res) => {
 })
 
 const getReviewById: RequestHandler = catchAsync(async (req, res) => {
-  const appointment = await reviewService.getReviewById(req.params?.id)
+  const appointment = await reviewService.getReviewById(req.params?.id as string)
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Review is retrieved successfully!',

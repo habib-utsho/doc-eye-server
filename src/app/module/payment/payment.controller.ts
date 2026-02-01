@@ -44,7 +44,7 @@ const getAllPayment = catchAsync(async (req, res) => {
   })
 })
 const getPaymentById: RequestHandler = catchAsync(async (req, res) => {
-  const patient = await paymentService.getPaymentById(req.params?.id)
+  const patient = await paymentService.getPaymentById(req.params?.id as string)
   sendResponse(res, StatusCodes.OK, {
     success: true,
     message: 'Payment is retrieved successfully!',

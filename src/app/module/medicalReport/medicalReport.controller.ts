@@ -36,7 +36,7 @@ const getAllMedicalReports = catchAsync(async (req, res) => {
 })
 
 const getMedicalReportById: RequestHandler = catchAsync(async (req, res) => {
-  const report = await medicalReportService.getMedicalReportById(req.params?.id)
+  const report = await medicalReportService.getMedicalReportById(req.params?.id as string)
 
   sendResponse(res, StatusCodes.OK, {
     success: true,

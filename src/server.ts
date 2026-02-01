@@ -2,6 +2,9 @@ import mongoose from 'mongoose'
 import { ioServer } from './app'
 import { Server } from 'http'
 
+// node 24 + mongoose If your local network's DNS (like a router or ISP) cannot resolve the SRV record, you can force Node.js to use Google's DNS (8.8.8.8) directly in your code:
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']); // Force Node to use Google DNS for SRV lookups
 
 const PORT = Number(process.env.PORT || process.env.SOCKET_PORT || 3000)
 const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : undefined

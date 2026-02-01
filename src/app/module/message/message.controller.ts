@@ -34,7 +34,7 @@ const getAllMessages = catchAsync(async (req, res) => {
 });
 
 const getMessageById: RequestHandler = catchAsync(async (req, res) => {
-  const message = await messageService.getMessageById(req.params?.id);
+  const message = await messageService.getMessageById(req.params?.id as string);
 
   sendResponse(res, StatusCodes.OK, {
     success: true,
