@@ -13,11 +13,7 @@ const ReviewSchema = new Schema<TReview>(
       ref: 'Patient',
       required: true,
     },
-    appointment: {
-      type: Schema.Types.ObjectId,
-      ref: 'Appointment',
-      required: true,
-    },
+
     rating: {
       type: Number,
       required: true,
