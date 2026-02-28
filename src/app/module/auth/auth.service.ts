@@ -358,6 +358,7 @@ This link will expire in 10 minutes. If you did not request this, please ignore 
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      border: 1px solid #0000000f;
     }
     .header {
       background: linear-gradient(135deg, #1e40af, #0ea5e9);

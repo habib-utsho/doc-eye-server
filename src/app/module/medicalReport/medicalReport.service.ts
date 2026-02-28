@@ -64,7 +64,8 @@ const createMedicalReport = async (
       <title>Your Medical Report is Ready</title>
       <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7fa; margin: 0; padding: 0; }
-        .container { max-width: 650px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .container { max-width: 650px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #0000000f; }
+        
         .header { background: linear-gradient(135deg, #2b6cb0, #1e40af); color: white; padding: 30px; text-align: center; }
         .header h1 { margin: 0; font-size: 26px; }
         .content { padding: 30px; color: #333; }
