@@ -332,21 +332,137 @@ const forgetPassword = async (payload: Record<string, unknown>) => {
   const resetLink = `${process.env.CLIENT_URL}/reset-password?email=${user.email}&token=${accessToken}`
   await sendEmail({
     toEmail: user.email,
-    subject: 'Reset your password for Doc Eye!',
-    text: `You requested a password reset for your account. Please click the link below to reset your password:
-    ${resetLink} This link will expire in 10 minutes. If you did not request a password reset, please ignore this email.`,
+    subject: "Reset Your Password – DocEye",
+    text: `You requested a password reset for your account.
+Please use the link below to reset your password:
+${resetLink}
+This link will expire in 10 minutes. If you did not request this, please ignore this email.`,
     html: `
-    <p>You requested a password reset for your account.</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Reset - DocEye</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fb;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container {
+      max-width: 650px;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+    .header {
+      background: linear-gradient(135deg, #1e40af, #0ea5e9);
+      color: #ffffff;
+      padding: 30px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .header p {
+      margin: 8px 0 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 35px 30px;
+      color: #333333;
+      line-height: 1.6;
+    }
+    .content h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #1e40af;
+    }
+    .info-box {
+      background: #f8fafc;
+      border-left: 4px solid #0ea5e9;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #475569;
+    }
+    .btn-wrapper {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .btn {
+      display: inline-block;
+      background: #1e40af;
+      color: #ffffff !important;
+      padding: 14px 36px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 15px;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+    .footer {
+      background: #0f172a;
+      color: #94a3b8;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+    }
+    .footer p {
+      margin: 6px 0;
+    }
+  </style>
+</head>
 
-    <p>Please click the link below to reset your password:</p>
+<body>
+  <div class="container">
+    
+    <div class="header">
+      <h1>DocEye</h1>
+      <p>Secure Password Reset Request</p>
+    </div>
 
- <div>
-    <a href="${resetLink}" style="background-color: #05668D; margin: 5px 0; cursor: pointer; padding: 10px 20px; border-radius: 5px; color: white; font-weight: bold; text-decoration: none; display: inline-block;">Reset Password</a>
+    <div class="content">
+      <h2>Hello user,</h2>
+
+      <p>We received a request to reset your password for your DocEye account.</p>
+
+      <div class="info-box">
+        For security reasons, this reset link will expire in <strong>10 minutes</strong>.
+      </div>
+
+      <div class="btn-wrapper">
+        <a href="${resetLink}" class="btn">Reset Your Password</a>
+      </div>
+
+      <p>If you did not request a password reset, you can safely ignore this email. Your account will remain secure.</p>
+
+      <p>If the button above does not work, copy and paste the link below into your browser:</p>
+      <p style="word-break: break-all; font-size: 13px; color: #0ea5e9;">
+        ${resetLink}
+      </p>
+
+      <p>Thank you,<br><strong>DocEye Security Team</strong></p>
+    </div>
+
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} DocEye. All rights reserved.</p>
+      <p>This is an automated security message. Please do not reply directly to this email.</p>
+    </div>
+
   </div>
-
-    <p>This link will expire in 10 minutes. If you did not request a password reset, please ignore this email.</p>
-    `,
-  })
+</body>
+</html>`});
   return { resetLink }
 }
 

@@ -128,8 +128,6 @@ const getDoctorStats = async (pDoctor: JwtPayload) => {
 
 
 
-    
-
   const totalAppointments = await Appointment.find({ doctor: doctor?._id }).countDocuments();
   const totalPendingAppointments = await Appointment.find({ status: "pending", doctor: doctor?._id }).countDocuments();
   const totalConfirmedAppointments = await Appointment.find({ status: "confirmed", doctor: doctor?._id }).countDocuments();
