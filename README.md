@@ -28,6 +28,8 @@ Secure, scalable, and real-time enabled backend for a full-stack doctor appointm
 | MongoDB + Mongoose  | Database & ODM (assumed – adjust if different) |
 | Multer + Cloudinary | File uploads                                   |
 | AamarPay SDK        | Payment processing                             |
+| Brevo               | Real-Time Email Notifications                  |
+| Jitsi               | Video call                                     |
 | JWT                 | Authentication                                 |
 | bcrypt              | Password hashing                               |
 | dotenv              | Environment management                         |
