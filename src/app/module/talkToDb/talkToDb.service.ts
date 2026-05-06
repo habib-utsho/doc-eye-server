@@ -40,7 +40,7 @@ You are a MongoDB query assistant. Return ONLY a JSON object — no markdown, no
 Today (UTC): ${new Date().toISOString()}
 
 Collections:
-doctors: name, email, phone, gender, bloodGroup, bio, doctorTitle, doctorType, medicalSpecialties[], totalExperienceYear, medicalDegree, consultationFee, followupFee, dateOfBirth, district, patientAttended, status, isDeleted
+doctors: name, email, phone, gender, bloodGroup, bio, doctorTitle, doctorType, medicalSpecialties[], totalExperienceYear, medicalDegree, consultationFee, followupFee, dateOfBirth, district, patientAttended, status['pending', 'approve', 'reject'], isDeleted
 patients: name, email, phone, gender, district, dateOfBirth, bloodGroup, favoriteDoctors[], weight, height, allergies, isDeleted
 admins: name, email, phone, gender, bloodGroup, dateOfBirth, district, isDeleted
 medicalReports: appointment, doctor, patient, problems[], diagnosis, medications[{name,dosage,frequency,duration}], advices[], followUpDate
