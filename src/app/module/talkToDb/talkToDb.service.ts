@@ -9,7 +9,7 @@ import Patient from '../patient/patient.model'
 import Admin from '../admin/admin.model'
 import Review from '../review/review.model'
 import QueryBuilder from '../../builder/QueryBuilder'
-import { Model } from 'mongoose'
+import { Model, PopulateOptions } from 'mongoose'
 // import { GoogleGenerativeAI } from '@google/generative-ai'
 import { OpenAI } from 'openai'
 import { TLlmResponse } from './talkToDb.interface'
@@ -66,11 +66,49 @@ Rules:
 
 // const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
+
+
+
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 })
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+
+const COLLECTION_POPULATE_MAP: Record<string, PopulateOptions[]> = {
+    [collectionFields.REVIEWS]: [
+        { path: 'doctor', select: '_id doctorTitle name profileImg email' },
+        { path: 'patient', select: '_id name profileImg email' },
+    ],
+    [collectionFields.APPOINTMENTS]: [
+        { path: 'doctor', select: '-createdAt -updatedAt -__v' },
+        { path: 'patient', select: '-createdAt -updatedAt -__v' },
+        { path: 'payment', select: '-createdAt -updatedAt -__v' },
+    ],
+    [collectionFields.PAYMENTS]: [
+        { path: 'appointment', select: '-createdAt -updatedAt -__v' },
+        { path: 'doctor', select: 'name doctorTitle profileImg' },
+        { path: 'patient', select: 'name profileImg' },
+    ],
+    [collectionFields.MEDICAL_REPORTS]: [
+        { path: 'doctor', select: '_id doctorTitle doctorType doctorCode name profileImg email' },
+        { path: 'patient', select: '_id name gender dateOfBirth profileImg weight email' },
+        { path: 'appointment', select: '-createdAt -updatedAt -__v' },
+    ],
+    [collectionFields.DOCTORS]: [
+        { path: 'user', select: '-createdAt -updatedAt -__v' },
+        { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
+    ],
+    [collectionFields.PATIENTS]: [
+        { path: 'user', select: '-createdAt -updatedAt -__v' },
+        { path: 'favoriteDoctors', select: '-createdAt -updatedAt -__v' },
+    ],
+    [collectionFields.ADMINS]: [
+        { path: 'user', select: '-createdAt -updatedAt -__v' },
+    ],
+}
 
 const resolveModel = (collection: string): Model<any> => {
     const model = COLLECTION_MODEL_MAP[collection]
@@ -139,11 +177,11 @@ const generateQueryFromLlm = async (prompt: string): Promise<TLlmResponse> => {
 const talkToDb = async (query: Record<string, unknown>) => {
     const { prompt, ...restQuery } = query
     console.log({ prompt, query, restQuery }, 'Received query parameters');
-    const { collection, filter, summary, populate } = await generateQueryFromLlm(prompt as string)
+    const { collection, filter, summary } = await generateQueryFromLlm(prompt as string)
 
 
 
-    console.log({ collection, filter, summary, populate }, 'collection, filter, summary, populate');
+    console.log({ collection, filter, summary }, 'collection, filter, summary, populate');
 
     const Model = resolveModel(collection)
 
@@ -154,54 +192,9 @@ const talkToDb = async (query: Record<string, unknown>) => {
         .paginateQuery()
         .fieldFilteringQuery()
 
-    if (collection === collectionFields.REVIEWS) {
-        talkToDbQuery.populateQuery([
-            { path: 'doctor', select: '_id doctorTitle name profileImg email' },
-            { path: 'patient', select: '_id doctorTitle name profileImg email' },
-        ])
-    } else if (collection === collectionFields.APPOINTMENTS) {
-        talkToDbQuery.populateQuery([
-            { path: 'doctor', select: '-createdAt -updatedAt -__v' },
-            { path: 'patient', select: '-createdAt -updatedAt -__v' },
-            { path: 'payment', select: '-createdAt -updatedAt -__v' },
-        ])
-    } else if (collection === collectionFields.PAYMENTS) {
-        talkToDbQuery.populateQuery([
-            {
-                path: 'appointment',
-                select: '-createdAt -updatedAt -__v',
-            },
-            { path: 'doctor', select: 'name doctorTitle profileImg' },
-            { path: 'patient', select: 'name profileImg' },
-        ])
-    } else if (collection === collectionFields.MEDICAL_REPORTS) {
-        talkToDbQuery.populateQuery([
-
-            {
-                path: 'doctor',
-                select: '_id doctorTitle doctorType doctorCode name profileImg email',
-            },
-            {
-                path: 'patient',
-                select: '_id name gender dateOfBirth profileImg weight email',
-            },
-            { path: 'appointment', select: '-createdAt -updatedAt -__v' },
-        ])
-    } else if (collection === collectionFields.DOCTORS) {
-        talkToDbQuery.populateQuery([
-            { path: 'user', select: '-createdAt -updatedAt -__v' },
-            { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
-        ])
-    } else if (collection === collectionFields.PATIENTS) {
-        talkToDbQuery.populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }, {
-            path: 'favoriteDoctors', select: '-createdAt -updatedAt -__v',
-            // populate: {
-            //   path: 'medicalSpecialties',
-            //   select: '-createdAt -updatedAt -__v',
-            // },
-        }])
-    } else if (collection === collectionFields.ADMINS) {
-        talkToDbQuery.populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }])
+    const populateOptions = COLLECTION_POPULATE_MAP[collection]
+    if (populateOptions) {
+        talkToDbQuery.populateQuery(populateOptions)
     }
 
     const [data, total] = await Promise.all([
