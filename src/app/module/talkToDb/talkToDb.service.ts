@@ -13,6 +13,7 @@ import { Model } from 'mongoose'
 // import { GoogleGenerativeAI } from '@google/generative-ai'
 import { OpenAI } from 'openai'
 import { TLlmResponse } from './talkToDb.interface'
+import { collectionFields } from './talkToDb.constant'
 
 
 
@@ -153,8 +154,54 @@ const talkToDb = async (query: Record<string, unknown>) => {
         .paginateQuery()
         .fieldFilteringQuery()
 
-    if (populate?.length) {
-        talkToDbQuery.populateQuery(populate)
+    if (collection === collectionFields.REVIEWS) {
+        talkToDbQuery.populateQuery([
+            { path: 'doctor', select: '_id doctorTitle name profileImg email' },
+            { path: 'patient', select: '_id doctorTitle name profileImg email' },
+        ])
+    } else if (collection === collectionFields.APPOINTMENTS) {
+        talkToDbQuery.populateQuery([
+            { path: 'doctor', select: '-createdAt -updatedAt -__v' },
+            { path: 'patient', select: '-createdAt -updatedAt -__v' },
+            { path: 'payment', select: '-createdAt -updatedAt -__v' },
+        ])
+    } else if (collection === collectionFields.PAYMENTS) {
+        talkToDbQuery.populateQuery([
+            {
+                path: 'appointment',
+                select: '-createdAt -updatedAt -__v',
+            },
+            { path: 'doctor', select: 'name doctorTitle profileImg' },
+            { path: 'patient', select: 'name profileImg' },
+        ])
+    } else if (collection === collectionFields.MEDICAL_REPORTS) {
+        talkToDbQuery.populateQuery([
+
+            {
+                path: 'doctor',
+                select: '_id doctorTitle doctorType doctorCode name profileImg email',
+            },
+            {
+                path: 'patient',
+                select: '_id name gender dateOfBirth profileImg weight email',
+            },
+            { path: 'appointment', select: '-createdAt -updatedAt -__v' },
+        ])
+    } else if (collection === collectionFields.DOCTORS) {
+        talkToDbQuery.populateQuery([
+            { path: 'user', select: '-createdAt -updatedAt -__v' },
+            { path: 'medicalSpecialties', select: '-createdAt -updatedAt -__v' },
+        ])
+    } else if (collection === collectionFields.PATIENTS) {
+        talkToDbQuery.populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }, {
+            path: 'favoriteDoctors', select: '-createdAt -updatedAt -__v',
+            // populate: {
+            //   path: 'medicalSpecialties',
+            //   select: '-createdAt -updatedAt -__v',
+            // },
+        }])
+    } else if (collection === collectionFields.ADMINS) {
+        talkToDbQuery.populateQuery([{ path: 'user', select: '-createdAt -updatedAt -__v' }])
     }
 
     const [data, total] = await Promise.all([
