@@ -123,7 +123,7 @@ const resolveModel = (collection: string): Model<any> => {
 
 const parseLlmJson = (raw: string): TLlmResponse => {
     try {
-        return JSON.parse(raw.replace(/```json|```/g, '').trim()) as TLlmResponse
+        return JSON.parse(raw) as TLlmResponse
     } catch {
         throw new AppError(
             StatusCodes.INTERNAL_SERVER_ERROR,
