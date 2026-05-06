@@ -14,4 +14,5 @@ export type TPayment = {
   }
   paymentMethod: 'bKash' | 'SSLCOMMERZ' | 'aamarPay'
   status: 'pending' | 'confirmed' | 'canceled'
+  isDeleted: boolean
 }

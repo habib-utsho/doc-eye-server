@@ -52,6 +52,10 @@ const MedicalReportSchema = new Schema<TMedicalReport>(
     followUpDate: {
       type: Date,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

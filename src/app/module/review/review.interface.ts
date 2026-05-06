@@ -6,4 +6,5 @@ export type TReview = {
   patient: Types.ObjectId
   rating: number
   comment: string
+  isDeleted: boolean
 }

@@ -10,6 +10,7 @@ const sendResponse = (
     accessToken?: string
     refreshToken?: string
     meta?: { total: number; page: number; totalPage: number; limit: number }
+    collection?: string
   },
 ) => {
   res.status(statusCode).send({
@@ -17,8 +18,12 @@ const sendResponse = (
     message: format?.message,
     data: format?.data || null,
     meta: format?.meta || null,
-    accessToken: format?.accessToken || null,
-    refreshToken: format?.refreshToken || null,
+    ...(format?.accessToken ? { accessToken: format.accessToken }
+      : {}),
+    ...(format?.refreshToken ? { refreshToken: format.refreshToken }
+      : {}),
+    ...(format?.collection ? { collection: format.collection }
+      : {}),
   })
 }
 

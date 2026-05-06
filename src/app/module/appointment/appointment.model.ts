@@ -37,6 +37,10 @@ const AppointmentSchema = new Schema<TAppointment>(
       enum: ['pending', 'confirmed', 'completed', 'canceled'],
       default: 'pending',
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

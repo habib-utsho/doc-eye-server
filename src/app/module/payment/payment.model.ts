@@ -51,6 +51,10 @@ const PaymentSchema = new Schema<TPayment>(
       enum: ['pending', 'confirmed', 'canceled'],
       default: 'pending',
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

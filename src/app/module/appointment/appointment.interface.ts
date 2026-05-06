@@ -9,4 +9,5 @@ export type TAppointment = {
   appointmentType: 'in-person' | 'online'
   symptoms?: string
   status: 'pending' | 'confirmed' | 'completed' | 'canceled'
+  isDeleted: boolean
 }

@@ -12,6 +12,7 @@ import { medicalReportRouter } from '../module/medicalReport/medicalReport.route
 import { messageRouter } from '../module/message/message.route'
 import { statsRouter } from '../module/stats/stats.route'
 import { paymentRouter2 } from '../module/paymentGateway/payment.route'
+import { talkToDbRouter } from '../module/talkToDb/talkToDb.route'
 
 const router = Router()
 const routes = [
@@ -66,6 +67,10 @@ const routes = [
   {
     path: '/stats',
     route: statsRouter,
+  },
+  {
+    path: '/talk-to-db',
+    route: talkToDbRouter,
   },
 ]
 
