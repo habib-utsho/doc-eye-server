@@ -23,7 +23,7 @@ Secure, scalable, and real-time enabled backend for a full-stack doctor appointm
 <details>
 <summary>Click to View ER Diagram</summary>
 
-![Doctor Portal ER Diagram](docs/doc-eye-server.png)
+![Doctor Portal ER Diagram](docs/doc-eye-server-erd.svg)
 
 </details>
 
