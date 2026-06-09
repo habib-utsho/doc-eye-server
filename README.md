@@ -18,15 +18,12 @@ Secure, scalable, and real-time enabled backend for a full-stack doctor appointm
 - Dark mode preference sync
 - File upload (prescriptions, profile images) via Multer
 
-## ✨ View Database ER Diagram
-
 <details>
-<summary>📊 View Database ER Diagram</summary>
+<summary> ## 📊 View Database ER Diagram</summary>
 
 ![Doctor Portal ER Diagram](docs/doc-eye-server.png)
 
 </details>
-
 
 ## 🛠 Tech Stack
 
