@@ -27,6 +27,7 @@ Secure, scalable, and real-time enabled backend for a full-stack doctor appointm
 
 </details>
 
+
 ## 🛠 Tech Stack
 
 | Technology          | Purpose                                        |
